@@ -480,7 +480,7 @@
                 localStorage.setItem("latitude", lat);
                 localStorage.setItem("longitude", lng);
 
-                await window.loadPressure();
+                await window.loadPressureChange();
 
                 document.getElementById("currentCity").textContent =
                     prefecture + city;
