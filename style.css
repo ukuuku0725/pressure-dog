@@ -1,0 +1,349 @@
+/* ==============================
+ウクの気圧予報
+============================== */
+
+body {
+margin: 0;
+padding: 24px 16px 40px;
+font-family: sans-serif;
+background: #f5f7f6;
+color: #333;
+line-height: 1.6;
+}
+
+/* ------------------------------
+タイトル
+------------------------------ */
+
+h1 {
+margin: 0 0 12px;
+text-align: center;
+font-size: 28px;
+}
+
+h2 {
+margin: 0 0 5px;
+font-size: 21px;
+}
+
+/* ------------------------------
+地域
+------------------------------ */
+
+.location {
+max-width: 520px;
+margin: 0 auto 24px;
+text-align: center;
+}
+
+#currentCity {
+margin: 0 0 16px;
+font-size: 18px;
+font-weight: bold;
+}
+
+.location-settings {
+    max-width: 520px;
+    margin: 18px auto;
+    padding: 12px 16px;
+    background: white;
+    border-radius: 12px;
+    text-align: center;
+}
+
+.location-settings h2 {
+    margin: 0 0 10px;
+    font-size: 17px;
+}
+
+.location-settings div {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 8px;
+}
+
+.location-settings label {
+    width: 100px;
+    min-width: 100px;
+    text-align: right;
+    margin-right: 8px;
+    white-space: nowrap;
+}
+
+.location-settings select {
+    width: 220px;
+    max-width: 220px;
+    padding: 6px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    background: white;
+}
+
+#saveCity {
+    margin-top: 2px;
+    padding: 6px 22px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+/* ------------------------------
+現在の気圧
+------------------------------ */
+
+.current-weather {
+max-width: 520px;
+margin: 0 auto 24px;
+padding: 24px 20px;
+background: white;
+border-radius: 16px;
+text-align: center;
+}
+
+.current-weather h2 {
+margin-bottom: 8px;
+}
+
+#pressure {
+margin: 0 0 10px;
+font-size: 42px;
+font-weight: bold;
+}
+
+.weather-details {
+display: flex;
+justify-content: center;
+gap: 28px;
+font-size: 18px;
+}
+
+
+/* ------------------------------
+気圧変化
+------------------------------ */
+
+#pressureChange {
+    max-width: 520px;
+    margin: 0 auto 24px;
+}
+
+.walk-face {
+    margin: 10px auto;
+    text-align: center;
+}
+
+.walk-face img {
+    width: 180px;
+    max-width: 60%;
+    height: auto;
+}
+
+.walk-card #currentWalkMessage {
+    font-size: 22px;
+    font-weight: 600;
+}
+
+.walk-card {
+    margin-bottom: 14px;
+    padding: 18px;
+    background: white;
+    border-radius: 16px;
+    text-align: center;
+}
+
+.walk-card h3 {
+    margin: 0 0 8px;
+    font-size: 18px;
+}
+
+.walk-card p {
+    margin: 5px 0;
+}
+
+/* 気圧の影響の判定 */
+.walk-card p:first-of-type {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+/* 現在の気圧 */
+.walk-pressure {
+    margin: 10px 0 14px;
+    font-size: 16px;
+    font-weight: normal;
+}
+
+/* お散歩メッセージ */
+.walk-card p:nth-of-type(3) {
+    font-size: 18px;
+    font-weight: 600;
+}
+
+/* 気圧変化 */
+.walk-detail {
+    font-size: 14px;
+}
+
+/* 気温・湿度・降水確率 */
+.walk-weather {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.walk-card #nextWalkMessage {
+    font-size: 22px !important;
+    font-weight: 600;
+}
+
+/* ------------------------------
+   気圧 注意度バー
+------------------------------ */
+
+.pressure-level {
+    max-width: 360px;
+    margin: 14px auto 18px;
+}
+
+.pressure-level-title {
+    margin-bottom: 5px;
+    font-size: 14px;
+    font-weight: bold;
+    text-align: left;
+}
+
+.pressure-bar {
+    width: 100%;
+    height: 10px;
+    background: #eeeeee;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.pressure-bar span {
+    display: block;
+    width: 50%;
+    height: 100%;
+    background: #f5c542;
+    border-radius: 5px;
+    transition: width 0.3s ease;
+}
+
+.pressure-level-label {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 4px;
+    font-size: 11px;
+}
+
+/* ------------------------------
+降水確率
+------------------------------ */
+
+#rainProbability {
+max-width: 520px;
+margin: 10px auto 24px;
+padding: 20px;
+background: white;
+border-radius: 16px;
+}
+
+.rain-hours {
+display: flex;
+justify-content: space-around;
+text-align: center;
+}
+
+.rain-hours > div {
+flex: 1;
+}
+
+.rain-hours p {
+margin: 4px 0;
+}
+
+.rain-hours p:last-child {
+font-size: 24px;
+font-weight: bold;
+}
+
+
+
+/* ------------------------------
+気圧とわんこの体調について
+------------------------------ */
+
+.pressure-info summary {
+    font-size: 16px;
+    font-weight: bold;
+}
+
+/* ------------------------------
+注意書き
+------------------------------ */
+
+.medical-note {
+    max-width: 520px;
+    margin: 12px auto 20px;
+    padding: 0 16px;
+    font-size: 12px;
+    line-height: 1.6;
+    text-align: left;
+}
+
+/* ------------------------------
+設定
+------------------------------ */
+
+.settings {
+max-width: 520px;
+margin: 0 auto;
+text-align: center;
+}
+
+#testNotification {
+padding: 10px 18px;
+border: none;
+border-radius: 8px;
+cursor: pointer;
+}
+
+/* ------------------------------
+スマホ用
+------------------------------ */
+
+@media (max-width: 600px) {
+
+body {
+    padding: 20px 12px 32px;
+}
+
+h1 {
+    font-size: 25px;
+}
+
+#pressure {
+    font-size: 38px;
+}
+
+.weather-details {
+    gap: 20px;
+    font-size: 16px;
+}
+
+.location-settings label {
+    width: auto;
+    text-align: left;
+}
+
+.location-settings select {
+    width: 100%;
+    max-width: none;
+    margin-top: 4px;
+}
+
+.rain-hours p:last-child {
+    font-size: 21px;
+}
+
+}
