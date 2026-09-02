@@ -648,7 +648,7 @@ async function registerPushNotification(
 
     const registration =
         await navigator.serviceWorker.register(
-            "/service-worker.js",
+            "./service-worker.js",
         );
 
     console.log(
