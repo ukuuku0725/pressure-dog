@@ -169,6 +169,10 @@
     <!-- 設定・テスト -->
     <div class="settings">
 
+        <button id="enableNotification">
+            🔔 通知を受け取る
+        </button>
+
         <button id="testNotification">
             🔔 テスト通知を送る
         </button>
@@ -310,25 +314,11 @@
         try {
 
             const userCredential = await signInAnonymously(auth);
-            const user = userCredential.user;
+            window.currentUser = userCredential.user;
+            const user = window.currentUser;
 
             console.log("匿名ログイン成功！");
             console.log("UID:", user.uid);
-
-        try {
-            await registerPushNotification(
-                user,
-                db,
-                doc,
-                setDoc,
-                serverTimestamp
-            );
-        } catch (error) {
-            console.error(
-                "Push通知登録に失敗しました:",
-                error
-            );
-        }
 
 
             const userRef = doc(db, "users", user.uid);
@@ -510,6 +500,35 @@
 
             }
         });
+        
+        document
+        .getElementById("enableNotification")
+        .addEventListener("click", async () => {
+        try {
+            console.log("通知登録を開始します");
+
+            await registerPushNotification(
+                window.currentUser,
+                db,
+                doc,
+                setDoc,
+                serverTimestamp
+            );
+
+            alert("通知の登録が完了しました！");
+
+        } catch (error) {
+            console.error(
+                "通知登録エラー:",
+                error,
+            );
+
+            alert(
+                "通知登録に失敗しました: " +
+                error.message,
+            );
+        }
+    });
 
     document
         .getElementById("testNotification")
