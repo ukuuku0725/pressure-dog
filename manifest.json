@@ -1,0 +1,13 @@
+{
+  "name": "わんこのための気圧予報",
+  "short_name": "わんこの気圧予報",
+  "start_url": "./",
+  "display": "standalone",
+  "icons": [
+    {
+      "src": "./images/icon.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
