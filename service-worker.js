@@ -4,11 +4,11 @@ self.addEventListener("push", event => {
         ? event.data.json()
         : {};
 
-    const title = data.title || "🐕 ウクの気圧予報";
+    const title = data.title || "🐕 わんこの気圧予報";
 
     const options = {
         body: data.body || "気圧予報が届きました",
-        icon: "/icon.png"
+        icon: "images/icon.png"
     };
 
     event.waitUntil(

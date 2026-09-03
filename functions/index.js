@@ -127,7 +127,7 @@ exports.sendTestNotification = onCall(
 
         const payload =
                 JSON.stringify({
-                  title: "🐕 ウクの気圧予報",
+                  title: "🐕 わんこの気圧予報",
                   body: "テスト通知です！🔔",
                 });
 
