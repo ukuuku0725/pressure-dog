@@ -1,13 +1,20 @@
 {
-  "name": "わんこのための気圧予報",
-  "short_name": "わんこの気圧予報",
-  "start_url": "./",
-  "display": "standalone",
-  "icons": [
-    {
-      "src": "./images/icon.png",
-      "sizes": "512x512",
-      "type": "image/png"
-    }
-  ]
+    "name": "わんこのための気圧予報",
+    "short_name": "わんこの気圧予報",
+    "start_url": "./",
+    "display": "standalone",
+    "icons": [
+        {
+            "src": "./images/icon.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "any"
+        },
+        {
+            "src": "./images/icon-maskable.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "maskable"
+        }
+    ]
 }
