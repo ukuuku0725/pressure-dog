@@ -46,7 +46,7 @@ exports.testSecret = onRequest(
     },
     (request, response) => {
       const secret =
-          VAPID_PRIVATE_KEY.value();
+            VAPID_PRIVATE_KEY.value();
 
       if (secret) {
         logger.info(
@@ -84,11 +84,11 @@ exports.sendTestNotification = onCall(
 
       try {
         const uid =
-            request.auth.uid;
+                request.auth.uid;
 
         // Secret Managerから秘密鍵を取得
         const privateKey =
-            VAPID_PRIVATE_KEY.value();
+                VAPID_PRIVATE_KEY.value();
 
         // VAPID設定
         webpush.setVapidDetails(
@@ -99,11 +99,11 @@ exports.sendTestNotification = onCall(
 
         // 自分のユーザー情報だけ取得
         const userDoc =
-            await admin
-                .firestore()
-                .collection("users")
-                .doc(uid)
-                .get();
+                await admin
+                    .firestore()
+                    .collection("users")
+                    .doc(uid)
+                    .get();
 
         if (!userDoc.exists) {
           throw new HttpsError(
@@ -113,10 +113,10 @@ exports.sendTestNotification = onCall(
         }
 
         const userData =
-            userDoc.data();
+                userDoc.data();
 
         const subscription =
-            userData.pushSubscription;
+                userData.pushSubscription;
 
         if (!subscription) {
           throw new HttpsError(
@@ -126,10 +126,10 @@ exports.sendTestNotification = onCall(
         }
 
         const payload =
-            JSON.stringify({
-              title: "🐕 ウクの気圧予報",
-              body: "テスト通知です！🔔",
-            });
+                JSON.stringify({
+                  title: "🐕 ウクの気圧予報",
+                  body: "テスト通知です！🔔",
+                });
 
         await webpush.sendNotification(
             subscription,
@@ -179,12 +179,12 @@ exports.getWeatherData = onCall(
 
       try {
         const {latitude, longitude} =
-            request.data;
+                request.data;
 
         // 緯度・経度チェック
         if (
           latitude === undefined ||
-          longitude === undefined
+                longitude === undefined
         ) {
           throw new HttpsError(
               "invalid-argument",
@@ -194,11 +194,11 @@ exports.getWeatherData = onCall(
 
         // Secret ManagerからAPIキー取得
         const weatherApiKey =
-            OPENWEATHER_API_KEY.value();
+                OPENWEATHER_API_KEY.value();
 
         // 現在時刻を正時にする
         const now =
-            new Date();
+                new Date();
 
         now.setMinutes(
             0,
@@ -208,29 +208,29 @@ exports.getWeatherData = onCall(
 
         // 6時間前から取得
         const start =
-            new Date(now);
+                new Date(now);
 
         start.setHours(
             start.getHours() - 6,
         );
 
         const startUnix =
-            Math.floor(
-                start.getTime() / 1000,
-            );
+                Math.floor(
+                    start.getTime() / 1000,
+                );
 
         // OpenWeatherMap One Call 4.0
         const url =
-            `https://api.openweathermap.org/data/4.0/onecall/timeline/1h?` +
-            `lat=${latitude}` +
-            `&lon=${longitude}` +
-            `&appid=${weatherApiKey}` +
-            `&units=metric` +
-            `&lang=ja` +
-            `&start=${startUnix}`;
+                `https://api.openweathermap.org/data/4.0/onecall/timeline/1h?` +
+                `lat=${latitude}` +
+                `&lon=${longitude}` +
+                `&appid=${weatherApiKey}` +
+                `&units=metric` +
+                `&lang=ja` +
+                `&start=${startUnix}`;
 
         const response =
-            await fetch(url);
+                await fetch(url);
 
         if (!response.ok) {
           throw new Error(
@@ -239,7 +239,7 @@ exports.getWeatherData = onCall(
         }
 
         const weatherData =
-            await response.json();
+                await response.json();
 
         logger.info(
             "天気データを取得しました",
@@ -248,9 +248,9 @@ exports.getWeatherData = onCall(
               latitude: latitude,
               longitude: longitude,
               dataCount:
-                  weatherData.data ?
-                    weatherData.data.length :
-                    0,
+                        weatherData.data ?
+                            weatherData.data.length :
+                            0,
             },
         );
 
@@ -290,14 +290,14 @@ exports.sendPressureNotification = onSchedule(
     },
     async () => {
       const db =
-          admin.firestore();
+            admin.firestore();
 
       // --------------------------------
       // VAPID設定
       // --------------------------------
 
       const privateKey =
-          VAPID_PRIVATE_KEY.value();
+            VAPID_PRIVATE_KEY.value();
 
       webpush.setVapidDetails(
           VAPID_EMAIL,
@@ -310,16 +310,16 @@ exports.sendPressureNotification = onSchedule(
       // --------------------------------
 
       const weatherApiKey =
-          OPENWEATHER_API_KEY.value();
+            OPENWEATHER_API_KEY.value();
 
       // --------------------------------
       // ユーザー取得
       // --------------------------------
 
       const usersSnapshot =
-          await db
-              .collection("users")
-              .get();
+            await db
+                .collection("users")
+                .get();
 
       logger.info(
           "通知対象ユーザー数",
@@ -335,7 +335,7 @@ exports.sendPressureNotification = onSchedule(
       for (const userDoc of usersSnapshot.docs) {
         try {
           const userData =
-              userDoc.data();
+                    userDoc.data();
 
           // 通知OFFはスキップ
           if (
@@ -345,18 +345,18 @@ exports.sendPressureNotification = onSchedule(
           }
 
           const subscription =
-              userData.pushSubscription;
+                    userData.pushSubscription;
 
           const latitude =
-              userData.latitude;
+                    userData.latitude;
 
           const longitude =
-              userData.longitude;
+                    userData.longitude;
 
           if (
             !subscription ||
-            latitude === undefined ||
-            longitude === undefined
+                    latitude === undefined ||
+                    longitude === undefined
           ) {
             logger.warn(
                 "通知に必要な情報がありません",
@@ -373,10 +373,10 @@ exports.sendPressureNotification = onSchedule(
           // --------------------------------
 
           const now =
-              new Date();
+                    new Date();
 
           const japanTime =
-              new Date(now);
+                    new Date(now);
 
           japanTime.setMinutes(
               0,
@@ -389,25 +389,25 @@ exports.sendPressureNotification = onSchedule(
           // --------------------------------
 
           const start =
-              new Date(japanTime);
+                    new Date(japanTime);
 
           start.setHours(
               start.getHours() - 6,
           );
 
           const startUnix =
-              Math.floor(
-                  start.getTime() / 1000,
-              );
+                    Math.floor(
+                        start.getTime() / 1000,
+                    );
 
           logger.info(
               "基準時刻",
               {
                 uid: userDoc.id,
                 japanTime:
-                    japanTime.toISOString(),
+                            japanTime.toISOString(),
                 start:
-                    start.toISOString(),
+                            start.toISOString(),
               },
           );
 
@@ -416,16 +416,16 @@ exports.sendPressureNotification = onSchedule(
           // --------------------------------
 
           const url =
-              `https://api.openweathermap.org/data/4.0/onecall/timeline/1h?` +
-              `lat=${latitude}` +
-              `&lon=${longitude}` +
-              `&appid=${weatherApiKey}` +
-              `&units=metric` +
-              `&lang=ja` +
-              `&start=${startUnix}`;
+                    `https://api.openweathermap.org/data/4.0/onecall/timeline/1h?` +
+                    `lat=${latitude}` +
+                    `&lon=${longitude}` +
+                    `&appid=${weatherApiKey}` +
+                    `&units=metric` +
+                    `&lang=ja` +
+                    `&start=${startUnix}`;
 
           const response =
-              await fetch(url);
+                    await fetch(url);
 
           if (!response.ok) {
             throw new Error(
@@ -434,17 +434,17 @@ exports.sendPressureNotification = onSchedule(
           }
 
           const weatherData =
-              await response.json();
+                    await response.json();
 
           const hourly =
-              weatherData.data;
+                    weatherData.data;
 
           // --------------------------------
           // 現在の基準時刻
           // --------------------------------
 
           const current =
-              new Date(japanTime);
+                    new Date(japanTime);
 
           // --------------------------------
           // 現在のお散歩用
@@ -452,7 +452,7 @@ exports.sendPressureNotification = onSchedule(
           // --------------------------------
 
           const minus6 =
-              new Date(current);
+                    new Date(current);
 
           minus6.setHours(
               minus6.getHours() - 6,
@@ -463,24 +463,24 @@ exports.sendPressureNotification = onSchedule(
           // --------------------------------
 
           const currentData =
-              hourly.find((item) =>
-                item.dt ===
-                Math.floor(
-                    current.getTime() / 1000,
-                ),
-              );
+                    hourly.find((item) =>
+                      item.dt ===
+                        Math.floor(
+                            current.getTime() / 1000,
+                        ),
+                    );
 
           const minus6Data =
-              hourly.find((item) =>
-                item.dt ===
-                Math.floor(
-                    minus6.getTime() / 1000,
-                ),
-              );
+                    hourly.find((item) =>
+                      item.dt ===
+                        Math.floor(
+                            minus6.getTime() / 1000,
+                        ),
+                    );
 
           if (
             !currentData ||
-            !minus6Data
+                    !minus6Data
           ) {
             logger.warn(
                 "現在のお散歩に必要な気圧データが取得できません",
@@ -497,8 +497,8 @@ exports.sendPressureNotification = onSchedule(
           // --------------------------------
 
           const currentWalkChange =
-              currentData.pressure -
-              minus6Data.pressure;
+                    currentData.pressure -
+                    minus6Data.pressure;
 
           // --------------------------------
           // 次のお散歩の時間帯
@@ -509,14 +509,14 @@ exports.sendPressureNotification = onSchedule(
           let nextWalkLabel;
 
           const currentHour =
-              current.getHours();
+                    current.getHours();
 
           if (currentHour < 12) {
             // 🌆 夕方のお散歩
             // 11:00 → 17:00
 
             nextWalkStart =
-                new Date(current);
+                        new Date(current);
 
             nextWalkStart.setHours(
                 11,
@@ -526,7 +526,7 @@ exports.sendPressureNotification = onSchedule(
             );
 
             nextWalkEnd =
-                new Date(current);
+                        new Date(current);
 
             nextWalkEnd.setHours(
                 17,
@@ -536,13 +536,13 @@ exports.sendPressureNotification = onSchedule(
             );
 
             nextWalkLabel =
-                "夕方のお散歩";
+                        "夕方のお散歩";
           } else {
             // 🌅 朝のお散歩
             // 23:00 → 翌5:00
 
             nextWalkStart =
-                new Date(current);
+                        new Date(current);
 
             nextWalkStart.setHours(
                 23,
@@ -552,7 +552,7 @@ exports.sendPressureNotification = onSchedule(
             );
 
             nextWalkEnd =
-                new Date(current);
+                        new Date(current);
 
             nextWalkEnd.setDate(
                 nextWalkEnd.getDate() + 1,
@@ -566,7 +566,7 @@ exports.sendPressureNotification = onSchedule(
             );
 
             nextWalkLabel =
-                "朝のお散歩";
+                        "朝のお散歩";
           }
 
           logger.info(
@@ -575,9 +575,9 @@ exports.sendPressureNotification = onSchedule(
                 uid: userDoc.id,
                 label: nextWalkLabel,
                 start:
-                    nextWalkStart.toISOString(),
+                            nextWalkStart.toISOString(),
                 end:
-                    nextWalkEnd.toISOString(),
+                            nextWalkEnd.toISOString(),
               },
           );
 
@@ -586,32 +586,32 @@ exports.sendPressureNotification = onSchedule(
           // --------------------------------
 
           const nextWalkStartData =
-              hourly.find((item) =>
-                item.dt ===
-                Math.floor(
-                    nextWalkStart.getTime() /
-                    1000,
-                ),
-              );
+                    hourly.find((item) =>
+                      item.dt ===
+                        Math.floor(
+                            nextWalkStart.getTime() /
+                            1000,
+                        ),
+                    );
 
           const nextWalkEndData =
-              hourly.find((item) =>
-                item.dt ===
-                Math.floor(
-                    nextWalkEnd.getTime() /
-                    1000,
-                ),
-              );
+                    hourly.find((item) =>
+                      item.dt ===
+                        Math.floor(
+                            nextWalkEnd.getTime() /
+                            1000,
+                        ),
+                    );
 
           let nextWalkChange = null;
 
           if (
             nextWalkStartData &&
-            nextWalkEndData
+                    nextWalkEndData
           ) {
             nextWalkChange =
-                nextWalkEndData.pressure -
-                nextWalkStartData.pressure;
+                        nextWalkEndData.pressure -
+                        nextWalkStartData.pressure;
           }
 
           if (nextWalkChange === null) {
@@ -631,74 +631,37 @@ exports.sendPressureNotification = onSchedule(
           // --------------------------------
 
           const judgePressureChange =
-              (change) => {
-                const decrease =
-                    Math.max(
-                        0,
-                        -change,
-                    );
+                    (change) => {
+                      const decrease =
+                            Math.max(
+                                0,
+                                -change,
+                            );
 
-                if (decrease <= 2) {
-                  return "🌤️ 影響は少なめ";
-                }
+                      if (decrease <= 2) {
+                        return "少なめ";
+                      }
 
-                if (decrease <= 4) {
-                  return "🌥️ 影響する可能性あり";
-                }
+                      if (decrease <= 4) {
+                        return "やや注意";
+                      }
 
-                if (decrease <= 9) {
-                  return "⚠️ 影響する可能性が高め";
-                }
+                      if (decrease <= 9) {
+                        return "注意";
+                      }
 
-                return "🚨 影響する可能性がかなり高い";
-              };
+                      return "かなり注意";
+                    };
 
           const currentJudgment =
-              judgePressureChange(
-                  currentWalkChange,
-              );
-
-          const nextJudgment =
-              judgePressureChange(
-                  nextWalkChange,
-              );
-
-          // --------------------------------
-          // お散歩メッセージ
-          // --------------------------------
-
-          const walkMessage =
-              (change) => {
-                const decrease =
-                    Math.max(
-                        0,
-                        -change,
+                    judgePressureChange(
+                        currentWalkChange,
                     );
 
-                if (decrease <= 2) {
-                  return "いつも通りのお散歩で大丈夫そう";
-                }
-
-                if (decrease <= 4) {
-                  return "お散歩は様子を見ながら";
-                }
-
-                if (decrease <= 9) {
-                  return "無理せず様子を見て";
-                }
-
-                return "無理せず、体調に注意";
-              };
-
-          const currentWalkMessage =
-              walkMessage(
-                  currentWalkChange,
-              );
-
-          const nextWalkMessage =
-              walkMessage(
-                  nextWalkChange,
-              );
+          const nextJudgment =
+                    judgePressureChange(
+                        nextWalkChange,
+                    );
 
           // --------------------------------
           // 今後3時間の降水確率
@@ -708,16 +671,16 @@ exports.sendPressureNotification = onSchedule(
 
           for (let i = 1; i <= 3; i++) {
             const target =
-                new Date(current);
+                        new Date(current);
 
             target.setHours(
                 target.getHours() + i,
             );
 
             const targetUnix =
-                Math.floor(
-                    target.getTime() / 1000,
-                );
+                        Math.floor(
+                            target.getTime() / 1000,
+                        );
 
             logger.info(
                 "降水確率の対象時刻",
@@ -725,20 +688,20 @@ exports.sendPressureNotification = onSchedule(
                   uid: userDoc.id,
                   hour: i,
                   target:
-                      target.toISOString(),
+                                target.toISOString(),
                   targetHour:
-                      target.getHours(),
+                                target.getHours(),
                 },
             );
 
             const item =
-                hourly.find((weather) =>
-                  weather.dt === targetUnix,
-                );
+                        hourly.find((weather) =>
+                          weather.dt === targetUnix,
+                        );
 
             if (
               item &&
-              item.pop !== undefined
+                        item.pop !== undefined
             ) {
               rainProbabilities.push(
                   Math.round(
@@ -749,18 +712,18 @@ exports.sendPressureNotification = onSchedule(
           }
 
           const maxRainProbability =
-              rainProbabilities.length > 0 ?
-                Math.max(
-                    ...rainProbabilities,
-                ) :
-                null;
+                    rainProbabilities.length > 0 ?
+                        Math.max(
+                            ...rainProbabilities,
+                        ) :
+                        null;
 
           logger.info(
               "今後3時間の降水確率",
               {
                 uid: userDoc.id,
                 probabilities:
-                    rainProbabilities,
+                            rainProbabilities,
               },
           );
 
@@ -772,24 +735,24 @@ exports.sendPressureNotification = onSchedule(
           const nextWalkRainProbabilities = [];
 
           const target =
-              new Date(nextWalkStart);
+                    new Date(nextWalkStart);
 
           while (
             target <= nextWalkEnd
           ) {
             const targetUnix =
-                Math.floor(
-                    target.getTime() / 1000,
-                );
+                        Math.floor(
+                            target.getTime() / 1000,
+                        );
 
             const item =
-                hourly.find((weather) =>
-                  weather.dt === targetUnix,
-                );
+                        hourly.find((weather) =>
+                          weather.dt === targetUnix,
+                        );
 
             if (
               item &&
-              item.pop !== undefined
+                        item.pop !== undefined
             ) {
               nextWalkRainProbabilities.push(
                   Math.round(
@@ -804,11 +767,11 @@ exports.sendPressureNotification = onSchedule(
           }
 
           const nextWalkMaxRainProbability =
-              nextWalkRainProbabilities.length > 0 ?
-                Math.max(
-                    ...nextWalkRainProbabilities,
-                ) :
-                null;
+                    nextWalkRainProbabilities.length > 0 ?
+                        Math.max(
+                            ...nextWalkRainProbabilities,
+                        ) :
+                        null;
 
           logger.info(
               "次のお散歩の降水確率",
@@ -816,9 +779,9 @@ exports.sendPressureNotification = onSchedule(
                 uid: userDoc.id,
                 label: nextWalkLabel,
                 probabilities:
-                    nextWalkRainProbabilities,
+                            nextWalkRainProbabilities,
                 max:
-                    nextWalkMaxRainProbability,
+                            nextWalkMaxRainProbability,
               },
           );
 
@@ -830,15 +793,15 @@ exports.sendPressureNotification = onSchedule(
               {
                 nextWalkPressure: {
                   label:
-                      nextWalkLabel,
+                                nextWalkLabel,
 
                   change:
-                      nextWalkChange,
+                                nextWalkChange,
 
                   updatedAt:
-                      admin.firestore
-                          .FieldValue
-                          .serverTimestamp(),
+                                admin.firestore
+                                    .FieldValue
+                                    .serverTimestamp(),
                 },
               },
               {
@@ -851,43 +814,47 @@ exports.sendPressureNotification = onSchedule(
           // --------------------------------
 
           const currentChangeText =
-              (currentWalkChange > 0 ?
-                "+" : "") +
-              currentWalkChange +
-              " hPa";
+                    (currentWalkChange > 0 ? "+" : "") +
+                    currentWalkChange +
+                    " hPa";
 
           const nextChangeText =
-              (nextWalkChange > 0 ?
-                "+" : "") +
-              nextWalkChange +
-              " hPa";
+                    (nextWalkChange > 0 ? "+" : "") +
+                    nextWalkChange +
+                    " hPa";
 
-          let rainText = "";
+          const currentRainText =
+                    maxRainProbability !== null ?
+                        `${maxRainProbability}%` :
+                        "---";
 
-          if (
-            maxRainProbability !== null
-          ) {
-            rainText =
-                `☔ 今後3時間の最大降水確率：` +
-                `${maxRainProbability}%`;
-          }
+          const nextRainText =
+                    nextWalkMaxRainProbability !== null ?
+                        `${nextWalkMaxRainProbability}%` :
+                        "---";
 
           const payload =
-              JSON.stringify({
-                title:
-                    "🐕 ウクの気圧予報",
+                    JSON.stringify({
+                      title:
+                            "🐕 わんこの気圧予報",
 
-                body:
-                    `現在のお散歩\n` +
-                    `${currentJudgment}（${currentChangeText}）\n` +
-                    `🐶 ${currentWalkMessage}\n\n` +
+                      body:
+                            `🐕 今のお散歩\n` +
+                            `影響度：${currentJudgment} ` +
+                            `（気圧変化 ${currentChangeText}）\n` +
+                            `🌀 ${currentData.pressure} hPa ` +
+                            `🌡️ ${currentData.temp}℃ ` +
+                            `💧 ${currentData.humidity}% ` +
+                            `☔ ${currentRainText}\n\n` +
 
-                    `${nextWalkLabel}\n` +
-                    `${nextJudgment}（${nextChangeText}）\n` +
-                    `🐶 ${nextWalkMessage}\n\n` +
-
-                    rainText,
-              });
+                            `🌅 ${nextWalkLabel}\n` +
+                            `影響度：${nextJudgment} ` +
+                            `（気圧変化 ${nextChangeText}）\n` +
+                            `🌀 ${nextWalkEndData.pressure} hPa ` +
+                            `🌡️ ${nextWalkEndData.temp}℃ ` +
+                            `💧 ${nextWalkEndData.humidity}% ` +
+                            `☔ ${nextRainText}`,
+                    });
 
           // --------------------------------
           // 通知送信
