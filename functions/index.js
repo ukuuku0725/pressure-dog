@@ -840,7 +840,7 @@ exports.sendPressureNotification = onSchedule(
 
                       body:
                             `🐕 今のお散歩\n` +
-                            `影響度：${currentJudgment} ` +
+                            `注意度：${currentJudgment} ` +
                             `（気圧変化 ${currentChangeText}）\n` +
                             `🌀 ${currentData.pressure} hPa ` +
                             `🌡️ ${currentData.temp}℃ ` +
