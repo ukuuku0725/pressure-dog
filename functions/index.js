@@ -836,7 +836,7 @@ exports.sendPressureNotification = onSchedule(
           const payload =
                     JSON.stringify({
                       title:
-                            "🐕 わんこの気圧予報",
+                            "わんこの気圧予報",
 
                       body:
                             `🐕 今のお散歩\n` +
