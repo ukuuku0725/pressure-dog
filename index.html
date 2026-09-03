@@ -315,6 +315,7 @@
             console.log("匿名ログイン成功！");
             console.log("UID:", user.uid);
 
+        try {
             await registerPushNotification(
                 user,
                 db,
@@ -322,6 +323,12 @@
                 setDoc,
                 serverTimestamp
             );
+        } catch (error) {
+            console.error(
+                "Push通知登録に失敗しました:",
+                error
+            );
+        }
 
 
             const userRef = doc(db, "users", user.uid);
