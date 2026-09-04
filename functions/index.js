@@ -241,22 +241,60 @@ exports.getWeatherData = onCall(
         const weatherData =
                 await response.json();
 
+        const hourly = weatherData.data || [];
+
+        try {
+          const userRef =
+                    admin.firestore()
+                        .collection("users")
+                        .doc(request.auth.uid);
+
+          const userSnap =
+                    await userRef.get();
+
+          if (userSnap.exists) {
+            const userDoc = {
+              id: request.auth.uid,
+              ref: userRef,
+            };
+
+            await updateNextWalkPressure(
+                hourly,
+                now,
+                userDoc,
+            );
+          } else {
+            logger.warn(
+                "ユーザードキュメントが見つかりません",
+                {
+                  uid: request.auth.uid,
+                },
+            );
+          }
+        } catch (nextWalkError) {
+          logger.error(
+              "次のお散歩データ更新エラー",
+              {
+                uid: request.auth.uid,
+                errorMessage: nextWalkError.message,
+                errorStack: nextWalkError.stack,
+              },
+          );
+        }
+
         logger.info(
             "天気データを取得しました",
             {
               uid: request.auth.uid,
               latitude: latitude,
               longitude: longitude,
-              dataCount:
-                        weatherData.data ?
-                            weatherData.data.length :
-                            0,
+              dataCount: hourly.length,
             },
         );
 
         return {
           success: true,
-          data: weatherData.data,
+          data: hourly,
         };
       } catch (error) {
         logger.error(
