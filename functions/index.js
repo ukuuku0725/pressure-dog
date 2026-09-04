@@ -439,6 +439,17 @@ exports.sendPressureNotification = onSchedule(
           const hourly =
                     weatherData.data;
 
+          logger.info(
+              "デバッグ：hourlyの時刻",
+              {
+                uid: userDoc.id,
+                hourly: hourly.map((item) => ({
+                  dt: item.dt,
+                  time: new Date(item.dt * 1000).toISOString(),
+                })),
+              },
+          );
+
           // --------------------------------
           // 現在の基準時刻
           // --------------------------------
@@ -500,6 +511,7 @@ exports.sendPressureNotification = onSchedule(
                     currentData.pressure -
                     minus6Data.pressure;
 
+
           // --------------------------------
           // 次のお散歩の時間帯
           // --------------------------------
@@ -508,78 +520,110 @@ exports.sendPressureNotification = onSchedule(
           let nextWalkEnd;
           let nextWalkLabel;
 
-          const currentHour =
-                    current.getHours();
+          // 現在時刻を日本時間（JST）として取得
+          const jstParts =
+                    new Intl.DateTimeFormat(
+                        "ja-JP",
+                        {
+                          timeZone: "Asia/Tokyo",
+                          year: "numeric",
+                          month: "numeric",
+                          day: "numeric",
+                          hour: "numeric",
+                          hour12: false,
+                        },
+                    ).formatToParts(current);
 
-          if (currentHour < 12) {
-            // 🌆 夕方のお散歩
-            // 11:00 → 17:00
+          const jstYear =
+                    Number(
+                        jstParts.find(
+                            (part) => part.type === "year",
+                        ).value,
+                    );
+
+          const jstMonth =
+                    Number(
+                        jstParts.find(
+                            (part) => part.type === "month",
+                        ).value,
+                    );
+
+          const jstDay =
+                    Number(
+                        jstParts.find(
+                            (part) => part.type === "day",
+                        ).value,
+                    );
+
+          const currentHour =
+                    Number(
+                        jstParts.find(
+                            (part) => part.type === "hour",
+                        ).value,
+                    );
+
+          if (currentHour >= 5 && currentHour < 17) {
+            // 🌆 夕方のお散歩データ取得 5～17時
+            // 気圧変化計算時間帯 11:00 JST → 17:00 JST
 
             nextWalkStart =
-                        new Date(current);
-
-            nextWalkStart.setHours(
-                11,
-                0,
-                0,
-                0,
-            );
+                        new Date(
+                            Date.UTC(
+                                jstYear,
+                                jstMonth - 1,
+                                jstDay,
+                                11 - 9,
+                                0,
+                                0,
+                            ),
+                        );
 
             nextWalkEnd =
-                        new Date(current);
-
-            nextWalkEnd.setHours(
-                17,
-                0,
-                0,
-                0,
-            );
+                        new Date(
+                            Date.UTC(
+                                jstYear,
+                                jstMonth - 1,
+                                jstDay,
+                                17 - 9,
+                                0,
+                                0,
+                            ),
+                        );
 
             nextWalkLabel =
                         "夕方のお散歩";
           } else {
-            // 🌅 朝のお散歩
-            // 23:00 → 翌5:00
+            // 🌅 朝のお散歩データ取得 17時～5時
+            // 気圧変化計算時間帯 23:00 JST → 翌5:00 JST
 
             nextWalkStart =
-                        new Date(current);
-
-            nextWalkStart.setHours(
-                23,
-                0,
-                0,
-                0,
-            );
+                        new Date(
+                            Date.UTC(
+                                jstYear,
+                                jstMonth - 1,
+                                jstDay,
+                                23 - 9,
+                                0,
+                                0,
+                            ),
+                        );
 
             nextWalkEnd =
-                        new Date(current);
-
-            nextWalkEnd.setDate(
-                nextWalkEnd.getDate() + 1,
-            );
-
-            nextWalkEnd.setHours(
-                5,
-                0,
-                0,
-                0,
-            );
+                        new Date(
+                            Date.UTC(
+                                jstYear,
+                                jstMonth - 1,
+                                jstDay + 1,
+                                5 - 9,
+                                0,
+                                0,
+                            ),
+                        );
 
             nextWalkLabel =
                         "朝のお散歩";
           }
 
-          logger.info(
-              "次のお散歩時間帯",
-              {
-                uid: userDoc.id,
-                label: nextWalkLabel,
-                start:
-                            nextWalkStart.toISOString(),
-                end:
-                            nextWalkEnd.toISOString(),
-              },
-          );
 
           // --------------------------------
           // 次のお散歩の気圧データ
@@ -602,6 +646,20 @@ exports.sendPressureNotification = onSchedule(
                             1000,
                         ),
                     );
+          logger.info(
+              "デバッグ：次のお散歩データ",
+              {
+                uid: userDoc.id,
+                startTarget:
+                            nextWalkStart.toISOString(),
+                endTarget:
+                            nextWalkEnd.toISOString(),
+                startFound:
+                            !!nextWalkStartData,
+                endFound:
+                            !!nextWalkEndData,
+              },
+          );
 
           let nextWalkChange = null;
 
