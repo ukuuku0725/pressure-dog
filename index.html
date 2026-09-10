@@ -191,6 +191,11 @@
 </html>
 
 <script type="module">
+    // データ計測
+    const startupTime = performance.now();
+    console.log("🚀 起動計測開始");
+    
+    
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
     import {
         getAuth,
@@ -568,6 +573,13 @@
     // 最初に地域データを読み込む
     await loadCityData();
 
+    // データ計測
+    console.log(
+        "⏱️ 地域データ読み込み:",
+        Math.round(performance.now() - startupTime),
+        "ms",
+    );
+
     // app.jsを読み込む
     await new Promise((resolve, reject) => {
 
@@ -581,11 +593,40 @@
         document.body.appendChild(script);
     });
 
+    //　データ計測
+    console.log(
+        "⏱️ app.js読み込み:",
+        Math.round(performance.now() - startupTime),
+        "ms",
+    );
+
     // Firebaseを開始
     await initializeUser();
 
+    //　データ計測
+    console.log(
+        "⏱️ Firebase＋Firestore:",
+        Math.round(performance.now() - startupTime),
+        "ms",
+    );
+
     // Firebaseからユーザー情報を取得した後に気圧変化を読み込む
     const result = await window.loadPressureChange();
+
+
+    //　データ計測
+    console.log(
+        "⏱️ 天気データ取得＋画面表示:",
+        Math.round(performance.now() - startupTime),
+        "ms",
+    );
+
+    console.log(
+        "⏱️ アプリ起動完了:",
+        Math.round(performance.now() - startupTime),
+        "ms",
+    );
+
 
     console.log("気圧変化の結果:", result);
 
