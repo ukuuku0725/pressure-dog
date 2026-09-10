@@ -140,11 +140,25 @@ async function loadPressureChange() {
     // --------------------------------
 
     try {
+
+        //　データ計測に必要
+        const weatherStart = performance.now();
+        //　ここまで
+
+
         const result =
             await window.getWeatherData({
                 latitude: Number(latitude),
                 longitude: Number(longitude),
             });
+
+            //　データ計測
+            console.log(
+                "⏱️ Cloud Functions＋OpenWeather:",
+                Math.round(performance.now() - weatherStart),
+                "ms",
+            );
+            //　ここまで
 
         const hourly =
             result.data.data;
