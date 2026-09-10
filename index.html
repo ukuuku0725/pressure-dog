@@ -315,103 +315,144 @@
     }
 
 
-    // Firebaseのログインとユーザー情報の処理
-    async function initializeUser() {
+// Firebaseのログインとユーザー情報の処理
+async function initializeUser() {
 
-        try {
+    const firebaseStart = performance.now();
 
-            const userCredential = await signInAnonymously(auth);
-            window.currentUser = userCredential.user;
-            const user = window.currentUser;
+    try {
 
-            console.log("匿名ログイン成功！");
-            console.log("UID:", user.uid);
+        const authStart = performance.now();
 
+        const userCredential = await signInAnonymously(auth);
+        window.currentUser = userCredential.user;
+        const user = window.currentUser;
 
-            const userRef = doc(db, "users", user.uid);
-            const userSnap = await getDoc(userRef);
+        console.log("匿名ログイン成功！");
+        console.log("UID:", user.uid);
 
-
-            if (!userSnap.exists()) {
-
-                // 初回アクセス
-                await setDoc(userRef, {
-                    prefecture: "新潟県",
-                    city: "五泉市",
-                    notificationEnabled: true,
-                    createdAt: serverTimestamp(),
-                    lastUsedAt: serverTimestamp()
-                });
+        console.log(
+            "⏱️ 匿名ログイン:",
+            Math.round(performance.now() - authStart),
+            "ms",
+        );
 
 
-                // 画面に初期値を表示
-                document.getElementById("prefectureSelect").value = "新潟県";
+        const userRef = doc(db, "users", user.uid);
 
-                updateCitySelect("新潟県", "五泉市");
+        const firestoreReadStart = performance.now();
 
-                document.getElementById("currentCity").textContent =
-                    "新潟県五泉市";
+        const userSnap = await getDoc(userRef);
 
-
-                console.log("新しいユーザーをFirestoreに保存しました！");
-
-            } else {
-
-                // 2回目以降
-                const userData = userSnap.data();
-
-                window.nextWalkPressure =
-                    userData.nextWalkPressure || null;
-
-                console.log(
-                    "Firestoreから取得したnextWalkPressure:",
-                    window.nextWalkPressure
-                );
-
-                if (userData.prefecture && userData.city) {
-
-                    document.getElementById("prefectureSelect").value =
-                        userData.prefecture;
-
-                    updateCitySelect(
-                        userData.prefecture,
-                        userData.city
-                    );
-
-                    document.getElementById("currentCity").textContent =
-                        "📍 " + userData.prefecture + userData.city;
-                }
-
-                if (userData.latitude && userData.longitude) {
-                    console.log("保存されている緯度:", userData.latitude);
-                    console.log("保存されている経度:", userData.longitude);
-
-                    localStorage.setItem("latitude", userData.latitude);
-                    localStorage.setItem("longitude", userData.longitude);
-                }
-
-                await setDoc(userRef, {
-                    lastUsedAt: serverTimestamp()
-                }, {
-                    merge: true
-                });
+        console.log(
+            "⏱️ Firestore読み込み:",
+            Math.round(performance.now() - firestoreReadStart),
+            "ms",
+        );
 
 
-                console.log("ユーザー情報を更新しました！");
-            }
+        if (!userSnap.exists()) {
+
+            // 初回アクセス
+            const firestoreWriteStart = performance.now();
+
+            await setDoc(userRef, {
+                prefecture: "新潟県",
+                city: "五泉市",
+                notificationEnabled: true,
+                createdAt: serverTimestamp(),
+                lastUsedAt: serverTimestamp()
+            });
 
             console.log(
-                "現在のnextWalkPressure:",
+                "⏱️ 初回Firestore保存:",
+                Math.round(performance.now() - firestoreWriteStart),
+                "ms",
+            );
+
+
+            // 画面に初期値を表示
+            document.getElementById("prefectureSelect").value = "新潟県";
+
+            updateCitySelect("新潟県", "五泉市");
+
+            document.getElementById("currentCity").textContent =
+                "新潟県五泉市";
+
+
+            console.log("新しいユーザーをFirestoreに保存しました！");
+
+        } else {
+
+            // 2回目以降
+            const userData = userSnap.data();
+
+            window.nextWalkPressure =
+                userData.nextWalkPressure || null;
+
+            console.log(
+                "Firestoreから取得したnextWalkPressure:",
                 window.nextWalkPressure
             );
-            console.log("Firestoreへの保存成功！");
 
-        } catch (error) {
+            if (userData.prefecture && userData.city) {
 
-            console.error("エラー:", error);
+                document.getElementById("prefectureSelect").value =
+                    userData.prefecture;
 
+                updateCitySelect(
+                    userData.prefecture,
+                    userData.city
+                );
+
+                document.getElementById("currentCity").textContent =
+                    "📍 " + userData.prefecture + userData.city;
+            }
+
+            if (userData.latitude && userData.longitude) {
+                console.log("保存されている緯度:", userData.latitude);
+                console.log("保存されている経度:", userData.longitude);
+
+                localStorage.setItem("latitude", userData.latitude);
+                localStorage.setItem("longitude", userData.longitude);
+            }
+
+            const firestoreUpdateStart = performance.now();
+
+            await setDoc(userRef, {
+                lastUsedAt: serverTimestamp()
+            }, {
+                merge: true
+            });
+
+            console.log(
+                "⏱️ 最終利用日時のFirestore更新:",
+                Math.round(performance.now() - firestoreUpdateStart),
+                "ms",
+            );
+
+
+            console.log("ユーザー情報を更新しました！");
         }
+
+        console.log(
+            "現在のnextWalkPressure:",
+            window.nextWalkPressure
+        );
+        console.log("Firestoreへの保存成功！");
+
+        console.log(
+            "⏱️ initializeUser全体:",
+            Math.round(performance.now() - firebaseStart),
+            "ms",
+        );
+
+    } catch (error) {
+
+        console.error("エラー:", error);
+
     }
+}
 
 
     // 都道府県が変更されたとき
