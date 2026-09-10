@@ -623,7 +623,6 @@ async function initializeUser() {
 
     // app.jsを読み込む
     await new Promise((resolve, reject) => {
-
         const script = document.createElement("script");
 
         script.src = "app.js";
@@ -634,28 +633,47 @@ async function initializeUser() {
         document.body.appendChild(script);
     });
 
-    //　データ計測
+    // データ計測
     console.log(
         "⏱️ app.js読み込み:",
         Math.round(performance.now() - startupTime),
         "ms",
     );
 
-    // Firebaseを開始
-    await initializeUser();
+    // localStorageに緯度・経度があるか確認
+    const latitude = localStorage.getItem("latitude");
+    const longitude = localStorage.getItem("longitude");
 
-    //　データ計測
+    let weatherPromise;
+
+    // 緯度・経度がある場合は、Firebaseを待たずに天気取得開始
+    if (latitude && longitude) {
+        console.log("📍 保存されている地域情報を使用して天気取得を開始します");
+
+        weatherPromise = window.loadPressureChange();
+
+        // Firebaseも並行して開始
+        await initializeUser();
+    } else {
+        // 初回アクセスなど、緯度・経度がない場合
+        // 先にFirebaseからユーザー情報を取得する
+        await initializeUser();
+
+        // Firebase完了後に天気取得
+        weatherPromise = window.loadPressureChange();
+    }
+
+    // Firebase＋Firestoreの計測
     console.log(
         "⏱️ Firebase＋Firestore:",
         Math.round(performance.now() - startupTime),
         "ms",
     );
 
-    // Firebaseからユーザー情報を取得した後に気圧変化を読み込む
-    const result = await window.loadPressureChange();
+    // 天気データ取得完了を待つ
+    const result = await weatherPromise;
 
-
-    //　データ計測
+    // データ計測
     console.log(
         "⏱️ 天気データ取得＋画面表示:",
         Math.round(performance.now() - startupTime),
@@ -667,7 +685,6 @@ async function initializeUser() {
         Math.round(performance.now() - startupTime),
         "ms",
     );
-
 
     console.log("気圧変化の結果:", result);
 
