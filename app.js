@@ -143,9 +143,10 @@ async function loadPressureChange() {
 
         //　データ計測に必要
         const weatherStart = performance.now();
+       
+        console.log("⏱️ Cloud Functions呼び出し開始");
         //　ここまで
-
-
+        
         const result =
             await window.getWeatherData({
                 latitude: Number(latitude),
