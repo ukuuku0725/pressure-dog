@@ -11,9 +11,13 @@
 
 <body>
 
+    <!-- ============================= -->
+    <!-- V1：今のお散歩 -->
+    <!-- ============================= -->
+
+    <!--
     <h1>わんこのための気圧予報</h1>
 
-    <!-- 現在地 -->
     <div class="location">
 
         <p id="currentCity">---</p>
@@ -21,13 +25,14 @@
     </div>
 
 
-    <!-- 今のお散歩 -->
     <div class="walk-card">
 
         <h2>🐕 今のお散歩</h2>
 
         <div class="walk-face">
-            <img id="currentWalkFace" src="images/shiba1.png" alt="わんこの表情">
+            <img id="currentWalkFace"
+                src="images/shiba1.png"
+                alt="わんこの表情">
         </div>
 
         <p id="currentWalkMessage">
@@ -36,11 +41,15 @@
 
         <p class="walk-pressure">
             🌀 <span id="currentPressure">---</span> hPa
-            （気圧変化 <span id="currentWalkChange">---</span>）
+            （気圧変化
+            <span id="currentWalkChange">---</span>）
         </p>
 
         <div class="pressure-level">
-            <div class="pressure-level-title">注意度</div>
+
+            <div class="pressure-level-title">
+                注意度
+            </div>
 
             <div class="pressure-bar">
                 <span id="currentPressureBar"></span>
@@ -50,6 +59,7 @@
                 <span>少なめ</span>
                 <span>かなり注意</span>
             </div>
+
         </div>
 
         <p class="walk-weather">
@@ -59,9 +69,19 @@
         </p>
 
     </div>
+    -->
+
+
+    <!-- ============================= -->
+    <!-- V1：気圧について -->
+    <!-- ============================= -->
+
+    <!--
     <details class="pressure-info">
 
-        <summary>💡 気圧とわんこの体調について</summary>
+        <summary>
+            💡 気圧とわんこの体調について
+        </summary>
 
         <p>
             気圧が大きく変化すると、わんこによっては
@@ -73,9 +93,16 @@
             気圧の変化が大きい日は、
             いつもよりゆっくり様子を見てあげましょう。
         </p>
-    </details>
 
-    <!-- これから3時間の降水確率 -->
+    </details>
+    -->
+
+
+    <!-- ============================= -->
+    <!-- V1：これから3時間の降水確率 -->
+    <!-- ============================= -->
+
+    <!--
     <div id="rainProbability">
 
         <h2>☔ 今後3時間の降水確率</h2>
@@ -100,9 +127,14 @@
         </div>
 
     </div>
+    -->
 
 
-    <!-- 次のお散歩 -->
+    <!-- ============================= -->
+    <!-- V1：次のお散歩 -->
+    <!-- ============================= -->
+
+    <!--
     <div class="walk-card">
 
         <h2 id="nextWalkTitle">
@@ -110,7 +142,9 @@
         </h2>
 
         <div class="walk-face">
-            <img id="nextWalkFace" src="images/shiba1.png" alt="わんこの表情">
+            <img id="nextWalkFace"
+                src="images/shiba1.png"
+                alt="わんこの表情">
         </div>
 
         <p id="nextWalkMessage">
@@ -119,11 +153,15 @@
 
         <p class="walk-pressure">
             🌀 <span id="nextPressure">---</span> hPa
-            （気圧変化 <span id="nextWalkChange">---</span>）
+            （気圧変化
+            <span id="nextWalkChange">---</span>）
         </p>
 
         <div class="pressure-level">
-            <div class="pressure-level-title">注意度</div>
+
+            <div class="pressure-level-title">
+                注意度
+            </div>
 
             <div class="pressure-bar">
                 <span id="nextPressureBar"></span>
@@ -133,6 +171,7 @@
                 <span>少なめ</span>
                 <span>かなり注意</span>
             </div>
+
         </div>
 
         <p class="walk-weather">
@@ -142,21 +181,35 @@
         </p>
 
     </div>
+    -->
 
-    <!-- 地域設定 -->
+
+    <!-- ============================= -->
+    <!-- V1：地域設定 -->
+    <!-- ============================= -->
+
+    <!--
     <div class="location-settings">
 
         <h2>⚙️ 地域設定</h2>
 
         <div>
-            <label for="prefectureSelect">都道府県：</label>
+            <label for="prefectureSelect">
+                都道府県：
+            </label>
+
             <select id="prefectureSelect">
-                <option value="">選択してください</option>
+                <option value="">
+                    選択してください
+                </option>
             </select>
         </div>
 
         <div>
-            <label for="citySelect">市区町村：</label>
+            <label for="citySelect">
+                市区町村：
+            </label>
+
             <select id="citySelect">
                 <option value="">
                     先に都道府県を選択してください
@@ -164,11 +217,19 @@
             </select>
         </div>
 
-        <button id="saveCity">保存</button>
+        <button id="saveCity">
+            保存
+        </button>
 
     </div>
+    -->
 
-    <!-- 設定・テスト -->
+
+    <!-- ============================= -->
+    <!-- V1：設定・テスト -->
+    <!-- ============================= -->
+
+    <!--
     <div class="settings">
 
         <button id="enableNotification">
@@ -180,11 +241,88 @@
         </button>
 
     </div>
+    -->
 
+
+    <!-- ============================= -->
+    <!-- V1：注意書き -->
+    <!-- ============================= -->
+
+    <!--
     <p class="medical-note">
-        ※この情報は、気圧の変化と愛犬の体調との関係を参考にしていただくためのものです。<br>
-        体調が悪い、いつもと違う様子が続くなどの場合は、気圧の影響と自己判断せず、動物病院にご相談ください。
+        ※この情報は、気圧の変化と愛犬の体調との関係を
+        参考にしていただくためのものです。<br>
+        体調が悪い、いつもと違う様子が続くなどの場合は、
+        気圧の影響と自己判断せず、動物病院にご相談ください。
     </p>
+    -->
+
+
+    <!-- ======================================== -->
+    <!-- V2：柴んぽ -->
+    <!-- ======================================== -->
+
+    <h1>柴んぽ</h1>
+
+    <!-- 現在地 -->
+    <div class="location">
+
+        <p id="currentCity">---</p>
+
+    </div>
+
+
+    <!-- 次のお散歩 -->
+    <div class="walk-card" id="nextWalkCard">
+
+        <h2 id="nextWalkTitle">
+            🌙 夜の柴んぽ
+        </h2>
+
+        <p id="nextWalkTime">
+            17:00〜20:00
+        </p>
+
+
+        <!-- 総合コンディション -->
+        <div class="next-walk-condition">
+
+            <p>
+                次のお散歩のコンディション
+            </p>
+
+            <p id="nextWalkCondition">
+                ---
+            </p>
+
+        </div>
+
+
+        <!-- 気をつけたいこと -->
+        <div class="next-walk-cautions">
+
+            <h3>
+                次のお散歩で気をつけたいこと
+            </h3>
+
+            <div id="nextWalkCautions">
+                ---
+            </div>
+
+        </div>
+        
+        <!-- もちもの -->
+        <div class="next-walk-belongings">
+            <h3>
+                🎒 次のお散歩の持ち物
+            </h3>
+            <div id="nextWalkBelongings">
+                ---
+            </div>
+        </div>
+
+    </div>
+
 
 </body>
 
@@ -238,7 +376,7 @@
     // 地域データ
     let cityData = {};
 
-
+/*
     async function loadCityData() {
         try {
             const response = await fetch(
@@ -285,6 +423,7 @@
             throw error;
         }
     }
+    */
 
     // 市区町村の選択肢を作る
     function updateCitySelect(prefecture, selectedCity = "") {
@@ -396,7 +535,7 @@ async function initializeUser() {
             );
 
             if (userData.prefecture && userData.city) {
-
+/*
                 document.getElementById("prefectureSelect").value =
                     userData.prefecture;
 
@@ -404,6 +543,7 @@ async function initializeUser() {
                     userData.prefecture,
                     userData.city
                 );
+                */
 
                 document.getElementById("currentCity").textContent =
                     "📍 " + userData.prefecture + userData.city;
@@ -454,7 +594,7 @@ async function initializeUser() {
     }
 }
 
-
+/*
     // 都道府県が変更されたとき
     document
         .getElementById("prefectureSelect")
@@ -465,8 +605,9 @@ async function initializeUser() {
 
             updateCitySelect(prefecture);
         });
+*/
 
-
+/*
     // 保存ボタン
     document
         .getElementById("saveCity")
@@ -548,8 +689,9 @@ async function initializeUser() {
 
             }
         });
-
-        document
+*/
+/*
+    document
         .getElementById("enableNotification")
         .addEventListener("click", async () => {
         try {
@@ -577,7 +719,8 @@ async function initializeUser() {
             );
         }
     });
-
+*/
+/*
     document
         .getElementById("testNotification")
         .addEventListener("click", async () => {
@@ -609,10 +752,10 @@ async function initializeUser() {
             );
         }
     });
-
+*/
 
     // 最初に地域データを読み込む
-    await loadCityData();
+//    await loadCityData();
 
     // データ計測
     console.log(

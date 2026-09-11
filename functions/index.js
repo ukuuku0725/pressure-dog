@@ -239,9 +239,66 @@ exports.getWeatherData = onCall(
         }
 
         const weatherData =
-                await response.json();
+            await response.json();
 
-        const hourly = weatherData.data || [];
+        const hourly =
+            weatherData.data || [];
+
+
+        console.log(
+            "🌅 OpenWeatherのレスポンス:",
+            weatherData,
+        );
+
+        // 2回目のデータを取得
+        let nextHourly = [];
+
+        if (weatherData.next) {
+          const nextResponse =
+                await fetch(weatherData.next);
+
+          if (!nextResponse.ok) {
+            throw new Error(
+                `OpenWeatherMap next API error: ${nextResponse.status}`,
+            );
+          }
+
+          const nextWeatherData =
+                await nextResponse.json();
+
+          nextHourly =
+                nextWeatherData.data || [];
+
+          logger.info(
+              "2回目の天気データを取得しました",
+              {
+                uid: request.auth.uid,
+                dataCount: nextHourly.length,
+              },
+          );
+        }
+
+        // 1回目＋2回目を結合
+        const combinedHourly =
+            [...hourly, ...nextHourly];
+
+        logger.info(
+            "天気データを結合しました",
+            {
+              uid: request.auth.uid,
+              firstCount: hourly.length,
+              secondCount: nextHourly.length,
+              totalCount: combinedHourly.length,
+              firstTime: hourly.length > 0 ?
+                new Date(hourly[0].dt * 1000).toISOString() :
+                null,
+              lastTime: combinedHourly.length > 0 ?
+                new Date(
+                    combinedHourly[combinedHourly.length - 1].dt * 1000,
+                ).toISOString() :
+                null,
+            },
+        );
 
         try {
           const userRef =
@@ -294,7 +351,7 @@ exports.getWeatherData = onCall(
 
         return {
           success: true,
-          data: hourly,
+          data: combinedHourly,
         };
       } catch (error) {
         logger.error(

@@ -3,6 +3,629 @@ const VAPID_PUBLIC_KEY =
 
 
 // ========================================
+// V2 お散歩時間帯
+// ========================================
+
+function createWalkSchedule(now, type, dayOffset) {
+    const schedule = new Date(now);
+
+    schedule.setDate(schedule.getDate() + dayOffset);
+
+    if (type === "morning") {
+        const start = new Date(schedule);
+        start.setHours(5, 0, 0, 0);
+
+        const end = new Date(schedule);
+        end.setHours(8, 0, 0, 0);
+
+        return {
+            type: "morning",
+            label: "🌅 朝の柴んぽ",
+            start,
+            end,
+        };
+    }
+
+    const start = new Date(schedule);
+    start.setHours(17, 0, 0, 0);
+
+    const end = new Date(schedule);
+    end.setHours(20, 0, 0, 0);
+
+    return {
+        type: "evening",
+        label: "🌙 夜の柴んぽ",
+        start,
+        end,
+    };
+}
+
+
+/**
+ * 次のお散歩とその次のお散歩の時間帯を取得します。
+ */
+function getWalkSchedules(now = new Date()) {
+    const hour = now.getHours();
+
+    if (hour < 8) {
+        return {
+            nextWalk: createWalkSchedule(now, "morning", 0),
+            nextNextWalk: createWalkSchedule(now, "evening", 0),
+        };
+    }
+
+    if (hour < 20) {
+        return {
+            nextWalk: createWalkSchedule(now, "evening", 0),
+            nextNextWalk: createWalkSchedule(now, "morning", 1),
+        };
+    }
+
+    return {
+        nextWalk: createWalkSchedule(now, "morning", 1),
+        nextNextWalk: createWalkSchedule(now, "evening", 1),
+    };
+}
+
+
+/**
+ * 指定した時間帯のhourlyデータを取得します。
+ */
+function getWalkWeatherData(hourly, walkSchedule) {
+    return hourly.filter((item) => {
+        const itemDate = new Date(item.dt * 1000);
+
+        return (
+            itemDate >= walkSchedule.start &&
+            itemDate < walkSchedule.end
+        );
+    });
+}
+
+
+/**
+ * 気温と湿度から基本的なコンディションを判定します。
+ */
+function judgeTemperatureCondition(temp, humidity) {
+    // 寒さ判定
+    if (temp <= 15) {
+        if (temp >= 11) {
+            return "🟢 快適";
+        }
+
+        if (temp >= 6) {
+            return "🟡 まずまず";
+        }
+
+        if (temp >= 1) {
+            return "🟠 少し注意";
+        }
+
+        return "🔴 かなり注意";
+    }
+
+    // 暑さ判定
+    if (temp >= 28) {
+        return "🔴 かなり注意";
+    }
+
+    if (temp >= 25) {
+        return "🟠 少し注意";
+    }
+
+    if (temp >= 21) {
+        if (humidity <= 60) {
+            return "🌟 とても快適";
+        }
+
+        if (humidity <= 70) {
+            return "🟢 快適";
+        }
+
+        return "🟡 まずまず";
+    }
+
+    if (temp >= 16) {
+        if (humidity <= 39) {
+            return "🟡 まずまず";
+        }
+
+        if (humidity <= 60) {
+            return "🌟 とても快適";
+        }
+
+        if (humidity <= 70) {
+            return "🟢 快適";
+        }
+
+        return "🟡 まずまず";
+    }
+
+    return "🟢 快適";
+}
+
+
+/**
+ * コンディションの注意度を数値に変換します。
+ */
+function getConditionLevel(condition) {
+    const levels = {
+        "🌟 とても快適": 0,
+        "🟢 快適": 1,
+        "🟡 まずまず": 2,
+        "🟠 少し注意": 3,
+        "🔴 かなり注意": 4,
+    };
+
+    return levels[condition];
+}
+
+
+/**
+ * 複数時間のコンディションから最も注意が必要な判定を取得します。
+ */
+function getWorstCondition(conditions) {
+    return conditions.reduce((worst, current) => {
+        if (
+            getConditionLevel(current.condition) >
+            getConditionLevel(worst.condition)
+        ) {
+            return current;
+        }
+
+        return worst;
+    });
+}
+
+
+/**
+ * 雨・雪による寒さ判定の補正を行います。
+ */
+function adjustColdCondition(condition, item) {
+    // 15℃以下だけ寒さ補正を行う
+    if (item.temp > 15) {
+        return condition;
+    }
+
+    const rain = item.rain?.["1h"] || 0;
+    const snow = item.snow?.["1h"] || 0;
+
+    let correction = 0;
+
+    // 雨：3mm/h以上で寒さを1段階強くする
+    if (rain >= 3) {
+        correction = 1;
+    }
+
+    // 雪：1mm/h以上で寒さを1段階強くする
+    if (snow >= 1) {
+        correction = 1;
+    }
+
+    if (correction === 0) {
+        return condition;
+    }
+
+    const currentLevel =
+        getConditionLevel(condition);
+
+    const correctedLevel =
+        Math.min(currentLevel + correction, 4);
+
+    const conditions = [
+        "🌟 とても快適",
+        "🟢 快適",
+        "🟡 まずまず",
+        "🟠 少し注意",
+        "🔴 かなり注意",
+    ];
+
+    return conditions[correctedLevel];
+}
+
+
+/**
+ * 雨・雪の注意ポイントを判定します。
+ */
+function getRainSnowCaution(item) {
+    const rain = item.rain?.["1h"] || 0;
+    const snow = item.snow?.["1h"] || 0;
+
+    const cautions = [];
+
+    // 雪
+    if (snow >= 3) {
+        cautions.push(
+            "❄️ 雪が強め・足元に注意",
+        );
+    } else if (snow >= 1) {
+        cautions.push(
+            "❄️ 雪に注意",
+        );
+    } else if (snow > 0) {
+        cautions.push(
+            "❄️ 雪が降っています",
+        );
+    }
+
+    // 雨
+    if (rain >= 10) {
+        cautions.push(
+            "🌧️ 雨が強めです",
+        );
+    } else if (rain > 0) {
+        cautions.push(
+            "🌧️ 雨が降っています",
+        );
+    }
+
+    return cautions;
+}
+
+
+/**
+ * 複数時間の雨・雪注意をまとめます。
+ */
+function getWalkRainSnowCautions(walkWeather) {
+    const cautions = [];
+
+    const hasRain =
+        walkWeather.some((item) => {
+            return (item.rain?.["1h"] || 0) > 0;
+        });
+
+    const hasHeavyRain =
+        walkWeather.some((item) => {
+            return (item.rain?.["1h"] || 0) >= 10;
+        });
+
+    const hasSnow =
+        walkWeather.some((item) => {
+            return (item.snow?.["1h"] || 0) > 0;
+        });
+
+    const hasHeavySnow =
+        walkWeather.some((item) => {
+            return (item.snow?.["1h"] || 0) >= 3;
+        });
+
+    if (hasHeavyRain) {
+        cautions.push("🌧️ 雨が強めです");
+    } else if (hasRain) {
+        cautions.push("🌧️ 雨が降る時間帯があります");
+    }
+
+    if (hasHeavySnow) {
+        cautions.push(
+            "❄️ 雪が強め・足元に注意",
+        );
+    } else if (hasSnow) {
+        cautions.push("❄️ 雪が降る時間帯があります");
+    }
+
+    return cautions;
+}
+
+
+/**
+ * 湿度の注意ポイントを判定します。
+ */
+function getHumidityCaution(item) {
+    const humidity = item.humidity;
+
+    // 寒いときは乾燥に注意
+    if (item.temp <= 15 && humidity < 40) {
+        return "💧 乾燥に注意";
+    }
+
+    // 暑いときは湿度に注意
+    if (item.temp >= 21 && humidity >= 60) {
+        return "💧 湿度が高め";
+    }
+
+    return null;
+}
+
+
+/**
+ * 複数時間の湿度注意をまとめます。
+ */
+function getWalkHumidityCautions(walkWeather) {
+    const cautions = [];
+
+    const humidityCautions =
+        walkWeather.map((item) => {
+            return getHumidityCaution(item);
+        });
+
+    if (humidityCautions.includes("💧 乾燥に注意")) {
+        cautions.push("💧 乾燥に注意");
+    }
+
+    if (humidityCautions.includes("💧 湿度が高め")) {
+        cautions.push("💧 湿度が高め");
+    }
+
+    return cautions;
+}
+
+
+/**
+ * 風の注意ポイントを判定します。
+ */
+function getWindCaution(item) {
+    const windSpeed = item.wind_speed || 0;
+
+    if (windSpeed >= 8) {
+        return "💨 強風に注意";
+    }
+
+    if (windSpeed >= 5) {
+        return "💨 風が強め";
+    }
+
+    return null;
+}
+
+
+/**
+ * 複数時間の風の注意をまとめます。
+ */
+function getWalkWindCautions(walkWeather) {
+    const cautions = [];
+
+    const windCautions =
+        walkWeather.map((item) => {
+            return getWindCaution(item);
+        });
+
+    if (windCautions.includes("💨 強風に注意")) {
+        cautions.push("💨 強風に注意");
+    } else if (
+        windCautions.includes("💨 風が強め")
+    ) {
+        cautions.push("💨 風が強め");
+    }
+
+    return cautions;
+}
+
+
+/**
+ * 気圧変化から注意ポイントを判定します。
+ */
+function getPressureCaution(change) {
+    const decrease = Math.max(0, -change);
+
+    if (decrease >= 9) {
+        return "🌀 気圧がかなり変化しています";
+    }
+
+    if (decrease >= 4) {
+        return "🌀 気圧が大きく変化しています";
+    }
+
+    if (decrease >= 2) {
+        return "🌀 気圧が変化しています";
+    }
+
+    return null;
+}
+
+
+/**
+ * 次のお散歩の気圧注意を判定します。
+ */
+function getWalkPressureCaution(
+    hourly,
+    walkWeather,
+) {
+    const cautions = [];
+
+    walkWeather.forEach((item) => {
+        const sixHoursAgoDt =
+            item.dt - (6 * 60 * 60);
+
+        const sixHoursAgo =
+            hourly.find((weather) => {
+                return weather.dt === sixHoursAgoDt;
+            });
+
+        if (!sixHoursAgo) {
+            return;
+        }
+
+        const change =
+            item.pressure -
+            sixHoursAgo.pressure;
+
+        const caution =
+            getPressureCaution(change);
+
+        if (caution) {
+            cautions.push(caution);
+        }
+    });
+
+    return cautions;
+}
+
+/**
+ * 次のお散歩で気をつけたいことをまとめます。
+ */
+function getWalkCautions(
+    rainSnowCautions,
+    humidityCautions,
+    windCautions,
+    pressureCautions,
+) {
+    return [
+        ...rainSnowCautions,
+        ...humidityCautions,
+        ...windCautions,
+        ...pressureCautions,
+    ];
+}
+
+
+/**
+ * 雨のもちもの
+ */
+function getRainBelongings(
+    walkWeather,
+    rainProbabilities,
+) {
+    const belongings = [];
+
+    const isRaining =
+        walkWeather.some((item) => {
+            return (item.rain?.["1h"] || 0) > 0;
+        });
+
+    const maxRainProbability =
+        rainProbabilities.length > 0 ?
+            Math.max(...rainProbabilities) :
+            0;
+
+    if (isRaining) {
+        belongings.push("☂️ 傘");
+        belongings.push("🐕 レインコート");
+        belongings.push("🧻 タオル");
+    } else if (maxRainProbability >= 50) {
+        belongings.push("☂️ 傘");
+        belongings.push("🐕 レインコート");
+    } else if (maxRainProbability >= 30) {
+        belongings.push("☂️ 折りたたみ傘");
+    }
+
+    return belongings;
+}
+
+
+/**
+ * 暑いときのもちもの
+ */
+function getTemperatureBelongings(walkWeather) {
+    const belongings = [];
+
+    const maxTemp = Math.max(
+        ...walkWeather.map((item) => item.temp),
+    );
+
+    if (maxTemp >= 28) {
+        belongings.push("💧 水");
+        belongings.push("🧊 ネッククーラー");
+        belongings.push("🦺 クールウェア");
+    } else if (maxTemp >= 25) {
+        belongings.push("💧 水");
+        belongings.push("🧊 ネッククーラー");
+    } else if (maxTemp >= 21) {
+        belongings.push("💧 水");
+    }
+
+    return belongings;
+}
+
+
+/**
+ * 寒いときのもちもの
+ */
+function getColdBelongings(walkWeather) {
+    const belongings = [];
+
+    const minTemp = Math.min(
+        ...walkWeather.map((item) => item.temp),
+    );
+
+    if (minTemp <= 5) {
+        belongings.push("🧥 冬用ウェア");
+    }
+
+    return belongings;
+}
+
+
+/**
+ * 雪のもちもの
+ */
+function getSnowBelongings(walkWeather) {
+    const belongings = [];
+
+    const hasSnow =
+        walkWeather.some((item) => {
+            return (item.snow?.["1h"] || 0) > 0;
+        });
+
+    if (hasSnow) {
+        belongings.push("🧥 冬用ウェア");
+        belongings.push("🧻 タオル");
+    }
+
+    return belongings;
+}
+
+/**
+ * ライトがいるかどうか日の出日の入時刻から判定
+ */
+function getLightBelongings(
+    walkWeather,
+    walkSchedule,
+) {
+    const belongings = [];
+
+    if (walkWeather.length === 0) {
+        return belongings;
+    }
+
+    const sunrise =
+        walkWeather[0].sunrise;
+
+    const sunset =
+        walkWeather[0].sunset;
+
+    if (
+        !sunrise ||
+        !sunset
+    ) {
+        return belongings;
+    }
+
+    const walkStart =
+        Math.floor(
+            walkSchedule.start.getTime() / 1000,
+        );
+
+    const walkEnd =
+        Math.floor(
+            walkSchedule.end.getTime() / 1000,
+        );
+
+    if (
+        walkStart < sunrise &&
+        walkEnd > sunrise
+    ) {
+        belongings.push("🔦 ライト");
+    }
+
+    if (
+        walkStart < sunset &&
+        walkEnd > sunset
+    ) {
+        belongings.push("🔦 ライト");
+    }
+
+    if (
+        walkStart >= sunset ||
+        walkEnd <= sunrise
+    ) {
+        belongings.push("🔦 ライト");
+    }
+
+    return belongings;
+}
+
+
+// ========================================
 // 気圧変化の判定
 // ========================================
 
@@ -146,7 +769,7 @@ async function loadPressureChange() {
        
         console.log("⏱️ Cloud Functions呼び出し開始");
         //　ここまで
-        
+
         const result =
             await window.getWeatherData({
                 latitude: Number(latitude),
@@ -163,6 +786,162 @@ async function loadPressureChange() {
 
         const hourly =
             result.data.data;
+
+
+        const schedules =
+            getWalkSchedules();
+
+        const nextWalkWeather =
+            getWalkWeatherData(
+                hourly,
+                schedules.nextWalk,
+            );
+
+        const nextWalkPressureCautions =
+            getWalkPressureCaution(
+                hourly,
+                nextWalkWeather,
+            );
+
+        console.log(
+            "🌀 次のお散歩の気圧注意:",
+            nextWalkPressureCautions,
+        );
+
+        const nextWalkRainSnowCautions =
+            getWalkRainSnowCautions(
+                nextWalkWeather,
+            );
+
+        console.log(
+            "🌧️ 次のお散歩の雨・雪注意:",
+            nextWalkRainSnowCautions,
+        );
+
+        const nextWalkHumidityCautions =
+            getWalkHumidityCautions(
+                nextWalkWeather,
+            );
+
+        console.log(
+            "💧 次のお散歩の湿度注意:",
+            nextWalkHumidityCautions,
+        );
+
+        const nextWalkWindCautions =
+            getWalkWindCautions(
+                nextWalkWeather,
+            );
+
+        console.log(
+            "💨 次のお散歩の風注意:",
+            nextWalkWindCautions,
+        );
+
+        const nextWalkCautions =
+            getWalkCautions(
+                nextWalkRainSnowCautions,
+                nextWalkHumidityCautions,
+                nextWalkWindCautions,
+                nextWalkPressureCautions,
+            );
+
+        console.log(
+            "🐕 次のお散歩で気をつけたいこと:",
+            nextWalkCautions,
+        );
+
+        const nextWalkCautionsElement =
+            document.getElementById(
+                "nextWalkCautions",
+            );
+
+        if (nextWalkCautionsElement) {
+            nextWalkCautionsElement.innerHTML =
+                nextWalkCautions
+                    .map((caution) => {
+                        return `<p>${caution}</p>`;
+                    })
+                    .join("");
+        }
+
+        console.log(
+            "🐕 次のお散歩データ:",
+            nextWalkWeather,
+        );
+
+        console.log(
+            "🌅 次のお散歩の天気データ1件目:",
+            nextWalkWeather[0],
+        );
+
+        const nextWalkConditions =
+            nextWalkWeather.map((item) => {
+                const baseCondition =
+                    judgeTemperatureCondition(
+                        item.temp,
+                        item.humidity,
+                    );
+
+                const condition =
+                    adjustColdCondition(
+                        baseCondition,
+                        item,
+                    );
+
+                const cautions =
+                    getRainSnowCaution(item);
+
+                return {
+                    time: new Date(item.dt * 1000),
+                    temp: item.temp,
+                    humidity: item.humidity,
+                    rain: item.rain?.["1h"] || 0,
+                    snow: item.snow?.["1h"] || 0,
+                    condition,
+                    cautions,
+                };
+            });
+
+        console.log(
+            "🌡️ 次のお散歩の気温・湿度判定:",
+            nextWalkConditions,
+        );
+
+        const nextWalkCondition =
+            getWorstCondition(
+                nextWalkConditions,
+            );
+
+        console.log(
+            "🐕 次のお散歩の総合判定:",
+            nextWalkCondition,
+        );
+
+        document.getElementById(
+            "nextWalkCondition",
+        ).textContent =
+            nextWalkCondition.condition;
+
+        const nextNextWalkWeather =
+            getWalkWeatherData(
+                hourly,
+                schedules.nextNextWalk,
+            );
+
+        console.log(
+            "🐕 その次のお散歩データ:",
+            nextNextWalkWeather,
+        );
+
+        console.log(
+            "🕐 hourlyの範囲:",
+            new Date(hourly[0].dt * 1000),
+            "〜",
+            new Date(hourly[hourly.length - 1].dt * 1000),
+            "件数:",
+            hourly.length,
+        );
 
         console.log(
             "Cloud Functions経由で天気データ取得成功！",
@@ -216,6 +995,18 @@ async function loadPressureChange() {
                 minus6Data.pressure;
         }
 
+        const currentPressureCaution =
+            currentWalkChange !== null ?
+                getPressureCaution(
+                    currentWalkChange,
+                ) :
+                null;
+
+        console.log(
+            "🌀 現在のお散歩の気圧注意:",
+            currentPressureCaution,
+        );
+
 
         // ========================================
         // 現在のお散歩を画面表示
@@ -232,7 +1023,7 @@ async function loadPressureChange() {
                     currentWalkChange,
                 );
 
-
+/*
             document.getElementById(
                 "currentWalkFace",
             ).src = getWalkFace(currentWalkChange);
@@ -253,6 +1044,7 @@ async function loadPressureChange() {
                     "currentPressureBar",
                     currentWalkChange,
                 );
+                */
 
         }
 
@@ -262,6 +1054,7 @@ async function loadPressureChange() {
         // ========================================
 
         if (currentData) {
+            /*
             document.getElementById(
                 "currentPressure",
             ).textContent =
@@ -280,6 +1073,7 @@ async function loadPressureChange() {
                 "currentHumidity",
             ).textContent =
                 currentData.humidity;
+                */
         }
 
 
@@ -356,7 +1150,7 @@ async function loadPressureChange() {
         // 現在のお散歩の降水確率
         // 1時間後
         // ========================================
-
+/*
         const currentRain =
             rainProbabilities[0];
 
@@ -366,7 +1160,7 @@ async function loadPressureChange() {
             currentRain !== null ?
                 currentRain :
                 "---";
-
+*/
 
         // ========================================
         // 次のお散歩
@@ -404,6 +1198,7 @@ async function loadPressureChange() {
             nextWalkChange !== null &&
             nextWalkLabel
         ) {
+            /*
             const message =
                 getWalkMessage(
                     nextWalkChange,
@@ -431,7 +1226,7 @@ async function loadPressureChange() {
                 "nextPressureBar",
                 nextWalkChange,
             );
-
+*/
 
             // --------------------------------
             // タイトル・時間帯
@@ -515,6 +1310,7 @@ async function loadPressureChange() {
                 );
 
             if (nextWalkStartData) {
+                /*
                 document.getElementById(
                     "nextPressure",
                 ).textContent =
@@ -533,6 +1329,7 @@ async function loadPressureChange() {
                     "nextHumidity",
                 ).textContent =
                     nextWalkStartData.humidity;
+                    */
             }
 
 
@@ -583,22 +1380,103 @@ async function loadPressureChange() {
                     Math.max(
                         ...nextWalkRainProbabilities,
                     );
-
+/*
                 document.getElementById(
                     "nextRain",
                 ).textContent =
                     maxRain;
+                    */
             } else {
+                /*
                 document.getElementById(
                     "nextRain",
                 ).textContent =
                     "---";
+                    */
             }
 
             console.log(
                 "次のお散歩の降水確率:",
                 nextWalkRainProbabilities,
             );
+
+            const nextWalkRainBelongings =
+                getRainBelongings(
+                    nextWalkWeather,
+                    nextWalkRainProbabilities,
+                );
+
+            console.log(
+                "🌧️ 次のお散歩の雨対策の持ち物:",
+                nextWalkRainBelongings,
+            );
+
+            const nextWalkTemperatureBelongings =
+                getTemperatureBelongings(
+                    nextWalkWeather,
+                );
+
+            console.log(
+                "🌡️ 次のお散歩の暑さ対策の持ち物:",
+                nextWalkTemperatureBelongings,
+            );
+
+            const nextWalkColdBelongings =
+                getColdBelongings(
+                    nextWalkWeather,
+                );
+
+            console.log(
+                "❄️ 次のお散歩の寒さ対策の持ち物:",
+                nextWalkColdBelongings,
+            );
+
+            const nextWalkSnowBelongings =
+                getSnowBelongings(
+                    nextWalkWeather,
+                );
+
+            console.log(
+                "❄️ 次のお散歩の雪対策の持ち物:",
+                nextWalkSnowBelongings,
+            );
+
+            console.log(
+                "🌅 次のお散歩の日の出・日の入り:",
+                nextWalkWeather[0]?.sunrise,
+                nextWalkWeather[0]?.sunset,
+            );
+
+            const nextWalkBelongings = [
+                ...nextWalkRainBelongings,
+                ...nextWalkTemperatureBelongings,
+                ...nextWalkColdBelongings,
+                ...nextWalkSnowBelongings,
+            ];
+
+            console.log(
+                "🎒 次のお散歩の持ち物:",
+                nextWalkBelongings,
+            );
+
+            const nextWalkBelongingsElement =
+                document.getElementById(
+                    "nextWalkBelongings",
+                );
+
+            if (nextWalkBelongingsElement) {
+                if (nextWalkBelongings.length > 0) {
+                    nextWalkBelongingsElement.innerHTML =
+                        nextWalkBelongings
+                            .map((item) => {
+                                return `<p>${item}</p>`;
+                            })
+                            .join("");
+                } else {
+                    nextWalkBelongingsElement.innerHTML =
+                        "<p>🎒 いつもの柴んぽグッズでOK！</p>";
+                }
+            }
         }
 
         return {
