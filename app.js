@@ -564,64 +564,124 @@ function getSnowBelongings(walkWeather) {
     return belongings;
 }
 
-/**
- * ライトがいるかどうか日の出日の入時刻から判定
- */
-function getLightBelongings(
-    walkWeather,
-    walkSchedule,
-) {
-    const belongings = [];
 
-    if (walkWeather.length === 0) {
-        return belongings;
-    }
+/**
+ * 日の出日の入時刻を計算
+ */
+function getSunriseSunset(
+    date,
+    latitude,
+    longitude,
+) {
+    const rad =
+        Math.PI / 180;
+
+    const dayOfYear =
+        Math.floor(
+            (
+                Date.UTC(
+                    date.getFullYear(),
+                    date.getMonth(),
+                    date.getDate(),
+                ) -
+                Date.UTC(
+                    date.getFullYear(),
+                    0,
+                    0,
+                )
+            ) /
+            86400000,
+        );
+
+    const declination =
+        23.44 *
+        Math.sin(
+            rad *
+            (360 / 365) *
+            (dayOfYear - 81),
+        );
+
+    const latitudeRad =
+        latitude * rad;
+
+    const declinationRad =
+        declination * rad;
+
+    const cosHourAngle =
+        (
+            Math.cos(90.833 * rad) -
+            Math.sin(latitudeRad) *
+            Math.sin(declinationRad)
+        ) /
+        (
+            Math.cos(latitudeRad) *
+            Math.cos(declinationRad)
+        );
+
+    const hourAngle =
+        Math.acos(cosHourAngle) /
+        rad;
+
+    const solarNoon =
+        720 -
+        (4 * longitude);
+
+    const sunriseMinutes =
+        solarNoon -
+        (4 * hourAngle) +
+        540;
+
+    const sunsetMinutes =
+        solarNoon +
+        (4 * hourAngle) +
+        540;
 
     const sunrise =
-        walkWeather[0].sunrise;
+        new Date(date);
+
+    sunrise.setHours(0, 0, 0, 0);
+    sunrise.setMinutes(
+        sunriseMinutes,
+    );
 
     const sunset =
-        walkWeather[0].sunset;
+        new Date(date);
 
+    sunset.setHours(0, 0, 0, 0);
+    sunset.setMinutes(
+        sunsetMinutes,
+    );
+
+    return {
+        sunrise,
+        sunset,
+    };
+}
+
+
+/**
+ * ライトが必要か判定
+ */
+function needsWalkLight(
+    walkSchedule,
+    sunrise,
+    sunset,
+) {
     if (
-        !sunrise ||
-        !sunset
+        walkSchedule.type === "morning" &&
+        walkSchedule.start < sunrise
     ) {
-        return belongings;
-    }
-
-    const walkStart =
-        Math.floor(
-            walkSchedule.start.getTime() / 1000,
-        );
-
-    const walkEnd =
-        Math.floor(
-            walkSchedule.end.getTime() / 1000,
-        );
-
-    if (
-        walkStart < sunrise &&
-        walkEnd > sunrise
-    ) {
-        belongings.push("🔦 ライト");
-    }
-
-    if (
-        walkStart < sunset &&
-        walkEnd > sunset
-    ) {
-        belongings.push("🔦 ライト");
+        return true;
     }
 
     if (
-        walkStart >= sunset ||
-        walkEnd <= sunrise
+        walkSchedule.type === "evening" &&
+        walkSchedule.end > sunset
     ) {
-        belongings.push("🔦 ライト");
+        return true;
     }
 
-    return belongings;
+    return false;
 }
 
 
@@ -790,6 +850,32 @@ async function loadPressureChange() {
 
         const schedules =
             getWalkSchedules();
+
+
+        const sun =
+            getSunriseSunset(
+                new Date(),
+                latitude,
+                longitude,
+            );
+
+        console.log(
+            "🌅 今日の日の出・日の入り:",
+            sun.sunrise,
+            sun.sunset,
+        );
+
+        const needsLight =
+            needsWalkLight(
+                schedules.nextWalk,
+                sun.sunrise,
+                sun.sunset,
+            );
+
+        console.log(
+            "🔦 次のお散歩のライト:",
+            needsLight,
+        );
 
         const nextWalkWeather =
             getWalkWeatherData(
@@ -1232,67 +1318,16 @@ async function loadPressureChange() {
             // タイトル・時間帯
             // --------------------------------
 
-            let nextWalkStart;
-            let nextWalkEnd;
+            nextWalkStart =
+                schedules.nextWalk.start;
 
-            if (
-                nextWalkLabel ===
-                "夕方のお散歩"
-            ) {
-                document.getElementById(
-                    "nextWalkTitle",
-                ).textContent =
-                    "🌆 夕方のお散歩";
+            nextWalkEnd =
+                schedules.nextWalk.end;
 
-                nextWalkStart =
-                    new Date(current);
-
-                nextWalkStart.setHours(
-                    11,
-                    0,
-                    0,
-                    0,
-                );
-
-                nextWalkEnd =
-                    new Date(current);
-
-                nextWalkEnd.setHours(
-                    17,
-                    0,
-                    0,
-                    0,
-                );
-            } else {
-                document.getElementById(
-                    "nextWalkTitle",
-                ).textContent =
-                    "🌅 朝のお散歩";
-
-                nextWalkStart =
-                    new Date(current);
-
-                nextWalkStart.setHours(
-                    23,
-                    0,
-                    0,
-                    0,
-                );
-
-                nextWalkEnd =
-                    new Date(current);
-
-                nextWalkEnd.setDate(
-                    nextWalkEnd.getDate() + 1,
-                );
-
-                nextWalkEnd.setHours(
-                    5,
-                    0,
-                    0,
-                    0,
-                );
-            }
+            document.getElementById(
+                "nextWalkTitle",
+            ).textContent =
+                schedules.nextWalk.label;
 
 
             // ========================================
@@ -1441,18 +1476,16 @@ async function loadPressureChange() {
                 nextWalkSnowBelongings,
             );
 
-            console.log(
-                "🌅 次のお散歩の日の出・日の入り:",
-                nextWalkWeather[0]?.sunrise,
-                nextWalkWeather[0]?.sunset,
-            );
-
             const nextWalkBelongings = [
                 ...nextWalkRainBelongings,
                 ...nextWalkTemperatureBelongings,
                 ...nextWalkColdBelongings,
                 ...nextWalkSnowBelongings,
             ];
+
+            if (needsLight) {
+                nextWalkBelongings.push("🔦 ライト");
+            }
 
             console.log(
                 "🎒 次のお散歩の持ち物:",
