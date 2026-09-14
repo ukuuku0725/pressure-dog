@@ -1227,6 +1227,15 @@ async function loadPressureChange() {
             }),
         );
 
+        console.log(
+            "🕐 hourlyの範囲:",
+            new Date(hourly[0].dt * 1000),
+            "〜",
+            new Date(hourly[hourly.length - 1].dt * 1000),
+            "件数:",
+            hourly.length,
+        );
+
         const currentWeatherCautions = [];
 
         // 💧 湿度
@@ -1302,34 +1311,43 @@ async function loadPressureChange() {
             }
         }
 
+
+
+
         const schedules =
             getWalkSchedules();
 
 
-        const sun =
-            getSunriseSunset(
-                new Date(),
-                latitude,
-                longitude,
-            );
+        // ========================================
+        // 次の柴んぽ処理
+        // ========================================
 
-        console.log(
-            "🌅 今日の日の出・日の入り:",
-            sun.sunrise,
-            sun.sunset,
-        );
+        // --------------------------------
+        // 次のお散歩 タイトル・時間帯
+        // --------------------------------
 
-        const needsLight =
-            needsWalkLight(
-                schedules.nextWalk,
-                sun.sunrise,
-                sun.sunset,
-            );
+        nextWalkStart =
+            schedules.nextWalk.start;
 
-        console.log(
-            "🔦 次のお散歩のライト:",
-            needsLight,
-        );
+        nextWalkEnd =
+            schedules.nextWalk.end;
+
+        document.getElementById(
+            "nextWalkTitle",
+        ).textContent =
+            schedules.nextWalk.label;
+
+        document.getElementById(
+            "nextWalkTime",
+        ).textContent =
+            `${nextWalkStart.getHours()
+                .toString()
+                .padStart(2, "0")}:00〜` +
+            `${nextWalkEnd.getHours()
+                .toString()
+                .padStart(2, "0")}:00`;
+
+
 
         const nextWalkWeather =
             getWalkWeatherData(
@@ -1342,6 +1360,129 @@ async function loadPressureChange() {
             schedules.nextWalk,
         );
 
+        console.log(
+            "🐕 次のお散歩データ:",
+            nextWalkWeather,
+        );
+
+        console.log(
+            "🌅 次のお散歩の天気データ1件目:",
+            nextWalkWeather[0],
+        );
+
+        
+        // --------------------------------
+        // 次の柴んぽ処理　コンディション
+        // --------------------------------
+
+        const nextWalkConditions =
+            nextWalkWeather.map((item) => {
+                const baseCondition =
+                    judgeTemperatureCondition(
+                        item.temp,
+                        item.humidity,
+                    );
+
+                const condition =
+                    adjustColdCondition(
+                        baseCondition,
+                        item,
+                    );
+
+                const cautions =
+                    getRainSnowCaution(item);
+
+                return {
+                    time: new Date(item.dt * 1000),
+                    temp: item.temp,
+                    humidity: item.humidity,
+                    pressure: item.pressure,
+                    rain: item.rain?.["1h"] || 0,
+                    snow: item.snow?.["1h"] || 0,
+                    condition,
+                    cautions,
+                };
+            });
+
+        console.log(
+            "🌡️ 次のお散歩の気温・湿度判定:",
+            nextWalkConditions,
+        );
+
+        const nextWalkCondition =
+            getWorstCondition(
+                nextWalkConditions,
+            );
+
+        console.log(
+            "🐕 次のお散歩の総合判定:",
+            nextWalkCondition,
+        );
+
+        document.getElementById(
+            "nextWalkCondition",
+        ).textContent =
+            nextWalkCondition.condition;
+
+
+
+        // --------------------------------
+        // 次のお散歩の代表値
+        // --------------------------------
+
+        const nextWalkMaxTemp =
+            Math.max(
+                ...nextWalkWeather.map(
+                    (item) => item.temp,
+                ),
+            );
+
+        const nextWalkMaxHumidity =
+            Math.max(
+                ...nextWalkWeather.map(
+                    (item) => item.humidity,
+                ),
+            );
+
+        const nextWalkMaxRain =
+            Math.max(
+                ...nextWalkWeather.map(
+                    (item) =>
+                        item.rain?.["1h"] || 0,
+                ),
+            );
+
+        const nextWalkMaxWind =
+            Math.max(
+                ...nextWalkWeather.map(
+                    (item) =>
+                        item.wind_speed || 0,
+                ),
+            );
+
+        console.log(
+            "📊 次のお散歩の代表値:",
+            {
+                maxTemp: nextWalkMaxTemp,
+                maxHumidity: nextWalkMaxHumidity,
+                maxRain: nextWalkMaxRain,
+                maxWind: nextWalkMaxWind,
+            },
+        );
+
+        document.getElementById(
+            "nextWalkWeatherSummary",
+        ).textContent =
+            `🌡️ ${nextWalkMaxTemp.toFixed(1)}℃ / ` +
+            `💧 湿度 ${nextWalkMaxHumidity}% / ` +
+            `🌧️ 雨 ${nextWalkMaxRain.toFixed(1)}mm/h / ` +
+            `💨 風 ${nextWalkMaxWind.toFixed(1)}m/s`;
+
+
+
+        // --------------------------------
+        // 次の柴んぽ処理　注意点
+        // --------------------------------
         const nextWalkPressureCautions =
             getWalkPressureCaution(
                 hourly,
@@ -1392,7 +1533,7 @@ async function loadPressureChange() {
             );
 
         console.log(
-            "🐕 次のお散歩で気をつけたいこと:",
+            "🐕 次のお散歩の注意点",
             nextWalkCautions,
         );
 
@@ -1410,18 +1551,187 @@ async function loadPressureChange() {
                     .join("");
         }
 
-        console.log(
-            "🐕 次のお散歩データ:",
-            nextWalkWeather,
-        );
+
+        // --------------------------------
+        // 次の柴んぽ処理　降水確率
+        // --------------------------------
+
+        const nextWalkRainProbabilities =
+            nextWalkWeather
+                .filter((item) => {
+                    return item.pop !== undefined;
+                })
+                .map((item) => {
+                    return Math.round(item.pop * 100);
+                });
 
         console.log(
-            "🌅 次のお散歩の天気データ1件目:",
-            nextWalkWeather[0],
+            "🌧️ 次のお散歩の降水確率:",
+            nextWalkRainProbabilities,
         );
 
-        const nextWalkConditions =
-            nextWalkWeather.map((item) => {
+        // --------------------------------
+        // 次の柴んぽ処理　もちもの
+        // --------------------------------
+
+        const sun =
+            getSunriseSunset(
+                schedules.nextWalk.start,
+                latitude,
+                longitude,
+            );
+
+        console.log(
+            "🌅 次のお散歩の日の出・日の入り:",
+            sun.sunrise,
+            sun.sunset,
+        );
+
+        const needsLight =
+            needsWalkLight(
+                schedules.nextWalk,
+                sun.sunrise,
+                sun.sunset,
+            );
+
+        console.log(
+            "🔦 次のお散歩のライト:",
+            needsLight,
+        );
+
+        const nextWalkRainBelongings =
+            getRainBelongings(
+                nextWalkWeather,
+                nextWalkRainProbabilities,
+            );
+
+        console.log(
+            "🌧️ 次のお散歩の雨対策の持ち物:",
+            nextWalkRainBelongings,
+        );
+
+        const nextWalkTemperatureBelongings =
+            getTemperatureBelongings(
+                nextWalkWeather,
+            );
+
+        console.log(
+            "🌡️ 次のお散歩の暑さ対策の持ち物:",
+            nextWalkTemperatureBelongings,
+        );
+
+        const nextWalkColdBelongings =
+            getColdBelongings(
+                nextWalkWeather,
+            );
+
+        console.log(
+            "❄️ 次のお散歩の寒さ対策の持ち物:",
+            nextWalkColdBelongings,
+        );
+
+        const nextWalkSnowBelongings =
+            getSnowBelongings(
+                nextWalkWeather,
+            );
+
+        console.log(
+            "❄️ 次のお散歩の雪対策の持ち物:",
+            nextWalkSnowBelongings,
+        );
+
+        const nextWalkBelongings = [
+            ...nextWalkRainBelongings,
+            ...nextWalkTemperatureBelongings,
+            ...nextWalkColdBelongings,
+            ...nextWalkSnowBelongings,
+        ];
+
+        if (needsLight) {
+            nextWalkBelongings.push("🔦 ライト");
+        }
+
+        console.log(
+            "🎒 次のお散歩の持ち物:",
+            nextWalkBelongings,
+        );
+
+        const nextWalkBelongingsElement =
+            document.getElementById(
+                "nextWalkBelongings",
+            );
+
+        if (nextWalkBelongingsElement) {
+            if (nextWalkBelongings.length > 0) {
+                nextWalkBelongingsElement.innerHTML =
+                    nextWalkBelongings
+                        .map((item) => {
+                            return `<p>${item}</p>`;
+                        })
+                        .join("");
+            } else {
+                nextWalkBelongingsElement.innerHTML =
+                    "<p>🎒 いつもの柴んぽグッズでOK！</p>";
+            }
+        }
+
+
+
+
+        // ========================================
+        // 次の次のお散歩処理
+        // ========================================
+
+        // --------------------------------
+        // 次の次のお散歩 タイトル・時間帯
+        // --------------------------------
+
+        const nextNextWalkStart =
+            schedules.nextNextWalk.start;
+
+        const nextNextWalkEnd =
+            schedules.nextNextWalk.end;
+
+        document.getElementById(
+            "nextNextWalkTitle",
+        ).textContent =
+            schedules.nextNextWalk.label;
+
+        document.getElementById(
+            "nextNextWalkTime",
+        ).textContent =
+            `${nextNextWalkStart.getDate() === new Date().getDate()
+                ? "今日"
+                : "明日"} ` +
+            `${nextNextWalkStart.getHours()
+                .toString()
+                .padStart(2, "0")}:00〜` +
+            `${nextNextWalkEnd.getHours()
+                .toString()
+                .padStart(2, "0")}:00`;
+
+
+
+        const nextNextWalkWeather =
+            getWalkWeatherData(
+                hourly,
+                schedules.nextNextWalk,
+            );
+
+        console.log(
+            "🐕 その次のお散歩データ:",
+            nextNextWalkWeather,
+        );
+
+
+
+        // --------------------------------
+        // 次の次のお散歩処理　コンディション
+        // --------------------------------
+
+        const nextNextWalkConditions =
+            nextNextWalkWeather.map((item) => {
+
                 const baseCondition =
                     judgeTemperatureCondition(
                         item.temp,
@@ -1441,6 +1751,7 @@ async function loadPressureChange() {
                     time: new Date(item.dt * 1000),
                     temp: item.temp,
                     humidity: item.humidity,
+                    pressure: item.pressure,
                     rain: item.rain?.["1h"] || 0,
                     snow: item.snow?.["1h"] || 0,
                     condition,
@@ -1449,44 +1760,79 @@ async function loadPressureChange() {
             });
 
         console.log(
-            "🌡️ 次のお散歩の気温・湿度判定:",
-            nextWalkConditions,
+            "🌡️ 次の次のお散歩の気温・湿度判定:",
+            nextNextWalkConditions,
         );
 
-        const nextWalkCondition =
+        const nextNextWalkCondition =
             getWorstCondition(
-                nextWalkConditions,
+                nextNextWalkConditions,
             );
 
         console.log(
-            "🐕 次のお散歩の総合判定:",
-            nextWalkCondition,
+            "🐕 次の次のお散歩の総合判定:",
+            nextNextWalkCondition,
         );
 
         document.getElementById(
-            "nextWalkCondition",
+            "nextNextWalkCondition",
         ).textContent =
-            nextWalkCondition.condition;
+            nextNextWalkCondition.condition;
 
-        const nextNextWalkWeather =
-            getWalkWeatherData(
-                hourly,
-                schedules.nextNextWalk,
+        // --------------------------------
+        // 次の次のお散歩の代表値
+        // --------------------------------
+
+        const nextNextWalkMaxTemp =
+            Math.max(
+                ...nextNextWalkConditions.map(
+                    (item) => item.temp,
+                ),
+            );
+
+        const nextNextWalkMaxHumidity =
+            Math.max(
+                ...nextNextWalkConditions.map(
+                    (item) => item.humidity,
+                ),
+            );
+
+        const nextNextWalkMaxRain =
+            Math.max(
+                ...nextNextWalkConditions.map(
+                    (item) => item.rain,
+                ),
+            );
+
+        const nextNextWalkMaxWind =
+            Math.max(
+                ...nextNextWalkWeather.map(
+                    (item) =>
+                        item.wind_speed || 0,
+                ),
             );
 
         console.log(
-            "🐕 その次のお散歩データ:",
-            nextNextWalkWeather,
+            "📊 次の次のお散歩の代表値:",
+            {
+                maxTemp:
+                    nextNextWalkMaxTemp,
+                maxHumidity:
+                    nextNextWalkMaxHumidity,
+                maxRain:
+                    nextNextWalkMaxRain,
+                maxWind:
+                    nextNextWalkMaxWind,
+            },
         );
 
-        console.log(
-            "🕐 hourlyの範囲:",
-            new Date(hourly[0].dt * 1000),
-            "〜",
-            new Date(hourly[hourly.length - 1].dt * 1000),
-            "件数:",
-            hourly.length,
-        );
+        document.getElementById(
+            "nextNextWalkWeatherSummary",
+        ).textContent =
+            `🌡️ ${nextNextWalkMaxTemp.toFixed(1)}℃ / ` +
+            `💧 湿度 ${nextNextWalkMaxHumidity}% / ` +
+            `🌧️ 雨 ${nextNextWalkMaxRain.toFixed(1)}mm/h / ` +
+            `💨 風 ${nextNextWalkMaxWind.toFixed(1)}m/s`;
 
         console.log(
             "Cloud Functions経由で天気データ取得成功！",
@@ -1497,496 +1843,156 @@ async function loadPressureChange() {
             hourly.length,
         );
 
+        
+        // --------------------------------
+        // 次の次のお散歩　注意点
+        // --------------------------------
 
-        // ========================================
-        // 現在のお散歩
-        // 6時間前 → 現在
-        // ========================================
-
-        const current =
-            new Date(now);
-
-        const minus6 =
-            new Date(current);
-
-        minus6.setHours(
-            minus6.getHours() - 6,
-        );
-
-        const currentData =
-            hourly.find((item) =>
-                item.dt ===
-                Math.floor(
-                    current.getTime() / 1000,
-                ),
+        const nextNextWalkRainSnowCautions =
+            getWalkRainSnowCautions(
+                nextNextWalkWeather,
             );
 
-        const minus6Data =
-            hourly.find((item) =>
-                item.dt ===
-                Math.floor(
-                    minus6.getTime() / 1000,
-                ),
+        const nextNextWalkHumidityCautions =
+            getWalkHumidityCautions(
+                nextNextWalkWeather,
             );
 
-        let currentWalkChange = null;
+        const nextNextWalkWindCautions =
+            getWalkWindCautions(
+                nextNextWalkWeather,
+            );
 
-        if (
-            currentData &&
-            minus6Data
-        ) {
-            currentWalkChange =
-                currentData.pressure -
-                minus6Data.pressure;
-        }
+        const nextNextWalkPressureCautions =
+            getWalkPressureCaution(
+                hourly,
+                nextNextWalkWeather,
+            );
 
-        const currentPressureCaution =
-            currentWalkChange !== null ?
-                getPressureCaution(
-                    currentWalkChange,
-                ) :
-                null;
+        const nextNextWalkCautions =
+            getWalkCautions(
+                nextNextWalkRainSnowCautions,
+                nextNextWalkHumidityCautions,
+                nextNextWalkWindCautions,
+                nextNextWalkPressureCautions,
+            );
 
         console.log(
-            "🌀 現在のお散歩の気圧注意:",
-            currentPressureCaution,
+            "⚠️ 次の次のお散歩の注意点:",
+            nextNextWalkCautions,
         );
 
-
-        // ========================================
-        // 現在のお散歩を画面表示
-        // ========================================
-
-        if (currentWalkChange !== null) {
-            const judgment =
-                judgePressureChange(
-                    currentWalkChange,
-                );
-
-            const message =
-                getWalkMessage(
-                    currentWalkChange,
-                );
-
-/*
+        const nextNextWalkCautionsElement =
             document.getElementById(
-                "currentWalkFace",
-            ).src = getWalkFace(currentWalkChange);
-
-            document.getElementById(
-                "currentWalkMessage",
-            ).textContent = message;
-
-            document.getElementById(
-                "currentWalkChange",
-            ).textContent =
-                (currentWalkChange > 0 ?
-                    "+" : "") +
-                currentWalkChange +
-                " hPa";
-
-                setPressureBar(
-                    "currentPressureBar",
-                    currentWalkChange,
-                );
-                */
-
-        }
-
-
-        // ========================================
-        // 現在の天気
-        // ========================================
-
-        if (currentData) {
-            /*
-            document.getElementById(
-                "currentPressure",
-            ).textContent =
-                Math.round(
-                    currentData.pressure,
-                );
-
-            document.getElementById(
-                "currentTemperature",
-            ).textContent =
-                Math.round(
-                    currentData.temp * 10,
-                ) / 10;
-
-            document.getElementById(
-                "currentHumidity",
-            ).textContent =
-                currentData.humidity;
-                */
-        }
-
-
-        // ========================================
-        // これから3時間の降水確率
-        // ========================================
-
-        const rainProbabilities = [];
-
-        for (let i = 1; i <= 3; i++) {
-            const target =
-                new Date(current);
-
-            target.setHours(
-                target.getHours() + i,
+                "nextNextWalkCautions",
             );
 
-            const targetUnix =
-                Math.floor(
-                    target.getTime() / 1000,
-                );
-
-            const item =
-                hourly.find((weather) =>
-                    weather.dt === targetUnix,
-                );
-
-            let probability = null;
-
-            if (
-                item &&
-                item.pop !== undefined
-            ) {
-                probability =
-                    Math.round(
-                        item.pop * 100,
-                    );
-            }
-
-            rainProbabilities.push(
-                probability,
-            );
-
-            const timeElement =
-                document.getElementById(
-                    `rain${i}hTime`,
-                );
-
-            const rainElement =
-                document.getElementById(
-                    `rain${i}h`,
-                );
-
-            if (timeElement) {
-                timeElement.textContent =
-                    `${target.getHours()}:00`;
-            }
-
-            if (rainElement) {
-                rainElement.textContent =
-                    probability !== null ?
-                        probability + "%" :
-                        "---";
-            }
-        }
-
-        console.log(
-            "1〜3時間後の降水確率:",
-            rainProbabilities,
-        );
-
-
-        // ========================================
-        // 現在のお散歩の降水確率
-        // 1時間後
-        // ========================================
-/*
-        const currentRain =
-            rainProbabilities[0];
-
-        document.getElementById(
-            "currentRainProbability",
-        ).textContent =
-            currentRain !== null ?
-                currentRain :
-                "---";
-*/
-
-        // ========================================
-        // 次のお散歩
-        // ========================================
-
-        const nextWalkPressure =
-            window.nextWalkPressure;
-
-        let nextWalkChange = null;
-        let nextWalkLabel = null;
-
-        if (nextWalkPressure) {
-            nextWalkChange =
-                nextWalkPressure.change;
-
-            nextWalkLabel =
-                nextWalkPressure.label;
-
-            console.log(
-                "Firestoreの次のお散歩:",
-                nextWalkPressure,
-            );
-        } else {
-            console.log(
-                "Firestoreに次のお散歩データがありません",
-            );
-        }
-
-
-        // ========================================
-        // 次のお散歩の表示
-        // ========================================
-
-        if (
-            nextWalkChange !== null &&
-            nextWalkLabel
-        ) {
-            /*
-            const message =
-                getWalkMessage(
-                    nextWalkChange,
-                );
-
-            document.getElementById(
-                "nextWalkMessage",
-            ).textContent = message;
-
-            document.getElementById(
-                "nextWalkFace",
-            ).src = getWalkFace(
-                nextWalkChange,
-            );
-
-            document.getElementById(
-                "nextWalkChange",
-            ).textContent =
-                (nextWalkChange > 0 ?
-                    "+" : "") +
-                nextWalkChange +
-                " hPa";
-
-            setPressureBar(
-                "nextPressureBar",
-                nextWalkChange,
-            );
-*/
-
-            // --------------------------------
-            // タイトル・時間帯
-            // --------------------------------
-
-            nextWalkStart =
-                schedules.nextWalk.start;
-
-            nextWalkEnd =
-                schedules.nextWalk.end;
-
-            document.getElementById(
-                "nextWalkTitle",
-            ).textContent =
-                schedules.nextWalk.label;
-
-            document.getElementById(
-                "nextWalkTime",
-            ).textContent =
-                `${nextWalkStart.getHours()
-                    .toString()
-                    .padStart(2, "0")}:00〜` +
-                `${nextWalkEnd.getHours()
-                    .toString()
-                    .padStart(2, "0")}:00`;
-
-
-            // ========================================
-            // 次のお散歩の天気
-            // 開始時刻の予報を使用
-            // ========================================
-
-            const nextWalkStartData =
-                hourly.find((item) =>
-                    item.dt ===
-                    Math.floor(
-                        nextWalkStart.getTime() /
-                        1000,
-                    ),
-                );
-
-            if (nextWalkStartData) {
-                /*
-                document.getElementById(
-                    "nextPressure",
-                ).textContent =
-                    Math.round(
-                        nextWalkStartData.pressure,
-                    );
-
-                document.getElementById(
-                    "nextTemperature",
-                ).textContent =
-                    Math.round(
-                        nextWalkStartData.temp * 10,
-                    ) / 10;
-
-                document.getElementById(
-                    "nextHumidity",
-                ).textContent =
-                    nextWalkStartData.humidity;
-                    */
-            }
-
-
-            // ========================================
-            // 次のお散歩の降水確率
-            // 時間帯の最大値
-            // ========================================
-
-            const nextWalkRainProbabilities = [];
-
-            const target =
-                new Date(nextWalkStart);
-
-            while (
-                target <= nextWalkEnd
-            ) {
-                const targetUnix =
-                    Math.floor(
-                        target.getTime() / 1000,
-                    );
-
-                const item =
-                    hourly.find((weather) =>
-                        weather.dt === targetUnix,
-                    );
-
-                if (
-                    item &&
-                    item.pop !== undefined
-                ) {
-                    nextWalkRainProbabilities.push(
-                        Math.round(
-                            item.pop * 100,
-                        ),
-                    );
-                }
-
-                target.setHours(
-                    target.getHours() + 1,
-                );
-            }
-
-            if (
-                nextWalkRainProbabilities.length >
-                0
-            ) {
-                const maxRain =
-                    Math.max(
-                        ...nextWalkRainProbabilities,
-                    );
-/*
-                document.getElementById(
-                    "nextRain",
-                ).textContent =
-                    maxRain;
-                    */
+        if (nextNextWalkCautionsElement) {
+            if (nextNextWalkCautions.length > 0) {
+                nextNextWalkCautionsElement.innerHTML =
+                    nextNextWalkCautions
+                        .map((caution) => {
+                            return `<p>${caution}</p>`;
+                        })
+                        .join("");
             } else {
-                /*
-                document.getElementById(
-                    "nextRain",
-                ).textContent =
-                    "---";
-                    */
-            }
-
-            console.log(
-                "次のお散歩の降水確率:",
-                nextWalkRainProbabilities,
-            );
-
-            const nextWalkRainBelongings =
-                getRainBelongings(
-                    nextWalkWeather,
-                    nextWalkRainProbabilities,
-                );
-
-            console.log(
-                "🌧️ 次のお散歩の雨対策の持ち物:",
-                nextWalkRainBelongings,
-            );
-
-            const nextWalkTemperatureBelongings =
-                getTemperatureBelongings(
-                    nextWalkWeather,
-                );
-
-            console.log(
-                "🌡️ 次のお散歩の暑さ対策の持ち物:",
-                nextWalkTemperatureBelongings,
-            );
-
-            const nextWalkColdBelongings =
-                getColdBelongings(
-                    nextWalkWeather,
-                );
-
-            console.log(
-                "❄️ 次のお散歩の寒さ対策の持ち物:",
-                nextWalkColdBelongings,
-            );
-
-            const nextWalkSnowBelongings =
-                getSnowBelongings(
-                    nextWalkWeather,
-                );
-
-            console.log(
-                "❄️ 次のお散歩の雪対策の持ち物:",
-                nextWalkSnowBelongings,
-            );
-
-            const nextWalkBelongings = [
-                ...nextWalkRainBelongings,
-                ...nextWalkTemperatureBelongings,
-                ...nextWalkColdBelongings,
-                ...nextWalkSnowBelongings,
-            ];
-
-            if (needsLight) {
-                nextWalkBelongings.push("🔦 ライト");
-            }
-
-            console.log(
-                "🎒 次のお散歩の持ち物:",
-                nextWalkBelongings,
-            );
-
-            const nextWalkBelongingsElement =
-                document.getElementById(
-                    "nextWalkBelongings",
-                );
-
-            if (nextWalkBelongingsElement) {
-                if (nextWalkBelongings.length > 0) {
-                    nextWalkBelongingsElement.innerHTML =
-                        nextWalkBelongings
-                            .map((item) => {
-                                return `<p>${item}</p>`;
-                            })
-                            .join("");
-                } else {
-                    nextWalkBelongingsElement.innerHTML =
-                        "<p>🎒 いつもの柴んぽグッズでOK！</p>";
-                }
+                nextNextWalkCautionsElement.innerHTML =
+                    "<p>🐕 今のところ特に注意することはなさそうです</p>";
             }
         }
 
-        return {
-            currentWalkChange,
-            nextWalkChange,
-            nextWalkLabel,
-            rainProbabilities,
-        };
+
+        // --------------------------------
+        // 次の次のお散歩の降水確率
+        // --------------------------------
+
+        const nextNextWalkRainProbabilities =
+            nextNextWalkWeather
+                .filter((item) => {
+                    return item.pop !== undefined;
+                })
+                .map((item) => {
+                    return Math.round(item.pop * 100);
+                });
+
+        console.log(
+            "🌧️ 次の次のお散歩の降水確率:",
+            nextNextWalkRainProbabilities,
+        );
+
+
+        // --------------------------------
+        // 次の次のお散歩のもちもの
+        // --------------------------------
+
+        const nextNextWalkRainBelongings =
+            getRainBelongings(
+                nextNextWalkWeather,
+                nextNextWalkRainProbabilities,
+            );
+
+        const nextNextWalkTemperatureBelongings =
+            getTemperatureBelongings(
+                nextNextWalkWeather,
+            );
+
+        const nextNextWalkColdBelongings =
+            getColdBelongings(
+                nextNextWalkWeather,
+            );
+
+        const nextNextWalkSnowBelongings =
+            getSnowBelongings(
+                nextNextWalkWeather,
+            );
+
+        const nextNextWalkBelongings = [
+            ...nextNextWalkRainBelongings,
+            ...nextNextWalkTemperatureBelongings,
+            ...nextNextWalkColdBelongings,
+            ...nextNextWalkSnowBelongings,
+        ];
+
+        const nextNextSun =
+            getSunriseSunset(
+                schedules.nextNextWalk.start,
+                latitude,
+                longitude,
+            );
+
+        const nextNextNeedsLight =
+            needsWalkLight(
+                schedules.nextNextWalk,
+                nextNextSun.sunrise,
+                nextNextSun.sunset,
+            );
+
+        if (nextNextNeedsLight) {
+            nextNextWalkBelongings.push(
+                "🔦 ライト",
+            );
+        }
+
+        const nextNextWalkBelongingsElement =
+            document.getElementById(
+                "nextNextWalkBelongings",
+            );
+
+        if (nextNextWalkBelongingsElement) {
+            if (nextNextWalkBelongings.length > 0) {
+                nextNextWalkBelongingsElement.innerHTML =
+                    nextNextWalkBelongings
+                        .map((item) => {
+                            return `<p>${item}</p>`;
+                        })
+                        .join("");
+            } else {
+                nextNextWalkBelongingsElement.innerHTML =
+                    "<p>🎒 いつもの柴んぽグッズでOK！</p>";
+            }
+        }
+
+
     } catch (error) {
         console.error(
             "One Call 4.0 エラー:",
