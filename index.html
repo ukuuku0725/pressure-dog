@@ -12,179 +12,6 @@
 <body>
 
     <!-- ============================= -->
-    <!-- V1：今のお散歩 -->
-    <!-- ============================= -->
-
-    <!--
-    <h1>わんこのための気圧予報</h1>
-
-    <div class="location">
-
-        <p id="currentCity">---</p>
-
-    </div>
-
-
-    <div class="walk-card">
-
-        <h2>🐕 今のお散歩</h2>
-
-        <div class="walk-face">
-            <img id="currentWalkFace"
-                src="images/shiba1.png"
-                alt="わんこの表情">
-        </div>
-
-        <p id="currentWalkMessage">
-            ---
-        </p>
-
-        <p class="walk-pressure">
-            🌀 <span id="currentPressure">---</span> hPa
-            （気圧変化
-            <span id="currentWalkChange">---</span>）
-        </p>
-
-        <div class="pressure-level">
-
-            <div class="pressure-level-title">
-                注意度
-            </div>
-
-            <div class="pressure-bar">
-                <span id="currentPressureBar"></span>
-            </div>
-
-            <div class="pressure-level-label">
-                <span>少なめ</span>
-                <span>かなり注意</span>
-            </div>
-
-        </div>
-
-        <p class="walk-weather">
-            🌡️ <span id="currentTemperature">---</span>℃　
-            💧 <span id="currentHumidity">---</span>%　
-            ☔ <span id="currentRainProbability">---</span>%
-        </p>
-
-    </div>
-    -->
-
-
-    <!-- ============================= -->
-    <!-- V1：気圧について -->
-    <!-- ============================= -->
-
-    <!--
-    <details class="pressure-info">
-
-        <summary>
-            💡 気圧とわんこの体調について
-        </summary>
-
-        <p>
-            気圧が大きく変化すると、わんこによっては
-            元気がない、落ち着かない、食欲がないなど、
-            いつもと違う様子が見られることがあります。
-        </p>
-
-        <p>
-            気圧の変化が大きい日は、
-            いつもよりゆっくり様子を見てあげましょう。
-        </p>
-
-    </details>
-    -->
-
-
-    <!-- ============================= -->
-    <!-- V1：これから3時間の降水確率 -->
-    <!-- ============================= -->
-
-    <!--
-    <div id="rainProbability">
-
-        <h2>☔ 今後3時間の降水確率</h2>
-
-        <div class="rain-hours">
-
-            <div>
-                <p id="rain1hTime">1時間後</p>
-                <p id="rain1h">---</p>
-            </div>
-
-            <div>
-                <p id="rain2hTime">2時間後</p>
-                <p id="rain2h">---</p>
-            </div>
-
-            <div>
-                <p id="rain3hTime">3時間後</p>
-                <p id="rain3h">---</p>
-            </div>
-
-        </div>
-
-    </div>
-    -->
-
-
-    <!-- ============================= -->
-    <!-- V1：次のお散歩 -->
-    <!-- ============================= -->
-
-    <!--
-    <div class="walk-card">
-
-        <h2 id="nextWalkTitle">
-            🌆 次のお散歩
-        </h2>
-
-        <div class="walk-face">
-            <img id="nextWalkFace"
-                src="images/shiba1.png"
-                alt="わんこの表情">
-        </div>
-
-        <p id="nextWalkMessage">
-            ---
-        </p>
-
-        <p class="walk-pressure">
-            🌀 <span id="nextPressure">---</span> hPa
-            （気圧変化
-            <span id="nextWalkChange">---</span>）
-        </p>
-
-        <div class="pressure-level">
-
-            <div class="pressure-level-title">
-                注意度
-            </div>
-
-            <div class="pressure-bar">
-                <span id="nextPressureBar"></span>
-            </div>
-
-            <div class="pressure-level-label">
-                <span>少なめ</span>
-                <span>かなり注意</span>
-            </div>
-
-        </div>
-
-        <p class="walk-weather">
-            🌡️ <span id="nextTemperature">---</span>℃　
-            💧 <span id="nextHumidity">---</span>%　
-            ☔ <span id="nextRain">---</span>%
-        </p>
-
-    </div>
-    -->
-
-
-    <!-- ============================= -->
     <!-- V1：地域設定 -->
     <!-- ============================= -->
 
@@ -262,15 +89,60 @@
     <!-- V2：柴んぽ -->
     <!-- ======================================== -->
 
-    <h1>柴んぽ</h1>
+    <!-- ヘッダー -->
+    <header class="app-header">
 
-    <!-- 現在地 -->
-    <div class="location">
+        <div class="header-top">
 
-        <p id="currentCity">---</p>
+            <h1>🐕 柴んぽ</h1>
 
-    </div>
+            <button
+                type="button"
+                id="settingsButton"
+                class="settings-button"
+            >
+                ⚙️
+            </button>
 
+        </div>
+
+        <div class="location">
+            <span></span>
+            <p id="currentCity">---</p>
+        </div>
+
+    </header>
+
+    <!-- タブ -->
+    <nav class="weather-tabs">
+
+        <button
+            type="button"
+            class="weather-tab active"
+            data-tab="current"
+        >
+            🌤️ 今の天気
+        </button>
+
+        <button
+            type="button"
+            class="weather-tab"
+            data-tab="next"
+            id="nextWalkTab"
+        >
+            ---
+        </button>
+
+        <button
+            type="button"
+            class="weather-tab"
+            data-tab="nextNext"
+            id="nextNextWalkTab"
+        >
+            ---
+        </button>
+
+    </nav>
 
     <!-- 今の天気 -->
     <div class="weather-card" id="currentWeatherCard">
@@ -279,18 +151,28 @@
             🌤️ 今の天気
         </h2>
 
+        <div class="current-weather-main">
+            <div class="current-weather-main-text">
+                <div id="currentWeatherDescription">---</div>
+                <div id="currentWeatherTemp">--.-℃</div>
+            </div>
+
+            <div class="current-weather-dog">
+                <img
+                    src="./images/shiba-weather.png"
+                    alt="柴犬"
+                >
+            </div>
+        </div>
+
         <div class="current-weather">
-
-            <p id="currentWeather">
-                ---
-            </p>
-
+            <div id="currentWeather">---</div>
         </div>
 
         <div class="current-weather-cautions">
 
             <h3>
-                今の天気で気をつけたいこと
+                注意ポイント
             </h3>
 
             <div id="currentWeatherCautions">
@@ -333,7 +215,7 @@
         <div class="next-walk-condition">
 
             <p>
-                次のお散歩のコンディション
+                お散歩のコンディション
             </p>
 
             <p id="nextWalkCondition">
@@ -355,7 +237,7 @@
         <div class="next-walk-cautions">
 
             <h3>
-                次のお散歩で気をつけたいこと
+                注意ポイント
             </h3>
 
             <div id="nextWalkCautions">
@@ -367,7 +249,7 @@
         <!-- もちもの -->
         <div class="next-walk-belongings">
             <h3>
-                🎒 次のお散歩の持ち物
+                もちもの
             </h3>
             <div id="nextWalkBelongings">
                 ---
@@ -392,7 +274,7 @@
         <div class="next-walk-condition">
 
             <p>
-                次のお散歩のコンディション
+                お散歩のコンディション
             </p>
 
             <p id="nextNextWalkCondition">
@@ -414,7 +296,7 @@
         <div class="next-walk-cautions">
 
             <h3>
-                次のお散歩で気をつけたいこと
+                注意ポイント
             </h3>
 
             <div id="nextNextWalkCautions">
@@ -428,7 +310,7 @@
         <div class="next-walk-belongings">
 
             <h3>
-                🎒 次のお散歩の持ち物
+                もちもの
             </h3>
 
             <div id="nextNextWalkBelongings">

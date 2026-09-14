@@ -458,26 +458,82 @@ h2 {
     max-width: 520px;
     margin: 0 auto 24px;
     padding: 20px;
-    background: white;
-    border-radius: 16px;
+    background: #ffffff;
+    border-radius: 20px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.06);
 }
 
 .weather-card h2 {
-    margin: 0 0 12px;
+    margin: 0 0 14px;
     font-size: 21px;
     font-weight: bold;
 }
 
 .current-weather {
     margin: 0;
-    padding: 0;
-    text-align: left;
+    padding: 14px 16px;
+    background: #f5fbff;
+    border-radius: 16px;
 }
 
 #currentWeather {
     margin: 0;
     font-size: 16px;
     font-weight: normal;
+    line-height: 1.8;
+}
+
+.current-weather-main {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 120px;
+    margin-bottom: 16px;
+}
+
+.current-weather-main-text {
+    flex: 1;
+}
+
+.current-weather-dog {
+    width: 130px;
+    height: 120px;
+    flex-shrink: 0;
+}
+
+#currentWeatherDescription {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+#currentWeatherTemp {
+    margin-top: 2px;
+    font-size: 32px;
+    font-weight: bold;
+    color: #1684c7;
+}
+
+.current-weather-description {
+    margin-bottom: 12px;
+    font-size: 17px;
+    font-weight: bold;
+}
+
+.current-weather-details {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px 12px;
+}
+
+.current-weather-details span {
+    font-size: 15px;
+    line-height: 1.5;
+}
+
+.current-weather-dog img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
 }
 
 /* ==============================
@@ -485,18 +541,27 @@ h2 {
 ============================== */
 
 .current-weather-cautions {
-    margin-top: 20px;
+    margin-top: 22px;
+    padding: 16px 18px;
+    background: #fff5f7;
+    border: 2px solid #ffd6df;
+    border-radius: 18px;
 }
 
 .current-weather-cautions h3 {
     margin: 0 0 10px;
-    font-size: 17px;
+    font-size: 18px;
     font-weight: bold;
+    color: #e85b6f;
 }
 
 #currentWeatherCautions p {
     margin: 6px 0;
+    padding: 0;
+    background: none;
+    border-radius: 0;
     font-size: 15px;
+    color: #3b95d0;
 }
 
 /* ==============================
@@ -521,4 +586,73 @@ h2 {
 
 .future-weather-table thead th:first-child {
     z-index: 3;
+}
+
+/* ==============================
+   ヘッダー
+============================== */
+
+.app-header {
+    max-width: 520px;
+    margin: 0 auto 16px;
+}
+
+.header-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.header-top h1 {
+    margin: 0;
+    font-size: 26px;
+    font-weight: bold;
+}
+
+.settings-button {
+    border: none;
+    background: white;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.location {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-top: 4px;
+    font-size: 13px;
+}
+
+.location p {
+    margin: 0;
+}
+
+.weather-tabs {
+    max-width: 520px;
+    margin: 0 auto 18px;
+    display: flex;
+    gap: 8px;
+}
+
+.weather-tab {
+    flex: 1;
+    padding: 11px 6px;
+    border: none;
+    border-radius: 18px;
+    background: #ffffff;
+    font-size: 13px;
+    font-weight: bold;
+    color: #777;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+}
+
+.weather-tab.active {
+    background: #e8f6ff;
+    color: #1684c7;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.08);
 }

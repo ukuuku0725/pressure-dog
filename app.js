@@ -1118,16 +1118,6 @@ async function loadPressureChange() {
             currentRain,
         );
 
-        document.getElementById(
-            "currentWeather",
-        ).textContent =
-            `${currentWeather.temp.toFixed(1)}℃ / ` +
-            `体感 ${currentWeather.feels_like.toFixed(1)}℃ / ` +
-            `湿度 ${currentWeather.humidity}% / ` +
-            `${currentWeather.weather[0].description} / ` +
-            `風 ${currentWeather.wind_speed.toFixed(1)}m/s`;
-
-
         let currentRainText;
 
         if (currentRain > 0) {
@@ -1135,14 +1125,8 @@ async function loadPressureChange() {
                 `🌧️ 雨 ${currentRain.toFixed(1)}mm/h`;
         } else {
             currentRainText =
-                "🌤️ 現在、雨は降っていません";
+                "🌤️ 雨なし";
         }
-
-        document.getElementById(
-            "currentWeather",
-        ).textContent +=
-            ` / ${currentRainText}`;
-    
         
         const sixHoursAgoTarget =
             currentWeather.dt -
@@ -1193,30 +1177,27 @@ async function loadPressureChange() {
             currentPressureChange,
         );
 
+
         document.getElementById(
-            "currentWeather",
-        ).textContent +=
-            ` / 🌀 気圧 ${currentWeather.pressure}hPa`;
+            "currentWeatherDescription",
+        ).textContent =
+            currentWeather.weather[0].description;
 
-        if (currentPressureChange !== null) {
+        document.getElementById(
+            "currentWeatherTemp",
+        ).textContent =
+            `${currentWeather.temp.toFixed(1)}℃`;
 
-            const pressureCaution =
-                getPressureCaution(
-                    currentPressureChange,
-                );
+        document.getElementById("currentWeather").innerHTML =
+            `<div class="current-weather-details">
+                <span>🌧️ 降水確率 ${Math.round(currentWeather.pop * 100)}%</span>
+                <span>🙂 体感 ${currentWeather.feels_like.toFixed(1)}℃</span>
+                <span>💧 湿度 ${currentWeather.humidity}%</span>
+                <span>💨 風 ${currentWeather.wind_speed.toFixed(1)}m/s</span>
+                <span>${currentRainText}</span>
+                <span>🌀 気圧 ${currentWeather.pressure}hPa</span>
+            </div>`;
 
-            if (pressureCaution) {
-                document.getElementById(
-                    "currentWeather",
-                ).textContent +=
-                    ` / ${pressureCaution}`;
-            } else {
-                document.getElementById(
-                    "currentWeather",
-                ).textContent +=
-                    " / 気圧はほぼ変化していません";
-            }
-        }
 
         console.log(
             "🕐 hourlyの時刻:",
@@ -1316,6 +1297,21 @@ async function loadPressureChange() {
 
         const schedules =
             getWalkSchedules();
+
+
+        // --------------------------------
+        // タブボタンの文言
+        // --------------------------------
+
+        document.getElementById(
+            "nextWalkTab",
+        ).textContent =
+            schedules.nextWalk.label;
+
+        document.getElementById(
+            "nextNextWalkTab",
+        ).textContent =
+            schedules.nextNextWalk.label;
 
 
         // ========================================
@@ -2000,6 +1996,87 @@ async function loadPressureChange() {
         );
     }
 }
+
+
+// ========================================
+// タブ切り替え
+// ========================================
+
+const weatherTabs =
+    document.querySelectorAll(
+        ".weather-tab",
+    );
+
+const currentWeatherCard =
+    document.getElementById(
+        "currentWeatherCard",
+    );
+
+const nextWalkCard =
+    document.getElementById(
+        "nextWalkCard",
+    );
+
+const nextNextWalkCard =
+    document.getElementById(
+        "nextNextWalkCard",
+    );
+
+weatherTabs.forEach((tab) => {
+
+    tab.addEventListener(
+        "click",
+        () => {
+
+            const tabType =
+                tab.dataset.tab;
+
+            // すべて非表示
+            currentWeatherCard.style.display =
+                "none";
+
+            nextWalkCard.style.display =
+                "none";
+
+            nextNextWalkCard.style.display =
+                "none";
+
+            // すべてのタブを通常状態
+            weatherTabs.forEach((item) => {
+                item.classList.remove(
+                    "active",
+                );
+            });
+
+            // 選択したタブを表示
+            tab.classList.add("active");
+
+            if (tabType === "current") {
+                currentWeatherCard.style.display =
+                    "";
+            }
+
+            if (tabType === "next") {
+                nextWalkCard.style.display =
+                    "";
+            }
+
+            if (tabType === "nextNext") {
+                nextNextWalkCard.style.display =
+                    "";
+            }
+        },
+    );
+});
+
+currentWeatherCard.style.display =
+    "";
+
+nextWalkCard.style.display =
+    "none";
+
+nextNextWalkCard.style.display =
+    "none";
 
 
 // ========================================
