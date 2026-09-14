@@ -1,21 +1,23 @@
+
+/* V1 CSS 一時停止
 /* ==============================
 ウクの気圧予報
 ============================== */
 
-body {
+/* body {
 margin: 0;
 padding: 24px 16px 40px;
 font-family: sans-serif;
 background: #f5f7f6;
 color: #333;
 line-height: 1.6;
-}
+} */
 
 /* ------------------------------
 タイトル
 ------------------------------ */
 
-h1 {
+/* h1 {
 margin: 0 0 12px;
 text-align: center;
 font-size: 28px;
@@ -24,13 +26,13 @@ font-size: 28px;
 h2 {
 margin: 0 0 5px;
 font-size: 21px;
-}
+} */
 
 /* ------------------------------
 地域
 ------------------------------ */
 
-.location {
+/* .location {
 max-width: 520px;
 margin: 0 auto 24px;
 text-align: center;
@@ -86,13 +88,13 @@ font-weight: bold;
     border: none;
     border-radius: 8px;
     cursor: pointer;
-}
+} */
 
 /* ------------------------------
 現在の気圧
 ------------------------------ */
 
-.current-weather {
+/* .current-weather {
 max-width: 520px;
 margin: 0 auto 24px;
 padding: 24px 20px;
@@ -116,14 +118,14 @@ display: flex;
 justify-content: center;
 gap: 28px;
 font-size: 18px;
-}
+} */
 
 
 /* ------------------------------
 気圧変化
 ------------------------------ */
 
-#pressureChange {
+/* #pressureChange {
     max-width: 520px;
     margin: 0 auto 24px;
 }
@@ -162,31 +164,31 @@ font-size: 18px;
 }
 
 /* 気圧の影響の判定 */
-.walk-card p:first-of-type {
+/* .walk-card p:first-of-type {
     font-size: 20px;
     font-weight: bold;
-}
+} */
 
 /* 現在の気圧 */
-.walk-pressure {
+/* .walk-pressure {
     margin: 10px 0 14px;
     font-size: 16px;
     font-weight: normal;
-}
+} */
 
 /* お散歩メッセージ */
-.walk-card p:nth-of-type(3) {
+/* .walk-card p:nth-of-type(3) {
     font-size: 18px;
     font-weight: 600;
-}
+} */
 
 /* 気圧変化 */
-.walk-detail {
+/* .walk-detail {
     font-size: 14px;
-}
+} */
 
 /* 気温・湿度・降水確率 */
-.walk-weather {
+/* .walk-weather {
     font-size: 20px;
     font-weight: bold;
 }
@@ -194,13 +196,13 @@ font-size: 18px;
 .walk-card #nextWalkMessage {
     font-size: 22px !important;
     font-weight: 600;
-}
+} */
 
 /* ------------------------------
    気圧 注意度バー
 ------------------------------ */
 
-.pressure-level {
+/* .pressure-level {
     max-width: 360px;
     margin: 14px auto 18px;
 }
@@ -234,13 +236,13 @@ font-size: 18px;
     justify-content: space-between;
     margin-top: 4px;
     font-size: 11px;
-}
+} */
 
 /* ------------------------------
 降水確率
 ------------------------------ */
 
-#rainProbability {
+/* #rainProbability {
 max-width: 520px;
 margin: 10px auto 24px;
 padding: 20px;
@@ -265,7 +267,7 @@ margin: 4px 0;
 .rain-hours p:last-child {
 font-size: 24px;
 font-weight: bold;
-}
+} */
 
 
 
@@ -273,29 +275,29 @@ font-weight: bold;
 気圧とわんこの体調について
 ------------------------------ */
 
-.pressure-info summary {
+/* .pressure-info summary {
     font-size: 16px;
     font-weight: bold;
-}
+} */
 
 /* ------------------------------
 注意書き
 ------------------------------ */
 
-.medical-note {
+/* .medical-note {
     max-width: 520px;
     margin: 12px auto 20px;
     padding: 0 16px;
     font-size: 12px;
     line-height: 1.6;
     text-align: left;
-}
+} */
 
 /* ------------------------------
 設定
 ------------------------------ */
 
-.settings {
+/* .settings {
 max-width: 520px;
 margin: 0 auto;
 text-align: center;
@@ -313,12 +315,12 @@ padding: 10px 18px;
 border: none;
 border-radius: 8px;
 cursor: pointer;
-}
+} */
 
 /* ------------------------------
 スマホ用
 ------------------------------ */
-
+/* 
 @media (max-width: 600px) {
 
 body {
@@ -353,4 +355,170 @@ h1 {
     font-size: 21px;
 }
 
+} */
+
+
+
+
+/* ==============================
+   柴んぽ V2
+============================== */
+
+body {
+    margin: 0;
+    padding: 20px 16px 40px;
+    font-family: sans-serif;
+    background: #f5f7f6;
+    color: #333;
+    line-height: 1.6;
+}
+
+h1 {
+    margin: 0 0 12px;
+    text-align: center;
+    font-size: 28px;
+}
+
+h2 {
+    margin: 0 0 8px;
+    font-size: 21px;
+}
+
+/* ==============================
+   このあとの天気
+============================== */
+
+.future-weather-table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.future-weather-table {
+    border-collapse: collapse;
+    white-space: nowrap;
+}
+
+.future-weather-table th,
+.future-weather-table td {
+    padding: 8px 10px;
+    text-align: center;
+}
+
+.future-weather-table th:first-child {
+    position: sticky;
+    left: 0;
+    background: white;
+}
+
+/* ==============================
+   33時間予報の表
+============================== */
+
+.future-weather-table th,
+.future-weather-table td {
+    padding: 8px 10px;
+    text-align: center;
+    font-size: 14px;
+}
+
+.future-weather-table thead th {
+    font-weight: bold;
+}
+
+.future-weather-table tbody th {
+    font-weight: bold;
+    text-align: left;
+    background: #f8f8f8;
+}
+
+.future-weather-table tbody td {
+    font-weight: normal;
+}
+
+/* ==============================
+   このあとの天気 見出し
+============================== */
+
+.future-weather h3 {
+    margin: 0 0 12px;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.future-weather-table th,
+.future-weather-table td {
+    border-bottom: 1px solid #eeeeee;
+}
+
+/* ==============================
+   今の天気
+============================== */
+
+.weather-card {
+    max-width: 520px;
+    margin: 0 auto 24px;
+    padding: 20px;
+    background: white;
+    border-radius: 16px;
+}
+
+.weather-card h2 {
+    margin: 0 0 12px;
+    font-size: 21px;
+    font-weight: bold;
+}
+
+.current-weather {
+    margin: 0;
+    padding: 0;
+    text-align: left;
+}
+
+#currentWeather {
+    margin: 0;
+    font-size: 16px;
+    font-weight: normal;
+}
+
+/* ==============================
+   今の天気の注意ポイント
+============================== */
+
+.current-weather-cautions {
+    margin-top: 20px;
+}
+
+.current-weather-cautions h3 {
+    margin: 0 0 10px;
+    font-size: 17px;
+    font-weight: bold;
+}
+
+#currentWeatherCautions p {
+    margin: 6px 0;
+    font-size: 15px;
+}
+
+/* ==============================
+   このあとの天気
+============================== */
+
+.future-weather {
+    margin-top: 28px;
+}
+
+.future-weather h3 {
+    padding-top: 16px;
+    border-top: 1px solid #eeeeee;
+}
+
+.future-weather-table th:first-child {
+    position: sticky;
+    left: 0;
+    background: white;
+    z-index: 2;
+}
+
+.future-weather-table thead th:first-child {
+    z-index: 3;
 }

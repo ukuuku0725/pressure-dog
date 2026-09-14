@@ -45,6 +45,14 @@ function createWalkSchedule(now, type, dayOffset) {
  * 次のお散歩とその次のお散歩の時間帯を取得します。
  */
 function getWalkSchedules(now = new Date()) {
+
+    console.log(
+        "🕐 お散歩スケジュール判定:",
+        now,
+        "時:",
+        now.getHours(),
+    );
+
     const hour = now.getHours();
 
     if (hour < 8) {
@@ -847,6 +855,452 @@ async function loadPressureChange() {
         const hourly =
             result.data.data;
 
+        const currentWeather =
+            hourly[6];
+
+        console.log(
+            "🌤️ 今の天気:",
+            currentWeather,
+        );
+
+        const currentWeatherTime =
+            new Date(
+                currentWeather.dt * 1000,
+            );
+
+        console.log(
+            "🌤️ 現在の天気データ時刻:",
+            currentWeatherTime,
+        );
+
+        // ========================================
+        // このあとの天気
+        // ========================================
+
+        const futureWeather =
+            hourly.slice(7);
+
+        console.log(
+            "🌤️ このあとの天気:",
+            futureWeather,
+        );
+
+        // ========================================
+        // 33時間予報を表示
+        // ========================================
+
+        const futureWeatherElement =
+            document.getElementById(
+                "futureWeather",
+            );
+
+        if (futureWeatherElement) {
+
+            const times =
+                futureWeather.map((item, index) => {
+
+                    const time =
+                        new Date(item.dt * 1000);
+
+                    const today =
+                        new Date();
+
+                    const todayDate =
+                        new Date(
+                            today.getFullYear(),
+                            today.getMonth(),
+                            today.getDate(),
+                        );
+
+                    const targetDate =
+                        new Date(
+                            time.getFullYear(),
+                            time.getMonth(),
+                            time.getDate(),
+                        );
+
+                    const dayDifference =
+                        Math.round(
+                            (
+                                targetDate -
+                                todayDate
+                            ) /
+                            (24 * 60 * 60 * 1000),
+                        );
+
+                    let dayLabel = "";
+
+                    // 前の時間データ
+                    const previousItem =
+                        futureWeather[index - 1];
+
+                    let isNewDay = false;
+
+                    if (previousItem) {
+
+                        const previousTime =
+                            new Date(
+                                previousItem.dt * 1000,
+                            );
+
+                        isNewDay =
+                            previousTime.getDate() !==
+                            time.getDate();
+
+                    } else {
+
+                        // 最初のデータ
+                        isNewDay = true;
+                    }
+
+                    if (isNewDay) {
+
+                        if (dayDifference === 0) {
+                            dayLabel = "今日 ";
+                        } else if (dayDifference === 1) {
+                            dayLabel = "明日 ";
+                        } else if (dayDifference === 2) {
+                            dayLabel = "明後日 ";
+                        }
+                    }
+
+                    return (
+                        dayLabel +
+                        time
+                            .getHours()
+                            .toString()
+                            .padStart(2, "0") +
+                        ":00"
+                    );
+                });
+
+            const temperatures =
+                futureWeather.map((item) =>
+                    `${item.temp.toFixed(1)}℃`
+                );
+
+            const humidities =
+                futureWeather.map((item) =>
+                    `${item.humidity}%`
+                );
+
+            const rains =
+                futureWeather.map((item) => {
+
+                    const rain =
+                        item.rain?.["1h"] || 0;
+
+                    return `${rain.toFixed(1)}mm/h`;
+                });
+
+            const rainProbabilities =
+                futureWeather.map((item) => {
+
+                    const probability =
+                        item.pop !== undefined
+                            ? Math.round(
+                                item.pop * 100,
+                            )
+                            : 0;
+
+                    return `${probability}%`;
+                });
+
+            const winds =
+                futureWeather.map((item) =>
+                    `${item.wind_speed.toFixed(1)}m/s`
+                );
+
+            const pressures =
+                futureWeather.map((item) =>
+                    `${item.pressure}hPa`
+                );
+
+            futureWeatherElement.innerHTML = `
+                <div class="future-weather-table-wrapper">
+
+                    <table class="future-weather-table">
+
+                        <thead>
+                            <tr>
+                                <th>項目</th>
+
+                                ${times
+                                    .map((time) =>
+                                        `<th>${time}</th>`
+                                    )
+                                    .join("")}
+
+                            </tr>
+                        </thead>
+
+                        <tbody>
+
+                            <tr>
+                                <th>気温</th>
+
+                                ${temperatures
+                                    .map((value) =>
+                                        `<td>${value}</td>`
+                                    )
+                                    .join("")}
+
+                            </tr>
+
+                            <tr>
+                                <th>湿度</th>
+
+                                ${humidities
+                                    .map((value) =>
+                                        `<td>${value}</td>`
+                                    )
+                                    .join("")}
+
+                            </tr>
+
+                            <tr>
+                                <th>雨</th>
+
+                                ${rains
+                                    .map((value) =>
+                                        `<td>${value}</td>`
+                                    )
+                                    .join("")}
+
+                            </tr>
+
+                            <tr>
+                                <th>降水確率</th>
+
+                                ${rainProbabilities
+                                    .map((value) =>
+                                        `<td>${value}</td>`
+                                    )
+                                    .join("")}
+
+                            </tr>
+
+                            <tr>
+                                <th>風</th>
+
+                                ${winds
+                                    .map((value) =>
+                                        `<td>${value}</td>`
+                                    )
+                                    .join("")}
+
+                            </tr>
+
+                            <tr>
+                                <th>気圧</th>
+
+                                ${pressures
+                                    .map((value) =>
+                                        `<td>${value}</td>`
+                                    )
+                                    .join("")}
+
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+            `;
+        }
+
+        const currentRain =
+            currentWeather.rain?.["1h"] || 0;
+
+        console.log(
+            "🌧️ 現在の降水量:",
+            currentRain,
+        );
+
+        document.getElementById(
+            "currentWeather",
+        ).textContent =
+            `${currentWeather.temp.toFixed(1)}℃ / ` +
+            `体感 ${currentWeather.feels_like.toFixed(1)}℃ / ` +
+            `湿度 ${currentWeather.humidity}% / ` +
+            `${currentWeather.weather[0].description} / ` +
+            `風 ${currentWeather.wind_speed.toFixed(1)}m/s`;
+
+
+        let currentRainText;
+
+        if (currentRain > 0) {
+            currentRainText =
+                `🌧️ 雨 ${currentRain.toFixed(1)}mm/h`;
+        } else {
+            currentRainText =
+                "🌤️ 現在、雨は降っていません";
+        }
+
+        document.getElementById(
+            "currentWeather",
+        ).textContent +=
+            ` / ${currentRainText}`;
+    
+        
+        const sixHoursAgoTarget =
+            currentWeather.dt -
+            (6 * 60 * 60);
+
+        const sixHoursAgo =
+            hourly.reduce(
+                (closest, weather) => {
+
+                    if (!closest) {
+                        return weather;
+                    }
+
+                    const currentDiff =
+                        Math.abs(
+                            weather.dt -
+                            sixHoursAgoTarget,
+                        );
+
+                    const closestDiff =
+                        Math.abs(
+                            closest.dt -
+                            sixHoursAgoTarget,
+                        );
+
+                    if (
+                        currentDiff <
+                        closestDiff
+                    ) {
+                        return weather;
+                    }
+
+                    return closest;
+                },
+                null,
+            );
+
+        let currentPressureChange = null;
+
+        if (sixHoursAgo) {
+            currentPressureChange =
+                currentWeather.pressure -
+                sixHoursAgo.pressure;
+        }
+
+        console.log(
+            "🌀 現在の気圧変化:",
+            currentPressureChange,
+        );
+
+        document.getElementById(
+            "currentWeather",
+        ).textContent +=
+            ` / 🌀 気圧 ${currentWeather.pressure}hPa`;
+
+        if (currentPressureChange !== null) {
+
+            const pressureCaution =
+                getPressureCaution(
+                    currentPressureChange,
+                );
+
+            if (pressureCaution) {
+                document.getElementById(
+                    "currentWeather",
+                ).textContent +=
+                    ` / ${pressureCaution}`;
+            } else {
+                document.getElementById(
+                    "currentWeather",
+                ).textContent +=
+                    " / 気圧はほぼ変化していません";
+            }
+        }
+
+        console.log(
+            "🕐 hourlyの時刻:",
+            hourly.map((item) => {
+                return new Date(
+                    item.dt * 1000,
+                );
+            }),
+        );
+
+        const currentWeatherCautions = [];
+
+        // 💧 湿度
+        const humidityCaution =
+            getHumidityCaution(
+                currentWeather,
+            );
+
+        if (humidityCaution) {
+            currentWeatherCautions.push(
+                humidityCaution,
+            );
+        }
+
+        // 💨 風
+        const windCaution =
+            getWindCaution(
+                currentWeather,
+            );
+
+        if (windCaution) {
+            currentWeatherCautions.push(
+                windCaution,
+            );
+        }
+
+        // 🌧️ 雨・雪
+        const rainSnowCautions =
+            getRainSnowCaution(
+                currentWeather,
+            );
+
+        currentWeatherCautions.push(
+            ...rainSnowCautions,
+        );
+
+        // 🌀 気圧
+        const pressureCaution =
+            getPressureCaution(
+                currentPressureChange,
+            );
+
+        if (pressureCaution) {
+            currentWeatherCautions.push(
+                pressureCaution,
+            );
+        }
+
+        console.log(
+            "⚠️ 今の天気の注意ポイント:",
+            currentWeatherCautions,
+        );
+
+        const currentWeatherCautionsElement =
+            document.getElementById(
+                "currentWeatherCautions",
+            );
+
+        if (currentWeatherCautionsElement) {
+
+            if (
+                currentWeatherCautions.length > 0
+            ) {
+                currentWeatherCautionsElement.innerHTML =
+                    currentWeatherCautions
+                        .map((caution) => {
+                            return `<p>${caution}</p>`;
+                        })
+                        .join("");
+            } else {
+                currentWeatherCautionsElement.innerHTML =
+                    "<p>🐕 今のところ特に注意することはなさそうです</p>";
+            }
+        }
 
         const schedules =
             getWalkSchedules();
@@ -882,6 +1336,11 @@ async function loadPressureChange() {
                 hourly,
                 schedules.nextWalk,
             );
+
+        console.log(
+            "🐕 V2 次のお散歩スケジュール:",
+            schedules.nextWalk,
+        );
 
         const nextWalkPressureCautions =
             getWalkPressureCaution(
@@ -1328,6 +1787,16 @@ async function loadPressureChange() {
                 "nextWalkTitle",
             ).textContent =
                 schedules.nextWalk.label;
+
+            document.getElementById(
+                "nextWalkTime",
+            ).textContent =
+                `${nextWalkStart.getHours()
+                    .toString()
+                    .padStart(2, "0")}:00〜` +
+                `${nextWalkEnd.getHours()
+                    .toString()
+                    .padStart(2, "0")}:00`;
 
 
             // ========================================
