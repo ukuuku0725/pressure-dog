@@ -338,14 +338,12 @@ function getWalkRainSnowCautions(walkWeather) {
 function getHumidityCaution(item) {
     const humidity = item.humidity;
 
-    // 寒いときは乾燥に注意
     if (item.temp <= 15 && humidity < 40) {
-        return "💧 乾燥に注意";
+        return `💧 乾燥に注意（湿度${humidity}%）`;
     }
 
-    // 暑いときは湿度に注意
     if (item.temp >= 21 && humidity >= 60) {
-        return "💧 湿度が高め";
+        return `💧 湿度が高め（湿度${humidity}%）`;
     }
 
     return null;
@@ -496,36 +494,30 @@ function getWalkCautions(
 /**
  * 雨のもちもの
  */
-function getRainBelongings(
-    walkWeather,
-    rainProbabilities,
-) {
+function getRainBelongings(walkWeather, rainProbabilities) {
     const belongings = [];
 
     const isRaining =
-        walkWeather.some((item) => {
-            return (item.rain?.["1h"] || 0) > 0;
-        });
+        walkWeather.some(
+            (item) => (item.rain?.["1h"] || 0) > 0
+        );
 
     const maxRainProbability =
-        rainProbabilities.length > 0 ?
-            Math.max(...rainProbabilities) :
-            0;
+        rainProbabilities.length > 0
+            ? Math.max(...rainProbabilities)
+            : 0;
 
     if (isRaining) {
         belongings.push("☂️ 傘");
-        belongings.push("🐕 レインコート");
         belongings.push("🧻 タオル");
     } else if (maxRainProbability >= 50) {
         belongings.push("☂️ 傘");
-        belongings.push("🐕 レインコート");
     } else if (maxRainProbability >= 30) {
         belongings.push("☂️ 折りたたみ傘");
     }
 
     return belongings;
 }
-
 
 /**
  * 暑いときのもちもの
@@ -562,8 +554,28 @@ function getColdBelongings(walkWeather) {
         ...walkWeather.map((item) => item.temp),
     );
 
+    const maxWind = Math.max(
+        ...walkWeather.map(
+            (item) => item.wind_speed || 0,
+        ),
+    );
+
+    // 5℃以下 → 手袋
     if (minTemp <= 5) {
-        belongings.push("🧥 冬用ウェア");
+        belongings.push("🧤 手袋");
+    }
+
+    // 0℃以下 → マフラー
+    if (minTemp <= 0) {
+        belongings.push("🧣 マフラー");
+    }
+
+    // 0℃以下 ＋ 風5m/s以上 → 帽子
+    if (
+        minTemp <= 0 &&
+        maxWind >= 5
+    ) {
+        belongings.push("🧢 帽子");
     }
 
     return belongings;
@@ -577,13 +589,13 @@ function getSnowBelongings(walkWeather) {
     const belongings = [];
 
     const hasSnow =
-        walkWeather.some((item) => {
-            return (item.snow?.["1h"] || 0) > 0;
-        });
+        walkWeather.some(
+            (item) => (item.snow?.["1h"] || 0) > 0
+        );
 
     if (hasSnow) {
-        belongings.push("🧥 冬用ウェア");
-        belongings.push("🧻 タオル");
+        belongings.push("🥾 長靴");
+        belongings.push("🔥 ホッカイロ");
     }
 
     return belongings;
@@ -1033,98 +1045,83 @@ async function loadPressureChange() {
                     `${item.pressure}hPa`
                 );
 
+            
             futureWeatherElement.innerHTML = `
                 <div class="future-weather-table-wrapper">
 
-                    <table class="future-weather-table">
+                    <div class="future-weather-table">
 
-                        <thead>
-                            <tr>
-                                <th>項目</th>
+                        <div class="future-weather-row future-weather-header">
+                            <div></div>
 
-                                ${times
-                                    .map((time) =>
-                                        `<th>${time}</th>`
-                                    )
-                                    .join("")}
+                            ${times
+                                .map((time) =>
+                                    `<div>${time}</div>`
+                                )
+                                .join("")}
 
-                            </tr>
-                        </thead>
+                        </div>
 
-                        <tbody>
+                        <div class="future-weather-row">
+                            <div>🌡️ 気温</div>
 
-                            <tr>
-                                <th>気温</th>
+                            ${temperatures
+                                .map((value) =>
+                                    `<div>${value}</div>`
+                                )
+                                .join("")}
 
-                                ${temperatures
-                                    .map((value) =>
-                                        `<td>${value}</td>`
-                                    )
-                                    .join("")}
+                        </div>
 
-                            </tr>
+                        <div class="future-weather-row">
+                            <div>🌧️ 雨量</div>
 
-                            <tr>
-                                <th>湿度</th>
+                            ${rains
+                                .map((value) =>
+                                    `<div>${value}</div>`
+                                )
+                                .join("")}
 
-                                ${humidities
-                                    .map((value) =>
-                                        `<td>${value}</td>`
-                                    )
-                                    .join("")}
+                        </div>
 
-                            </tr>
+                        <div class="future-weather-row">
+                            <div>☂️ 確率</div>
 
-                            <tr>
-                                <th>雨</th>
+                            ${rainProbabilities
+                                .map((value) =>
+                                    `<div>${value}</div>`
+                                )
+                                .join("")}
 
-                                ${rains
-                                    .map((value) =>
-                                        `<td>${value}</td>`
-                                    )
-                                    .join("")}
+                        </div>
 
-                            </tr>
+                        <div class="future-weather-row">
+                            <div>💨 風</div>
 
-                            <tr>
-                                <th>降水確率</th>
+                            ${winds
+                                .map((value) =>
+                                    `<div>${value}</div>`
+                                )
+                                .join("")}
 
-                                ${rainProbabilities
-                                    .map((value) =>
-                                        `<td>${value}</td>`
-                                    )
-                                    .join("")}
+                        </div>
 
-                            </tr>
+                        <div class="future-weather-row">
+                            <div>🌀 気圧</div>
 
-                            <tr>
-                                <th>風</th>
+                            ${pressures
+                                .map((value) =>
+                                    `<div>${value}</div>`
+                                )
+                                .join("")}
 
-                                ${winds
-                                    .map((value) =>
-                                        `<td>${value}</td>`
-                                    )
-                                    .join("")}
+                        </div>
 
-                            </tr>
-
-                            <tr>
-                                <th>気圧</th>
-
-                                ${pressures
-                                    .map((value) =>
-                                        `<td>${value}</td>`
-                                    )
-                                    .join("")}
-
-                            </tr>
-
-                        </tbody>
-
-                    </table>
+                    </div>
 
                 </div>
             `;
+
         }
 
         const currentRain =
@@ -1203,7 +1200,7 @@ async function loadPressureChange() {
         document.getElementById(
             "currentWeatherTemp",
         ).textContent =
-            `${currentWeather.temp.toFixed(1)}℃`;
+            `${Math.round(currentWeather.temp)}℃`;
 
         document.getElementById("currentWeather").innerHTML =
             `<div class="current-weather-details">
@@ -1493,11 +1490,6 @@ async function loadPressureChange() {
         ).textContent =
             `${Math.round(nextWalkMaxTemp)}℃`
 
-        document.getElementById(
-            "nextWalkMaxHumidity",
-        ).textContent =
-            `${nextWalkMaxHumidity}%`;
-
         
         // --------------------------------
         // 次のお散歩時間帯の３時間天気
@@ -1505,55 +1497,68 @@ async function loadPressureChange() {
 
         document.getElementById(
             "nextWalkHourlyWeather",
-        ).innerHTML =
-            nextWalkWeather
-                .map((item) => {
+        ).innerHTML = `
+            <div class="walk-hourly-table">
 
-                    const time =
-                        new Date(item.dt * 1000);
+                <div class="walk-hourly-row walk-hourly-header">
+                    <div></div>
+                    ${nextWalkWeather
+                        .map((item) => {
+                            const time =
+                                new Date(item.dt * 1000);
+                            return `<div>${time.getHours()}:00</div>`;
+                        })
+                        .join("")}
+                </div>
 
-                    const hour =
-                        time.getHours();
+                <div class="walk-hourly-row">
+                    <div>🌧️ 雨量</div>
+                    ${nextWalkWeather
+                        .map((item) => {
+                            const rain =
+                                item.rain?.["1h"] || 0;
+                            return `<div>${rain.toFixed(1)}mm</div>`;
+                        })
+                        .join("")}
+                </div>
 
-                    const rain =
-                        item.rain?.["1h"] || 0;
+                <div class="walk-hourly-row">
+                    <div>☂️ 確率</div>
+                    ${nextWalkWeather
+                        .map((item) => {
+                            const pop =
+                                item.pop !== undefined
+                                    ? Math.round(item.pop * 100)
+                                    : 0;
+                            return `<div>${pop}%</div>`;
+                        })
+                        .join("")}
+                </div>
 
-                    const pop =
-                        item.pop !== undefined
-                            ? Math.round(item.pop * 100)
-                            : 0;
+                <div class="walk-hourly-row">
+                    <div>💨 風</div>
+                    ${nextWalkWeather
+                        .map((item) => {
+                            const wind =
+                                item.wind_speed || 0;
+                            return `<div>${wind.toFixed(1)}m/s</div>`;
+                        })
+                        .join("")}
+                </div>
 
-                    const wind =
-                        item.wind_speed || 0;
+                <div class="walk-hourly-row">
+                    <div>🌀 気圧</div>
+                    ${nextWalkWeather
+                        .map((item) => {
+                            const pressure =
+                                item.pressure || 0;
+                            return `<div>${pressure}hPa</div>`;
+                        })
+                        .join("")}
+                </div>
 
-                    const pressure =
-                        item.pressure || 0;
-
-                    return `
-                        <div class="walk-hour">
-                            <div class="walk-hour-time">
-                                ${hour}:00
-                            </div>
-
-                            <div>
-                                🌧️ ${rain.toFixed(1)}mm
-                            </div>
-
-                            <div>
-                                ${pop}%
-                            </div>
-
-                            <div>
-                                💨 ${wind.toFixed(1)}m/s
-                            </div>
-
-                            <div>
-                                🌀 ${pressure}hPa
-                            </div>
-                        </div>
-                    `;
-                })
-                .join("");
+            </div>
+        `;
 
 
 
@@ -1901,64 +1906,81 @@ async function loadPressureChange() {
         ).textContent =
             `${Math.round(nextNextWalkMaxTemp)}℃`;
 
-        document.getElementById(
-            "nextNextWalkMaxHumidity",
-        ).textContent =
-            `${nextNextWalkMaxHumidity}%`;
 
         document.getElementById(
             "nextNextWalkHourlyWeather",
-        ).innerHTML =
-            nextNextWalkWeather
-                .map((item) => {
+        ).innerHTML = `
+            <div class="walk-hourly-table">
 
-                    const time =
-                        new Date(item.dt * 1000);
+                <div class="walk-hourly-row walk-hourly-header">
+                    <div></div>
 
-                    const hour =
-                        time.getHours();
+                    ${nextNextWalkWeather
+                        .map((item) => {
+                            const time =
+                                new Date(item.dt * 1000);
 
-                    const rain =
-                        item.rain?.["1h"] || 0;
+                            return `<div>${time.getHours()}:00</div>`;
+                        })
+                        .join("")}
+                </div>
 
-                    const pop =
-                        item.pop !== undefined
-                            ? Math.round(item.pop * 100)
-                            : 0;
+                <div class="walk-hourly-row">
+                    <div>🌧️ 雨量</div>
 
-                    const wind =
-                        item.wind_speed || 0;
+                    ${nextNextWalkWeather
+                        .map((item) => {
+                            const rain =
+                                item.rain?.["1h"] || 0;
 
-                    const pressure =
-                        item.pressure || 0;
+                            return `<div>${rain.toFixed(1)}mm</div>`;
+                        })
+                        .join("")}
+                </div>
 
-                    return `
-                        <div class="walk-hour">
+                <div class="walk-hourly-row">
+                    <div>☂️ 確率</div>
 
-                            <div class="walk-hour-time">
-                                ${hour}:00
-                            </div>
+                    ${nextNextWalkWeather
+                        .map((item) => {
+                            const pop =
+                                item.pop !== undefined
+                                    ? Math.round(item.pop * 100)
+                                    : 0;
 
-                            <div>
-                                🌧️ ${rain.toFixed(1)}mm
-                            </div>
+                            return `<div>${pop}%</div>`;
+                        })
+                        .join("")}
+                </div>
 
-                            <div>
-                                ${pop}%
-                            </div>
+                <div class="walk-hourly-row">
+                    <div>💨 風</div>
 
-                            <div>
-                                💨 ${wind.toFixed(1)}m/s
-                            </div>
+                    ${nextNextWalkWeather
+                        .map((item) => {
+                            const wind =
+                                item.wind_speed || 0;
 
-                            <div>
-                                🌀 ${pressure}hPa
-                            </div>
+                            return `<div>${wind.toFixed(1)}m/s</div>`;
+                        })
+                        .join("")}
+                </div>
 
-                        </div>
-                    `;
-                })
-                .join("");
+                <div class="walk-hourly-row">
+                    <div>🌀 気圧</div>
+
+                    ${nextNextWalkWeather
+                        .map((item) => {
+                            const pressure =
+                                item.pressure || 0;
+
+                            return `<div>${pressure}hPa</div>`;
+                        })
+                        .join("")}
+                </div>
+
+            </div>
+        `;
 
         console.log(
             "Cloud Functions経由で天気データ取得成功！",

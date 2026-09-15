@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;500;700&display=swap');
+
 
 /* V1 CSS 一時停止
 /* ==============================
@@ -367,7 +369,7 @@ h1 {
 body {
     margin: 0;
     padding: 20px 16px 40px;
-    font-family: sans-serif;
+    font-family: "M PLUS Rounded 1c", sans-serif;
     background: #f5f7f6;
     color: #333;
     line-height: 1.6;
@@ -390,25 +392,35 @@ h2 {
 
 .future-weather-table-wrapper {
     width: 100%;
+    max-width: 100%;
     overflow-x: auto;
 }
 
 .future-weather-table {
-    border-collapse: collapse;
+    width: max-content;
+}
+
+.future-weather-row {
+    display: grid;
+    grid-template-columns: 70px repeat(33, 80px);
+}
+
+.future-weather-row > div {
+    padding: 8px 4px;
+    text-align: center;
+    font-size: 13px;
     white-space: nowrap;
 }
 
-.future-weather-table th,
-.future-weather-table td {
-    padding: 8px 10px;
-    text-align: center;
-}
-
-.future-weather-table th:first-child {
+.future-weather-row > div:first-child {
+    text-align: left;
+    font-weight: bold;
     position: sticky;
     left: 0;
-    background: white;
+    background: #fff;
+    z-index: 2;
 }
+
 
 /* ==============================
    33時間予報の表
@@ -502,8 +514,9 @@ h2 {
 }
 
 #currentWeatherDescription {
-    font-size: 20px;
+    font-size: 16px;
     font-weight: bold;
+    margin-bottom: 8px;
 }
 
 #currentWeatherTemp {
@@ -537,10 +550,11 @@ h2 {
 }
 
 /* ==============================
-   今の天気の注意ポイント
+   注意ポイントともちもの
 ============================== */
 
-.current-weather-cautions {
+.current-weather-cautions,
+.next-walk-cautions{
     margin-top: 22px;
     padding: 16px 18px;
     background: #fff5f7;
@@ -548,20 +562,28 @@ h2 {
     border-radius: 18px;
 }
 
-.current-weather-cautions h3 {
+.current-weather-cautions h3,
+.next-walk-cautions h3 {
     margin: 0 0 10px;
     font-size: 18px;
     font-weight: bold;
     color: #e85b6f;
 }
 
-#currentWeatherCautions p {
-    margin: 6px 0;
-    padding: 0;
-    background: none;
-    border-radius: 0;
-    font-size: 15px;
-    color: #3b95d0;
+.next-walk-belongings {
+    margin-top: 22px;
+    padding: 16px 18px;
+    background: #f5fbff;
+    border: 2px solid #c9e9fb;
+    border-radius: 18px;
+}
+
+
+.next-walk-belongings h3 {
+    margin: 0 0 10px;
+    font-size: 18px;
+    font-weight: bold;
+    color: #1684c7;
 }
 
 /* ==============================
@@ -597,6 +619,19 @@ h2 {
 .walk-weather-details span {
     font-size: 15px;
     line-height: 1.5;
+}
+
+
+/* ==============================
+   次の散歩カード枠
+============================== */
+
+.walk-card {
+    padding: 20px;
+    margin-top: 20px;
+    border-radius: 16px;
+    background: #ffffff;
+    border: 1px solid #eeeeee;
 }
 
 /* ==============================
@@ -709,18 +744,51 @@ h2 {
 /* ==============================
    次の散歩　気温湿度表示
 ============================== */
-.walk-main-weather {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 8px;
+
+.next-walk-condition {
+    margin-bottom: 16px;
 }
 
-.walk-main-weather-item {
-    text-align: center;
+.next-walk-condition > p {
+    margin: 0;
+}
+
+.next-walk-condition
+#nextWalkWeatherDescription,
+.next-walk-condition
+#nextNextWalkWeatherDescription {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 4px;
+}
+
+.next-walk-condition
+#nextWalkMaxTemp,
+.next-walk-condition
+#nextNextWalkMaxTemp {
+    display: block;
     font-size: 28px;
     font-weight: bold;
+    margin-bottom: 12px;
 }
 
+.next-walk-condition
+#nextWalkWeatherDescription,
+.next-walk-condition
+#nextNextWalkWeatherDescription {
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+.next-walk-condition
+#nextWalkCondition,
+.next-walk-condition
+#nextNextWalkCondition {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 8px;
+}
 
 /* ==============================
    次の散歩　３時間ごとの天気
@@ -732,19 +800,42 @@ h2 {
 }
 
 #nextWalkHourlyWeather {
+    width: 100%;
+}
+
+.walk-hourly-table {
+    width: 100%;
+}
+
+.walk-hourly-row {
     display: grid;
-    grid-auto-flow: column;
-    grid-auto-columns: 100px;
-    gap: 16px;
-    min-width: max-content;
+    grid-template-columns: 70px repeat(3, 1fr);
+    align-items: center;
+    border-bottom: 1px solid #eeeeee;
+}
+
+.walk-hourly-row > div {
+    padding: 8px 4px;
+    text-align: center;
+    font-size: 13px;
+}
+
+.walk-hourly-row > div:first-child {
+    text-align: left;
+    font-weight: bold;
+}
+
+.walk-hourly-header > div {
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.walk-hourly-header > div:first-child {
+    font-weight: normal;
 }
 
 #nextNextWalkHourlyWeather {
-    display: grid;
-    grid-auto-flow: column;
-    grid-auto-columns: 100px;
-    gap: 16px;
-    min-width: max-content;
+    width: 100%;
 }
 
 .walk-hour {
