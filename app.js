@@ -2420,3 +2420,24 @@ async function registerPushNotification(
         );
     }
 }
+
+// =============================
+// 設定画面の切り替え
+// =============================
+
+const settingsButton =
+    document.getElementById("settingsButton");
+
+const locationSettings =
+    document.getElementById("locationSettings");
+
+const backToMain =
+    document.getElementById("backToMain");
+
+settingsButton.addEventListener("click", () => {
+    locationSettings.style.display = "block";
+});
+
+backToMain.addEventListener("click", () => {
+    locationSettings.style.display = "none";
+});

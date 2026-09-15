@@ -855,3 +855,18 @@ h2 {
     font-weight: bold;
     margin-bottom: 4px;
 }
+
+
+/* ==============================
+   設定画面切り替え
+============================== */
+
+#locationSettings {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    background: #ffffff;
+    padding: 24px 16px;
+    box-sizing: border-box;
+    overflow-y: auto;
+}
