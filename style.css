@@ -588,6 +588,17 @@ h2 {
     z-index: 3;
 }
 
+.walk-weather-details {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px 12px;
+}
+
+.walk-weather-details span {
+    font-size: 15px;
+    line-height: 1.5;
+}
+
 /* ==============================
    ヘッダー
 ============================== */
@@ -655,4 +666,101 @@ h2 {
     background: #e8f6ff;
     color: #1684c7;
     box-shadow: 0 3px 8px rgba(0, 0, 0, 0.08);
+}
+
+
+
+.app-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.app-title img {
+    width: 48px;
+    height: 48px;
+    object-fit: contain;
+}
+
+.app-title h1 {
+    margin: 0;
+}
+
+
+/* ==============================
+   タブ
+============================== */
+
+.weather-tab {
+    vertical-align: middle;
+}
+
+.walk-tab-label {
+    display: block;
+}
+
+.walk-tab-time {
+    display: block;
+    font-size: 10px;
+    margin-top: 3px;
+}
+
+
+/* ==============================
+   次の散歩　気温湿度表示
+============================== */
+.walk-main-weather {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+}
+
+.walk-main-weather-item {
+    text-align: center;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+
+/* ==============================
+   次の散歩　３時間ごとの天気
+============================== */
+
+.walk-hourly-weather {
+    overflow-x: auto;
+    margin-top: 16px;
+}
+
+#nextWalkHourlyWeather {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: 100px;
+    gap: 16px;
+    min-width: max-content;
+}
+
+#nextNextWalkHourlyWeather {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: 100px;
+    gap: 16px;
+    min-width: max-content;
+}
+
+.walk-hour {
+    text-align: center;
+    font-size: 13px;
+    line-height: 1.8;
+    padding: 8px 4px;
+}
+
+.walk-hour-time {
+    font-size: 15px;
+    font-weight: bold;
+    margin-bottom: 6px;
+}
+
+.walk-hour-weather {
+    font-weight: bold;
+    margin-bottom: 4px;
 }

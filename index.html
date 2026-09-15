@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>わんこのための気圧予報</title>
-    <link rel="icon" href="images/icon.png">
+    <title>お散歩コンディションアプリ【柴んぽ】</title>
+    <link rel="icon" href="./images/icons/shiba-logo.png">
     <link rel="manifest" href="./manifest.json">
     <link rel="stylesheet" href="style.css">
 </head>
@@ -91,10 +91,15 @@
 
     <!-- ヘッダー -->
     <header class="app-header">
-
         <div class="header-top">
 
-            <h1>🐕 柴んぽ</h1>
+            <div class="app-title">
+                <img
+                    src="./images/icons/shiba-logo.png"
+                    alt="柴んぽ"
+                >
+                <h1>柴んぽ</h1>
+            </div>
 
             <button
                 type="button"
@@ -147,10 +152,6 @@
     <!-- 今の天気 -->
     <div class="weather-card" id="currentWeatherCard">
 
-        <h2>
-            🌤️ 今の天気
-        </h2>
-
         <div class="current-weather-main">
             <div class="current-weather-main-text">
                 <div id="currentWeatherDescription">---</div>
@@ -202,34 +203,27 @@
     <!-- 次のお散歩 -->
     <div class="walk-card" id="nextWalkCard">
 
-        <h2 id="nextWalkTitle">
-            🌙 夜の柴んぽ
-        </h2>
-
-        <p id="nextWalkTime">
-            ---
-        </p>
-
-
         <!-- 総合コンディション -->
         <div class="next-walk-condition">
 
-            <p>
-                お散歩のコンディション
-            </p>
-
-            <p id="nextWalkCondition">
-                ---
-            </p>
+            <p id="nextWalkWeatherDescription">---</p>
+            <p id="nextWalkCondition">---</p>
+            <p id="nextWalkConditionMessage">---</p>
 
         </div>
 
         <!-- お散歩時間帯の天気 -->
         <div class="next-walk-weather-summary">
 
-            <p id="nextWalkWeatherSummary">
-                ---
-            </p>
+            <div class="walk-main-weather">
+                <div class="walk-main-weather-item">
+                    <span id="nextWalkMaxTemp">--.-℃</span>
+                </div>
+
+                <div class="walk-main-weather-item">
+                    <span id="nextWalkMaxHumidity">--%</span>
+                </div>
+            </div>
 
         </div>
 
@@ -245,6 +239,11 @@
             </div>
 
         </div>
+
+        <!-- ３時間天気 -->
+        <div class="walk-hourly-weather">
+            <div id="nextWalkHourlyWeather"></div>
+        </div>
         
         <!-- もちもの -->
         <div class="next-walk-belongings">
@@ -258,37 +257,30 @@
 
     </div>
 
-        <!-- 次の次のお散歩 -->
+    <!-- 次の次のお散歩 -->
     <div class="walk-card" id="nextNextWalkCard">
-
-        <h2 id="nextNextWalkTitle">
-            🌅 朝の柴んぽ
-        </h2>
-
-        <p id="nextNextWalkTime">
-            ---
-        </p>
-
 
         <!-- 総合コンディション -->
         <div class="next-walk-condition">
 
-            <p>
-                お散歩のコンディション
-            </p>
-
-            <p id="nextNextWalkCondition">
-                ---
-            </p>
+            <p id="nextNextWalkWeatherDescription">---</p>
+            <p id="nextNextWalkCondition">---</p>
+            <p id="nextNextWalkConditionMessage">---</p>
 
         </div>
 
         <!-- お散歩時間帯の天気 -->
         <div class="next-walk-weather-summary">
 
-            <p id="nextNextWalkWeatherSummary">
-                ---
-            </p>
+            <div class="walk-main-weather">
+                <div class="walk-main-weather-item">
+                    <span id="nextNextWalkMaxTemp">--℃</span>
+                </div>
+
+                <div class="walk-main-weather-item">
+                    <span id="nextNextWalkMaxHumidity">--%</span>
+                </div>
+            </div>
 
         </div>
 
@@ -305,6 +297,10 @@
 
         </div>
 
+        <!-- 3時間天気 -->
+        <div class="walk-hourly-weather">
+            <div id="nextNextWalkHourlyWeather"></div>
+        </div>
 
         <!-- もちもの -->
         <div class="next-walk-belongings">

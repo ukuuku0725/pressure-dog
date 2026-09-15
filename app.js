@@ -20,7 +20,7 @@ function createWalkSchedule(now, type, dayOffset) {
 
         return {
             type: "morning",
-            label: "🌅 朝の柴んぽ",
+            label: "朝のさんぽ",
             start,
             end,
         };
@@ -34,7 +34,7 @@ function createWalkSchedule(now, type, dayOffset) {
 
     return {
         type: "evening",
-        label: "🌙 夜の柴んぽ",
+        label: "夜のさんぽ",
         start,
         end,
     };
@@ -150,6 +150,23 @@ function judgeTemperatureCondition(temp, humidity) {
     }
 
     return "🟢 快適";
+}
+
+
+/**
+ * コンディションに応じたメッセージを取得します。
+ */
+function getConditionMessage(condition) {
+
+    const messages = {
+        "🌟 とても快適": "素晴らしいコンディションです",
+        "🟢 快適": "気持ちよくお散歩できそう",
+        "🟡 まずまず": "お散歩を楽しめそうです",
+        "🟠 少し注意": "少し気をつけてお散歩しましょう",
+        "🔴 かなり注意": "無理のないお散歩を心がけましょう",
+    };
+
+    return messages[condition] || "";
 }
 
 
@@ -1293,25 +1310,35 @@ async function loadPressureChange() {
         }
 
 
-
-
-        const schedules =
-            getWalkSchedules();
-
-
         // --------------------------------
         // タブボタンの文言
         // --------------------------------
+        
+        const schedules = getWalkSchedules();
 
-        document.getElementById(
-            "nextWalkTab",
-        ).textContent =
-            schedules.nextWalk.label;
+        const today = new Date();
 
-        document.getElementById(
-            "nextNextWalkTab",
-        ).textContent =
-            schedules.nextNextWalk.label;
+        const nextWalkDateLabel =
+            schedules.nextWalk.start.toDateString() !== today.toDateString()
+                ? "明日 "
+                : "";
+
+        const nextNextWalkDateLabel =
+            schedules.nextNextWalk.start.toDateString() !== today.toDateString()
+                ? "明日 "
+                : "";
+
+        document.getElementById("nextWalkTab").innerHTML =
+            `<span class="walk-tab-label">${schedules.nextWalk.label}</span>` +
+            `<span class="walk-tab-time">${nextWalkDateLabel}` +
+            `${schedules.nextWalk.start.getHours()}:00〜` +
+            `${schedules.nextWalk.end.getHours()}:00</span>`;
+
+        document.getElementById("nextNextWalkTab").innerHTML =
+            `<span class="walk-tab-label">${schedules.nextNextWalk.label}</span>` +
+            `<span class="walk-tab-time">${nextNextWalkDateLabel}` +
+            `${schedules.nextNextWalk.start.getHours()}:00〜` +
+            `${schedules.nextNextWalk.end.getHours()}:00</span>`;
 
 
         // ========================================
@@ -1328,23 +1355,6 @@ async function loadPressureChange() {
         nextWalkEnd =
             schedules.nextWalk.end;
 
-        document.getElementById(
-            "nextWalkTitle",
-        ).textContent =
-            schedules.nextWalk.label;
-
-        document.getElementById(
-            "nextWalkTime",
-        ).textContent =
-            `${nextWalkStart.getHours()
-                .toString()
-                .padStart(2, "0")}:00〜` +
-            `${nextWalkEnd.getHours()
-                .toString()
-                .padStart(2, "0")}:00`;
-
-
-
         const nextWalkWeather =
             getWalkWeatherData(
                 hourly,
@@ -1356,49 +1366,52 @@ async function loadPressureChange() {
             schedules.nextWalk,
         );
 
-        console.log(
-            "🐕 次のお散歩データ:",
-            nextWalkWeather,
-        );
-
-        console.log(
-            "🌅 次のお散歩の天気データ1件目:",
-            nextWalkWeather[0],
-        );
-
         
-        // --------------------------------
-        // 次の柴んぽ処理　コンディション
-        // --------------------------------
+    // --------------------------------
+    // 次の柴んぽ処理　コンディション
+    // --------------------------------
 
-        const nextWalkConditions =
-            nextWalkWeather.map((item) => {
-                const baseCondition =
-                    judgeTemperatureCondition(
-                        item.temp,
-                        item.humidity,
-                    );
+    const nextWalkConditions =
+        nextWalkWeather.map((item) => {
+            const baseCondition =
+                judgeTemperatureCondition(
+                    item.temp,
+                    item.humidity,
+                );
 
-                const condition =
-                    adjustColdCondition(
-                        baseCondition,
-                        item,
-                    );
+            const condition =
+                adjustColdCondition(
+                    baseCondition,
+                    item,
+                );
 
-                const cautions =
-                    getRainSnowCaution(item);
-
-                return {
-                    time: new Date(item.dt * 1000),
-                    temp: item.temp,
-                    humidity: item.humidity,
-                    pressure: item.pressure,
-                    rain: item.rain?.["1h"] || 0,
-                    snow: item.snow?.["1h"] || 0,
+            const conditionMessage =
+                getConditionMessage(
                     condition,
-                    cautions,
-                };
-            });
+                );
+
+            console.log(
+                "次の柴んぽ weather:",
+                item.weather,
+            );
+
+            const cautions =
+                getRainSnowCaution(item);
+
+            return {
+                time: new Date(item.dt * 1000),
+                temp: item.temp,
+                humidity: item.humidity,
+                pressure: item.pressure,
+                rain: item.rain?.["1h"] || 0,
+                snow: item.snow?.["1h"] || 0,
+                condition,
+                conditionMessage,
+                weatherDescription:
+                    item.weather?.[0]?.description || "",
+                cautions,
+            };
+        });
 
         console.log(
             "🌡️ 次のお散歩の気温・湿度判定:",
@@ -1420,8 +1433,17 @@ async function loadPressureChange() {
         ).textContent =
             nextWalkCondition.condition;
 
+        document.getElementById(
+            "nextWalkWeatherDescription",
+        ).textContent =
+            nextWalkCondition.weatherDescription;
 
+        document.getElementById(
+            "nextWalkConditionMessage",
+        ).textContent =
+            nextWalkCondition.conditionMessage;
 
+            
         // --------------------------------
         // 次のお散歩の代表値
         // --------------------------------
@@ -1467,12 +1489,71 @@ async function loadPressureChange() {
         );
 
         document.getElementById(
-            "nextWalkWeatherSummary",
+            "nextWalkMaxTemp",
         ).textContent =
-            `🌡️ ${nextWalkMaxTemp.toFixed(1)}℃ / ` +
-            `💧 湿度 ${nextWalkMaxHumidity}% / ` +
-            `🌧️ 雨 ${nextWalkMaxRain.toFixed(1)}mm/h / ` +
-            `💨 風 ${nextWalkMaxWind.toFixed(1)}m/s`;
+            `${Math.round(nextWalkMaxTemp)}℃`
+
+        document.getElementById(
+            "nextWalkMaxHumidity",
+        ).textContent =
+            `${nextWalkMaxHumidity}%`;
+
+        
+        // --------------------------------
+        // 次のお散歩時間帯の３時間天気
+        // --------------------------------
+
+        document.getElementById(
+            "nextWalkHourlyWeather",
+        ).innerHTML =
+            nextWalkWeather
+                .map((item) => {
+
+                    const time =
+                        new Date(item.dt * 1000);
+
+                    const hour =
+                        time.getHours();
+
+                    const rain =
+                        item.rain?.["1h"] || 0;
+
+                    const pop =
+                        item.pop !== undefined
+                            ? Math.round(item.pop * 100)
+                            : 0;
+
+                    const wind =
+                        item.wind_speed || 0;
+
+                    const pressure =
+                        item.pressure || 0;
+
+                    return `
+                        <div class="walk-hour">
+                            <div class="walk-hour-time">
+                                ${hour}:00
+                            </div>
+
+                            <div>
+                                🌧️ ${rain.toFixed(1)}mm
+                            </div>
+
+                            <div>
+                                ${pop}%
+                            </div>
+
+                            <div>
+                                💨 ${wind.toFixed(1)}m/s
+                            </div>
+
+                            <div>
+                                🌀 ${pressure}hPa
+                            </div>
+                        </div>
+                    `;
+                })
+                .join("");
 
 
 
@@ -1682,32 +1763,6 @@ async function loadPressureChange() {
         // 次の次のお散歩 タイトル・時間帯
         // --------------------------------
 
-        const nextNextWalkStart =
-            schedules.nextNextWalk.start;
-
-        const nextNextWalkEnd =
-            schedules.nextNextWalk.end;
-
-        document.getElementById(
-            "nextNextWalkTitle",
-        ).textContent =
-            schedules.nextNextWalk.label;
-
-        document.getElementById(
-            "nextNextWalkTime",
-        ).textContent =
-            `${nextNextWalkStart.getDate() === new Date().getDate()
-                ? "今日"
-                : "明日"} ` +
-            `${nextNextWalkStart.getHours()
-                .toString()
-                .padStart(2, "0")}:00〜` +
-            `${nextNextWalkEnd.getHours()
-                .toString()
-                .padStart(2, "0")}:00`;
-
-
-
         const nextNextWalkWeather =
             getWalkWeatherData(
                 hourly,
@@ -1740,6 +1795,11 @@ async function loadPressureChange() {
                         item,
                     );
 
+                const conditionMessage =
+                    getConditionMessage(
+                        condition,
+                    );
+
                 const cautions =
                     getRainSnowCaution(item);
 
@@ -1751,6 +1811,9 @@ async function loadPressureChange() {
                     rain: item.rain?.["1h"] || 0,
                     snow: item.snow?.["1h"] || 0,
                     condition,
+                    conditionMessage,
+                    weatherDescription:
+                        item.weather?.[0]?.description || "",
                     cautions,
                 };
             });
@@ -1774,6 +1837,17 @@ async function loadPressureChange() {
             "nextNextWalkCondition",
         ).textContent =
             nextNextWalkCondition.condition;
+
+        document.getElementById(
+            "nextNextWalkWeatherDescription",
+        ).textContent =
+            nextNextWalkCondition.weatherDescription;
+
+        document.getElementById(
+            "nextNextWalkConditionMessage",
+        ).textContent =
+            nextNextWalkCondition.conditionMessage;
+
 
         // --------------------------------
         // 次の次のお散歩の代表値
@@ -1823,12 +1897,68 @@ async function loadPressureChange() {
         );
 
         document.getElementById(
-            "nextNextWalkWeatherSummary",
+            "nextNextWalkMaxTemp",
         ).textContent =
-            `🌡️ ${nextNextWalkMaxTemp.toFixed(1)}℃ / ` +
-            `💧 湿度 ${nextNextWalkMaxHumidity}% / ` +
-            `🌧️ 雨 ${nextNextWalkMaxRain.toFixed(1)}mm/h / ` +
-            `💨 風 ${nextNextWalkMaxWind.toFixed(1)}m/s`;
+            `${Math.round(nextNextWalkMaxTemp)}℃`;
+
+        document.getElementById(
+            "nextNextWalkMaxHumidity",
+        ).textContent =
+            `${nextNextWalkMaxHumidity}%`;
+
+        document.getElementById(
+            "nextNextWalkHourlyWeather",
+        ).innerHTML =
+            nextNextWalkWeather
+                .map((item) => {
+
+                    const time =
+                        new Date(item.dt * 1000);
+
+                    const hour =
+                        time.getHours();
+
+                    const rain =
+                        item.rain?.["1h"] || 0;
+
+                    const pop =
+                        item.pop !== undefined
+                            ? Math.round(item.pop * 100)
+                            : 0;
+
+                    const wind =
+                        item.wind_speed || 0;
+
+                    const pressure =
+                        item.pressure || 0;
+
+                    return `
+                        <div class="walk-hour">
+
+                            <div class="walk-hour-time">
+                                ${hour}:00
+                            </div>
+
+                            <div>
+                                🌧️ ${rain.toFixed(1)}mm
+                            </div>
+
+                            <div>
+                                ${pop}%
+                            </div>
+
+                            <div>
+                                💨 ${wind.toFixed(1)}m/s
+                            </div>
+
+                            <div>
+                                🌀 ${pressure}hPa
+                            </div>
+
+                        </div>
+                    `;
+                })
+                .join("");
 
         console.log(
             "Cloud Functions経由で天気データ取得成功！",
