@@ -579,7 +579,7 @@ h2 {
 
 #currentWeather {
     margin: 0;
-    font-size: 20px;
+    font-size: 24px;
     font-weight: normal;
     line-height: 1.8;
 }
@@ -603,7 +603,7 @@ h2 {
 }
 
 #currentWeatherDescription {
-    font-size: 20px;
+    font-size: 22px;
     font-weight: bold;
     margin-bottom: 8px;
 }
@@ -622,7 +622,7 @@ h2 {
 }
 
 .current-weather-details span {
-    font-size: 15px;
+    font-size: 18px;
     line-height: 1.5;
 }
 

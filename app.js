@@ -309,7 +309,7 @@ function getRainSnowCaution(item) {
     if (snow >= 3) {
         cautions.push({
             icon: "❄️",
-            message: "強い雪・足元注意",
+            message: "足元注意",
             value: `${snow.toFixed(1)} mm/h`,
         });
     } else if (snow >= 1) {
@@ -321,7 +321,7 @@ function getRainSnowCaution(item) {
     } else if (snow > 0) {
         cautions.push({
             icon: "❄️",
-            message: "雪が降ってます",
+            message: "雪が降る",
             value: `${snow.toFixed(1)} mm/h`,
         });
     }
@@ -336,7 +336,7 @@ function getRainSnowCaution(item) {
     } else if (rain > 0) {
         cautions.push({
             icon: "🌧️",
-            message: "雨が降ってます",
+            message: "雨が降る",
             value: `${rain.toFixed(1)} mm/h`,
         });
     }
@@ -377,7 +377,7 @@ function getWalkRainSnowCautions(walkWeather) {
     } else if (maxRain > 0) {
         cautions.push({
             icon: "🌧️",
-            message: "雨の時間帯あり",
+            message: "雨の時間あり",
             value: `${maxRain.toFixed(1)} mm/h`,
         });
     }
@@ -386,13 +386,13 @@ function getWalkRainSnowCautions(walkWeather) {
     if (maxSnow >= 3) {
         cautions.push({
             icon: "❄️",
-            message: "雪が強め・足元注意",
+            message: "足元注意",
             value: `${maxSnow.toFixed(1)} mm/h`,
         });
     } else if (maxSnow > 0) {
         cautions.push({
             icon: "❄️",
-            message: "雪の時間帯あり",
+            message: "雪の時間あり",
             value: `${maxSnow.toFixed(1)} mm/h`,
         });
     }
