@@ -307,28 +307,38 @@ function getRainSnowCaution(item) {
 
     // 雪
     if (snow >= 3) {
-        cautions.push(
-            "❄️ 雪が強め・足元に注意",
-        );
+        cautions.push({
+            icon: "❄️",
+            message: "雪が強め・足元に注意",
+            value: `${snow.toFixed(1)} mm/h`,
+        });
     } else if (snow >= 1) {
-        cautions.push(
-            "❄️ 雪に注意",
-        );
+        cautions.push({
+            icon: "❄️",
+            message: "雪に注意",
+            value: `${snow.toFixed(1)} mm/h`,
+        });
     } else if (snow > 0) {
-        cautions.push(
-            "❄️ 雪が降っています",
-        );
+        cautions.push({
+            icon: "❄️",
+            message: "雪が降っています",
+            value: `${snow.toFixed(1)} mm/h`,
+        });
     }
 
     // 雨
     if (rain >= 10) {
-        cautions.push(
-            "🌧️ 雨が強めです",
-        );
+        cautions.push({
+            icon: "🌧️",
+            message: "雨が強めです",
+            value: `${rain.toFixed(1)} mm/h`,
+        });
     } else if (rain > 0) {
-        cautions.push(
-            "🌧️ 雨が降っています",
-        );
+        cautions.push({
+            icon: "🌧️",
+            message: "雨が降っています",
+            value: `${rain.toFixed(1)} mm/h`,
+        });
     }
 
     return cautions;
@@ -341,38 +351,50 @@ function getRainSnowCaution(item) {
 function getWalkRainSnowCautions(walkWeather) {
     const cautions = [];
 
-    const hasRain =
-        walkWeather.some((item) => {
-            return (item.rain?.["1h"] || 0) > 0;
-        });
+    const maxRain =
+        Math.max(
+            ...walkWeather.map((item) => {
+                return item.rain?.["1h"] || 0;
+            }),
+            0,
+        );
 
-    const hasHeavyRain =
-        walkWeather.some((item) => {
-            return (item.rain?.["1h"] || 0) >= 10;
-        });
+    const maxSnow =
+        Math.max(
+            ...walkWeather.map((item) => {
+                return item.snow?.["1h"] || 0;
+            }),
+            0,
+        );
 
-    const hasSnow =
-        walkWeather.some((item) => {
-            return (item.snow?.["1h"] || 0) > 0;
+    // 雨
+    if (maxRain >= 10) {
+        cautions.push({
+            icon: "🌧️",
+            message: "雨が強めです",
+            value: `${maxRain.toFixed(1)} mm/h`,
         });
-
-    const hasHeavySnow =
-        walkWeather.some((item) => {
-            return (item.snow?.["1h"] || 0) >= 3;
+    } else if (maxRain > 0) {
+        cautions.push({
+            icon: "🌧️",
+            message: "雨が降る時間帯があります",
+            value: `${maxRain.toFixed(1)} mm/h`,
         });
-
-    if (hasHeavyRain) {
-        cautions.push("🌧️ 雨が強めです");
-    } else if (hasRain) {
-        cautions.push("🌧️ 雨が降る時間帯があります");
     }
 
-    if (hasHeavySnow) {
-        cautions.push(
-            "❄️ 雪が強め・足元に注意",
-        );
-    } else if (hasSnow) {
-        cautions.push("❄️ 雪が降る時間帯があります");
+    // 雪
+    if (maxSnow >= 3) {
+        cautions.push({
+            icon: "❄️",
+            message: "雪が強め・足元に注意",
+            value: `${maxSnow.toFixed(1)} mm/h`,
+        });
+    } else if (maxSnow > 0) {
+        cautions.push({
+            icon: "❄️",
+            message: "雪が降る時間帯があります",
+            value: `${maxSnow.toFixed(1)} mm/h`,
+        });
     }
 
     return cautions;
@@ -386,11 +408,19 @@ function getHumidityCaution(item) {
     const humidity = item.humidity;
 
     if (item.temp <= 15 && humidity < 40) {
-        return `💧 乾燥に注意（湿度${humidity}%）`;
+        return {
+            icon: "💧",
+            message: "乾燥に注意",
+            value: `${humidity}%`,
+        };
     }
 
     if (item.temp >= 21 && humidity >= 60) {
-        return `💧 湿度が高め（湿度${humidity}%）`;
+        return {
+            icon: "💧",
+            message: "湿度が高め",
+            value: `${humidity}%`,
+        };
     }
 
     return null;
@@ -401,22 +431,45 @@ function getHumidityCaution(item) {
  * 複数時間の湿度注意をまとめます。
  */
 function getWalkHumidityCautions(walkWeather) {
-    const cautions = [];
-
     const humidityCautions =
-        walkWeather.map((item) => {
-            return getHumidityCaution(item);
+        walkWeather
+            .map((item) => {
+                return getHumidityCaution(item);
+            })
+            .filter(Boolean);
+
+    if (humidityCautions.length === 0) {
+        return [];
+    }
+
+    // 乾燥に注意する時間があれば表示
+    const dryCaution =
+        humidityCautions.find((caution) => {
+            return caution.message === "乾燥に注意";
         });
 
-    if (humidityCautions.includes("💧 乾燥に注意")) {
-        cautions.push("💧 乾燥に注意");
+    if (dryCaution) {
+        return [dryCaution];
     }
 
-    if (humidityCautions.includes("💧 湿度が高め")) {
-        cautions.push("💧 湿度が高め");
-    }
+    // 湿度が高めの場合は、最も湿度が高いものを表示
+    const highHumidityCaution =
+        humidityCautions.reduce(
+            (highest, current) => {
 
-    return cautions;
+                const highestValue =
+                    parseFloat(highest.value);
+
+                const currentValue =
+                    parseFloat(current.value);
+
+                return currentValue > highestValue
+                    ? current
+                    : highest;
+            },
+        );
+
+    return [highHumidityCaution];
 }
 
 
@@ -427,11 +480,19 @@ function getWindCaution(item) {
     const windSpeed = item.wind_speed || 0;
 
     if (windSpeed >= 8) {
-        return "💨 強風に注意";
+        return {
+            icon: "💨",
+            message: "強風に注意",
+            value: `${windSpeed.toFixed(1)} m/s`,
+        };
     }
 
     if (windSpeed >= 5) {
-        return "💨 風が強め";
+        return {
+            icon: "💨",
+            message: "風が強め",
+            value: `${windSpeed.toFixed(1)} m/s`,
+        };
     }
 
     return null;
@@ -442,22 +503,42 @@ function getWindCaution(item) {
  * 複数時間の風の注意をまとめます。
  */
 function getWalkWindCautions(walkWeather) {
-    const cautions = [];
-
     const windCautions =
-        walkWeather.map((item) => {
-            return getWindCaution(item);
-        });
+        walkWeather
+            .map((item) => {
+                return getWindCaution(item);
+            })
+            .filter(Boolean);
 
-    if (windCautions.includes("💨 強風に注意")) {
-        cautions.push("💨 強風に注意");
-    } else if (
-        windCautions.includes("💨 風が強め")
-    ) {
-        cautions.push("💨 風が強め");
+    if (windCautions.length === 0) {
+        return [];
     }
 
-    return cautions;
+    // 強風が1時間でもあれば、強風を優先
+    const strongWind =
+        windCautions.find((caution) => {
+            return caution.message === "強風に注意";
+        });
+
+    if (strongWind) {
+        return [strongWind];
+    }
+
+    // それ以外は最も風速が大きいものを表示
+    const strongestWind =
+        windCautions.reduce((strongest, current) => {
+            const strongestValue =
+                parseFloat(strongest.value);
+
+            const currentValue =
+                parseFloat(current.value);
+
+            return currentValue > strongestValue
+                ? current
+                : strongest;
+        });
+
+    return [strongestWind];
 }
 
 
@@ -468,15 +549,27 @@ function getPressureCaution(change) {
     const decrease = Math.max(0, -change);
 
     if (decrease >= 9) {
-        return "🌀 気圧がかなり変化しています";
+        return {
+            icon: "🌀",
+            message: "気圧がかなり変化しています",
+            value: `${change.toFixed(1)} hPa`,
+        };
     }
 
     if (decrease >= 4) {
-        return "🌀 気圧が大きく変化しています";
+        return {
+            icon: "🌀",
+            message: "気圧が大きく変化しています",
+            value: `${change.toFixed(1)} hPa`,
+        };
     }
 
     if (decrease >= 2) {
-        return "🌀 気圧が変化しています";
+        return {
+            icon: "🌀",
+            message: "気圧が変化しています",
+            value: `${change.toFixed(1)} hPa`,
+        };
     }
 
     return null;
@@ -1341,12 +1434,33 @@ async function loadPressureChange() {
             if (
                 currentWeatherCautions.length > 0
             ) {
-                currentWeatherCautionsElement.innerHTML =
-                    currentWeatherCautions
-                        .map((caution) => {
-                            return `<p>${caution}</p>`;
-                        })
-                        .join("");
+                currentWeatherCautionsElement.innerHTML = `
+                    <div class="caution-cards">
+
+                        ${currentWeatherCautions
+                            .map((caution) => {
+                                return `
+                                    <div class="caution-card">
+
+                                        <div class="caution-icon">
+                                            ${caution.icon}
+                                        </div>
+
+                                        <div class="caution-message">
+                                            ${caution.message}
+                                        </div>
+
+                                        <div class="caution-value">
+                                            (${caution.value})
+                                        </div>
+
+                                    </div>
+                                `;
+                            })
+                            .join("")}
+
+                    </div>
+                `;
             } else {
                 currentWeatherCautionsElement.innerHTML =
                     "<p>🐕 今のところ特に注意することはなさそうです</p>";
@@ -1595,7 +1709,7 @@ async function loadPressureChange() {
 
                                 <div class="walk-hour-data">
 
-                                    <div>
+                                    <div class="walk-hour-pop">
                                         ☂️ ${pop}%
                                     </div>
 
@@ -1634,29 +1748,6 @@ async function loadPressureChange() {
             </div>
         `;
 
-        document
-            .querySelectorAll(".walk-hour-card")
-            .forEach((card) => {
-
-                card.addEventListener("click", () => {
-
-                    const isOpen =
-                        card.classList.contains("open");
-
-                    document
-                        .querySelectorAll(".walk-hour-card")
-                        .forEach((targetCard) => {
-
-                            targetCard.classList.toggle(
-                                "open",
-                                !isOpen
-                            );
-
-                        });
-
-                });
-
-            });
 
         // --------------------------------
         // 次の柴んぽ処理　注意点
@@ -1720,13 +1811,45 @@ async function loadPressureChange() {
                 "nextWalkCautions",
             );
 
+
         if (nextWalkCautionsElement) {
-            nextWalkCautionsElement.innerHTML =
-                nextWalkCautions
-                    .map((caution) => {
-                        return `<p>${caution}</p>`;
-                    })
-                    .join("");
+
+            if (nextWalkCautions.length > 0) {
+
+                nextWalkCautionsElement.innerHTML = `
+                    <div class="caution-cards">
+
+                        ${nextWalkCautions
+                            .map((caution) => {
+                                return `
+                                    <div class="caution-card">
+
+                                        <div class="caution-icon">
+                                            ${caution.icon}
+                                        </div>
+
+                                        <div class="caution-message">
+                                            ${caution.message}
+                                        </div>
+
+                                        <div class="caution-value">
+                                            (${caution.value})
+                                        </div>
+
+                                    </div>
+                                `;
+                            })
+                            .join("")}
+
+                    </div>
+                `;
+
+            } else {
+
+                nextWalkCautionsElement.innerHTML =
+                    "<p>🐕 今のところ特に注意することはなさそうです</p>";
+
+            }
         }
 
 
@@ -2006,78 +2129,128 @@ async function loadPressureChange() {
         document.getElementById(
             "nextNextWalkHourlyWeather",
         ).innerHTML = `
-            <div class="walk-hourly-table">
+            <div class="walk-hourly-cards">
 
-                <div class="walk-hourly-row walk-hourly-header">
-                    <div></div>
+                ${nextNextWalkWeather
+                    .map((item) => {
 
-                    ${nextNextWalkWeather
-                        .map((item) => {
-                            const time =
-                                new Date(item.dt * 1000);
+                        const time =
+                            new Date(item.dt * 1000);
 
-                            return `<div>${time.getHours()}:00</div>`;
-                        })
-                        .join("")}
-                </div>
+                        const hour =
+                            time
+                                .getHours()
+                                .toString()
+                                .padStart(2, "0");
 
-                <div class="walk-hourly-row">
-                    <div>🌧️ 雨量</div>
+                        const temp =
+                            Math.round(item.temp);
 
-                    ${nextNextWalkWeather
-                        .map((item) => {
-                            const rain =
-                                item.rain?.["1h"] || 0;
+                        const pop =
+                            item.pop !== undefined
+                                ? Math.round(item.pop * 100)
+                                : 0;
 
-                            return `<div>${rain.toFixed(1)}mm</div>`;
-                        })
-                        .join("")}
-                </div>
+                        const humidity =
+                            item.humidity ?? 0;
 
-                <div class="walk-hourly-row">
-                    <div>☂️ 確率</div>
+                        const wind =
+                            item.wind_speed || 0;
 
-                    ${nextNextWalkWeather
-                        .map((item) => {
-                            const pop =
-                                item.pop !== undefined
-                                    ? Math.round(item.pop * 100)
-                                    : 0;
+                        const pressure =
+                            item.pressure || 0;
 
-                            return `<div>${pop}%</div>`;
-                        })
-                        .join("")}
-                </div>
+                        return `
+                            <div class="walk-hour-card">
 
-                <div class="walk-hourly-row">
-                    <div>💨 風</div>
+                                <div class="walk-hour-time">
+                                    ${hour}:00
+                                </div>
 
-                    ${nextNextWalkWeather
-                        .map((item) => {
-                            const wind =
-                                item.wind_speed || 0;
+                                <div class="walk-hour-main">
 
-                            return `<div>${wind.toFixed(1)}m/s</div>`;
-                        })
-                        .join("")}
-                </div>
+                                    <span class="walk-hour-weather-icon">
+                                        ${getWeatherIcon(item)}
+                                    </span>
 
-                <div class="walk-hourly-row">
-                    <div>🌀 気圧</div>
+                                    <span class="walk-hour-temp">
+                                        ${temp}℃
+                                    </span>
 
-                    ${nextNextWalkWeather
-                        .map((item) => {
-                            const pressure =
-                                item.pressure || 0;
+                                </div>
 
-                            return `<div>${pressure}hPa</div>`;
-                        })
-                        .join("")}
-                </div>
+                                <div class="walk-hour-data">
+
+                                    <div class="walk-hour-pop">
+                                        ☂️ ${pop}%
+                                    </div>
+
+                                    <div class="walk-hour-details">
+
+                                        <div>
+                                            🌧️ ${(item.rain?.["1h"] || 0).toFixed(1)}mm
+                                        </div>
+
+                                        <div>
+                                            💧 ${humidity}%
+                                        </div>
+
+                                        <div>
+                                            💨 ${wind.toFixed(1)}m/s
+                                        </div>
+
+                                        <div>
+                                            🌀 ${pressure}hPa
+                                        </div>
+
+                                    </div>
+
+                                    <div class="walk-hour-toggle">
+                                        <span>詳細</span>
+                                        <span class="walk-hour-arrow">▼</span>
+                                    </div>
+
+                                </div>
+
+                            </div>
+                        `;
+                    })
+                    .join("")}
 
             </div>
         `;
 
+        // --------------------------------
+        // 次のお散歩、次の次のお散歩　共通　詳細開閉処理
+        // --------------------------------
+        document
+            .querySelectorAll(".walk-hourly-cards")
+            .forEach((group) => {
+
+                const cards =
+                    group.querySelectorAll(".walk-hour-card");
+
+                cards.forEach((card) => {
+
+                    card.addEventListener("click", () => {
+
+                        const isOpen =
+                            card.classList.contains("open");
+
+                        cards.forEach((targetCard) => {
+
+                            targetCard.classList.toggle(
+                                "open",
+                                !isOpen
+                            );
+
+                        });
+
+                    });
+
+                });
+
+            });
         console.log(
             "Cloud Functions経由で天気データ取得成功！",
         );
@@ -2132,16 +2305,42 @@ async function loadPressureChange() {
             );
 
         if (nextNextWalkCautionsElement) {
+
             if (nextNextWalkCautions.length > 0) {
-                nextNextWalkCautionsElement.innerHTML =
-                    nextNextWalkCautions
-                        .map((caution) => {
-                            return `<p>${caution}</p>`;
-                        })
-                        .join("");
+
+                nextNextWalkCautionsElement.innerHTML = `
+                    <div class="caution-cards">
+
+                        ${nextNextWalkCautions
+                            .map((caution) => {
+                                return `
+                                    <div class="caution-card">
+
+                                        <div class="caution-icon">
+                                            ${caution.icon}
+                                        </div>
+
+                                        <div class="caution-message">
+                                            ${caution.message}
+                                        </div>
+
+                                        <div class="caution-value">
+                                            (${caution.value})
+                                        </div>
+
+                                    </div>
+                                `;
+                            })
+                            .join("")}
+
+                    </div>
+                `;
+
             } else {
+
                 nextNextWalkCautionsElement.innerHTML =
                     "<p>🐕 今のところ特に注意することはなさそうです</p>";
+
             }
         }
 

@@ -553,6 +553,52 @@ h2 {
    注意ポイントともちもの
 ============================== */
 
+.caution-cards {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    padding: 4px 2px 8px;
+    scrollbar-width: none;
+}
+
+.caution-cards::-webkit-scrollbar {
+    display: none;
+}
+
+.caution-card {
+    flex: 0 0 110px;
+    min-height: 100px;
+    padding: 10px 8px;
+    border: 1px solid #eeeeee;
+    border-radius: 12px;
+    background: #ffffff;
+    box-sizing: border-box;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.caution-icon {
+    font-size: 24px;
+    line-height: 1;
+    margin-bottom: 8px;
+}
+
+.caution-message {
+    font-size: 13px;
+    font-weight: bold;
+    line-height: 1.4;
+}
+
+.caution-value {
+    margin-top: 4px;
+    font-size: 12px;
+    color: #777777;
+}
+
 .current-weather-cautions,
 .next-walk-cautions{
     margin-top: 22px;
@@ -908,6 +954,11 @@ h2 {
 .walk-hour-data div {
     font-size: 13px;
     white-space: nowrap;
+}
+
+.walk-hour-data .walk-hour-pop {
+    font-size: 16px;
+    /* font-weight: bold; */
 }
 
 .walk-hour-details {
