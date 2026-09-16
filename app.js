@@ -671,11 +671,11 @@ function getTemperatureBelongings(walkWeather) {
 
     if (maxTemp >= 28) {
         belongings.push("💧 水");
+        belongings.push("🧢 夏帽子");
         belongings.push("🧊 ネッククーラー");
-        belongings.push("🦺 クールウェア");
     } else if (maxTemp >= 25) {
         belongings.push("💧 水");
-        belongings.push("🧊 ネッククーラー");
+        belongings.push("🧢 夏帽子");
     } else if (maxTemp >= 21) {
         belongings.push("💧 水");
     }
@@ -715,7 +715,7 @@ function getColdBelongings(walkWeather) {
         minTemp <= 0 &&
         maxWind >= 5
     ) {
-        belongings.push("🧢 帽子");
+        belongings.push("🧢 防寒帽");
     }
 
     return belongings;
@@ -1941,6 +1941,8 @@ async function loadPressureChange() {
             nextWalkSnowBelongings,
         );
 
+
+
         const nextWalkBelongings = [
             ...nextWalkRainBelongings,
             ...nextWalkTemperatureBelongings,
@@ -1957,22 +1959,61 @@ async function loadPressureChange() {
             nextWalkBelongings,
         );
 
+
+        const belongingIcons = {
+            "☂️ 傘": "./images/belongings/umbrella_1.png",
+            "☂️ 折りたたみ傘": "./images/belongings/umbrella_2.png",
+            "🧻 タオル": "./images/belongings/towel.png",
+            "🥾 長靴": "./images/belongings/boots.png",
+            "🔥 ホッカイロ": "./images/belongings/hot.png",
+            "🧤 手袋": "./images/belongings/hand.png",
+            "🧣 マフラー": "./images/belongings/muffler.png",
+            "🧢 防寒帽": "./images/belongings/cap.png",
+            "💧 水": "./images/belongings/water.png",
+            "🧊 ネッククーラー": "./images/belongings/neckcooler.png",
+            "🧢 夏帽子": "./images/belongings/hat.png",
+            "🔦 ライト": "./images/belongings/light.png",
+        };
+
         const nextWalkBelongingsElement =
             document.getElementById(
                 "nextWalkBelongings",
             );
 
         if (nextWalkBelongingsElement) {
+
             if (nextWalkBelongings.length > 0) {
-                nextWalkBelongingsElement.innerHTML =
-                    nextWalkBelongings
-                        .map((item) => {
-                            return `<p>${item}</p>`;
-                        })
-                        .join("");
+
+                nextWalkBelongingsElement.innerHTML = `
+                    <div class="belonging-cards">
+
+                        ${nextWalkBelongings
+                            .map((item) => {
+
+                                const icon =
+                                    belongingIcons[item];
+
+                                return `
+                                    <div class="belonging-card">
+
+                                        <img
+                                            src="${icon}"
+                                            alt="${item}"
+                                        >
+
+                                    </div>
+                                `;
+                            })
+                            .join("")}
+
+                    </div>
+                `;
+
             } else {
+
                 nextWalkBelongingsElement.innerHTML =
                     "<p>🎒 いつもの柴んぽグッズでOK！</p>";
+
             }
         }
 
@@ -2422,16 +2463,39 @@ async function loadPressureChange() {
             );
 
         if (nextNextWalkBelongingsElement) {
+
             if (nextNextWalkBelongings.length > 0) {
-                nextNextWalkBelongingsElement.innerHTML =
-                    nextNextWalkBelongings
-                        .map((item) => {
-                            return `<p>${item}</p>`;
-                        })
-                        .join("");
+
+                nextNextWalkBelongingsElement.innerHTML = `
+                    <div class="belonging-cards">
+
+                        ${nextNextWalkBelongings
+                            .map((item) => {
+
+                                const icon =
+                                    belongingIcons[item];
+
+                                return `
+                                    <div class="belonging-card">
+
+                                        <img
+                                            src="${icon}"
+                                            alt="${item}"
+                                        >
+
+                                    </div>
+                                `;
+                            })
+                            .join("")}
+
+                    </div>
+                `;
+
             } else {
+
                 nextNextWalkBelongingsElement.innerHTML =
                     "<p>🎒 いつもの柴んぽグッズでOK！</p>";
+
             }
         }
 
