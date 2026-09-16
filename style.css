@@ -553,6 +553,11 @@ h2 {
    注意ポイント
 ============================== */
 
+.caution-text {
+    flex: 1;
+    min-width: 0;
+}
+
 .caution-cards {
     display: flex;
     gap: 10px;
@@ -566,25 +571,23 @@ h2 {
 }
 
 .caution-card {
-    flex: 0 0 110px;
-    min-height: 100px;
-    padding: 10px 8px;
+    flex: 0 0 180px;
+    min-height: 70px;
+    padding: 10px 12px;
     border: 1px solid #eeeeee;
     border-radius: 12px;
     background: #ffffff;
     box-sizing: border-box;
 
     display: flex;
-    flex-direction: column;
     align-items: center;
-    justify-content: center;
-    text-align: center;
+    gap: 10px;
 }
 
 .caution-icon {
-    font-size: 24px;
+    flex: 0 0 auto;
+    font-size: 28px;
     line-height: 1;
-    margin-bottom: 8px;
 }
 
 .caution-message {
@@ -594,7 +597,7 @@ h2 {
 }
 
 .caution-value {
-    margin-top: 4px;
+    margin-top: 3px;
     font-size: 12px;
     color: #777777;
 }

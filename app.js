@@ -309,7 +309,7 @@ function getRainSnowCaution(item) {
     if (snow >= 3) {
         cautions.push({
             icon: "❄️",
-            message: "雪が強め・足元に注意",
+            message: "強い雪・足元注意",
             value: `${snow.toFixed(1)} mm/h`,
         });
     } else if (snow >= 1) {
@@ -330,7 +330,7 @@ function getRainSnowCaution(item) {
     if (rain >= 10) {
         cautions.push({
             icon: "🌧️",
-            message: "雨が強めです",
+            message: "雨が強め",
             value: `${rain.toFixed(1)} mm/h`,
         });
     } else if (rain > 0) {
@@ -371,13 +371,13 @@ function getWalkRainSnowCautions(walkWeather) {
     if (maxRain >= 10) {
         cautions.push({
             icon: "🌧️",
-            message: "雨が強めです",
+            message: "雨が強め",
             value: `${maxRain.toFixed(1)} mm/h`,
         });
     } else if (maxRain > 0) {
         cautions.push({
             icon: "🌧️",
-            message: "雨が降る時間帯があります",
+            message: "雨の時間帯あり",
             value: `${maxRain.toFixed(1)} mm/h`,
         });
     }
@@ -386,13 +386,13 @@ function getWalkRainSnowCautions(walkWeather) {
     if (maxSnow >= 3) {
         cautions.push({
             icon: "❄️",
-            message: "雪が強め・足元に注意",
+            message: "雪が強め・足元注意",
             value: `${maxSnow.toFixed(1)} mm/h`,
         });
     } else if (maxSnow > 0) {
         cautions.push({
             icon: "❄️",
-            message: "雪が降る時間帯があります",
+            message: "雪の時間帯あり",
             value: `${maxSnow.toFixed(1)} mm/h`,
         });
     }
@@ -551,7 +551,7 @@ function getPressureCaution(change) {
     if (decrease >= 9) {
         return {
             icon: "🌀",
-            message: "気圧がかなり変化しています",
+            message: "気圧がかなり変化",
             value: `${change.toFixed(1)} hPa`,
         };
     }
@@ -559,7 +559,7 @@ function getPressureCaution(change) {
     if (decrease >= 4) {
         return {
             icon: "🌀",
-            message: "気圧が大きく変化しています",
+            message: "気圧が大きく変化",
             value: `${change.toFixed(1)} hPa`,
         };
     }
@@ -567,7 +567,7 @@ function getPressureCaution(change) {
     if (decrease >= 2) {
         return {
             icon: "🌀",
-            message: "気圧が変化しています",
+            message: "気圧変化あり",
             value: `${change.toFixed(1)} hPa`,
         };
     }
@@ -1446,12 +1446,16 @@ async function loadPressureChange() {
                                             ${caution.icon}
                                         </div>
 
-                                        <div class="caution-message">
-                                            ${caution.message}
-                                        </div>
+                                        <div class="caution-text">
 
-                                        <div class="caution-value">
-                                            (${caution.value})
+                                            <div class="caution-message">
+                                                ${caution.message}
+                                            </div>
+
+                                            <div class="caution-value">
+                                                (${caution.value})
+                                            </div>
+
                                         </div>
 
                                     </div>
@@ -1828,12 +1832,16 @@ async function loadPressureChange() {
                                             ${caution.icon}
                                         </div>
 
-                                        <div class="caution-message">
-                                            ${caution.message}
-                                        </div>
+                                        <div class="caution-text">
 
-                                        <div class="caution-value">
-                                            (${caution.value})
+                                            <div class="caution-message">
+                                                ${caution.message}
+                                            </div>
+
+                                            <div class="caution-value">
+                                                (${caution.value})
+                                            </div>
+
                                         </div>
 
                                     </div>
@@ -2361,12 +2369,16 @@ async function loadPressureChange() {
                                             ${caution.icon}
                                         </div>
 
-                                        <div class="caution-message">
-                                            ${caution.message}
-                                        </div>
+                                        <div class="caution-text">
 
-                                        <div class="caution-value">
-                                            (${caution.value})
+                                            <div class="caution-message">
+                                                ${caution.message}
+                                            </div>
+
+                                            <div class="caution-value">
+                                                (${caution.value})
+                                            </div>
+
                                         </div>
 
                                     </div>
