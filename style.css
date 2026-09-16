@@ -447,6 +447,95 @@ h2 {
     font-weight: normal;
 }
 
+
+.future-weather-cards {
+    display: flex;
+    gap: 6px;
+    overflow-x: auto;
+    padding: 4px 2px 8px;
+    scrollbar-width: none;
+}
+
+.future-weather-cards::-webkit-scrollbar {
+    display: none;
+}
+
+.future-weather-card {
+    flex: 0 0 62px;
+    width: 62px;
+    padding: 7px 4px;
+    border: 1px solid #eeeeee;
+    border-radius: 10px;
+    background: #ffffff;
+    box-sizing: border-box;
+    text-align: center;
+}
+
+.future-weather-time {
+    font-size: 12px;
+    font-weight: bold;
+    margin-bottom: 4px;
+}
+
+.future-weather-main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+}
+
+.future-weather-icon {
+    font-size: 22px;
+    line-height: 1;
+}
+
+.future-weather-temp {
+    font-size: 14px;
+    font-weight: bold;
+    color: #1684c7;
+}
+
+.future-weather-pop {
+    margin-top: 4px;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.future-weather-details {
+    display: none;
+    flex-direction: column;
+    gap: 2px;
+    margin-top: 5px;
+}
+
+.future-weather-card.open .future-weather-details {
+    display: flex;
+}
+
+.future-weather-details div {
+    font-size: 11px;
+    white-space: nowrap;
+}
+
+.future-weather-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    margin-top: 4px;
+    font-size: 10px;
+    color: #777777;
+    cursor: pointer;
+}
+
+.future-weather-arrow {
+    font-size: 8px;
+}
+
+.future-weather-card.open .future-weather-arrow {
+    transform: rotate(180deg);
+}
+
 /* ==============================
    このあとの天気 見出し
 ============================== */

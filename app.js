@@ -1159,7 +1159,7 @@ async function loadPressureChange() {
                     const rain =
                         item.rain?.["1h"] || 0;
 
-                    return `${rain.toFixed(1)}mm/h`;
+                    return `${rain.toFixed(1)}mm`;
                 });
 
             const rainProbabilities =
@@ -1182,85 +1182,115 @@ async function loadPressureChange() {
 
             const pressures =
                 futureWeather.map((item) =>
-                    `${item.pressure}hPa`
+                    `${item.pressure}`
                 );
 
             
             futureWeatherElement.innerHTML = `
-                <div class="future-weather-table-wrapper">
+                <div class="future-weather-cards">
 
-                    <div class="future-weather-table">
+                    ${times
+                        .map((time, index) => {
 
-                        <div class="future-weather-row future-weather-header">
-                            <div></div>
+                            const temperature =
+                                temperatures[index];
 
-                            ${times
-                                .map((time) =>
-                                    `<div>${time}</div>`
-                                )
-                                .join("")}
+                            const rain =
+                                rains[index];
 
-                        </div>
+                            const rainProbability =
+                                rainProbabilities[index];
 
-                        <div class="future-weather-row">
-                            <div>🌡️ 気温</div>
+                            const wind =
+                                winds[index];
 
-                            ${temperatures
-                                .map((value) =>
-                                    `<div>${value}</div>`
-                                )
-                                .join("")}
+                            const pressure =
+                                pressures[index];
 
-                        </div>
+                            const weatherItem =
+                                futureWeather[index];
 
-                        <div class="future-weather-row">
-                            <div>🌧️ 雨量</div>
+                            return `
+                                <div class="future-weather-card">
 
-                            ${rains
-                                .map((value) =>
-                                    `<div>${value}</div>`
-                                )
-                                .join("")}
+                                    <div class="future-weather-time">
+                                        ${time.split(":")[0]}
+                                    </div>
 
-                        </div>
+                                    <div class="future-weather-main">
+                                        <span class="future-weather-icon">
+                                            ${getWeatherIcon(weatherItem)}
+                                        </span>
 
-                        <div class="future-weather-row">
-                            <div>☂️ 確率</div>
+                                        <span class="future-weather-temp">
+                                            ${temperature}
+                                        </span>
+                                    </div>
 
-                            ${rainProbabilities
-                                .map((value) =>
-                                    `<div>${value}</div>`
-                                )
-                                .join("")}
+                                    <div class="future-weather-pop">
+                                        ☂️ ${rainProbability}
+                                    </div>
 
-                        </div>
+                                    <div class="future-weather-details">
 
-                        <div class="future-weather-row">
-                            <div>💨 風</div>
+                                        <div>
+                                            🌧️ ${rain}
+                                        </div>
 
-                            ${winds
-                                .map((value) =>
-                                    `<div>${value}</div>`
-                                )
-                                .join("")}
+                                        <div>
+                                            💨 ${wind}
+                                        </div>
 
-                        </div>
+                                        <div>
+                                            🌀 ${pressure}
+                                        </div>
 
-                        <div class="future-weather-row">
-                            <div>🌀 気圧</div>
+                                    </div>
 
-                            ${pressures
-                                .map((value) =>
-                                    `<div>${value}</div>`
-                                )
-                                .join("")}
+                                    <div class="future-weather-toggle">
+                                        <span>詳細</span>
+                                        <span class="future-weather-arrow">▼</span>
+                                    </div>
 
-                        </div>
-
-                    </div>
+                                </div>
+                            `;
+                        })
+                        .join("")}
 
                 </div>
             `;
+
+
+            document
+                .querySelectorAll(".future-weather-cards")
+                .forEach((group) => {
+
+                    const cards =
+                        group.querySelectorAll(
+                            ".future-weather-card",
+                        );
+
+                    cards.forEach((card) => {
+
+                        card.addEventListener("click", () => {
+
+                            const isOpen =
+                                card.classList.contains("open");
+
+                            cards.forEach((targetCard) => {
+
+                                targetCard.classList.toggle(
+                                    "open",
+                                    !isOpen,
+                                );
+
+                            });
+
+                        });
+
+                    });
+
+                });
 
         }
 
@@ -1276,7 +1306,7 @@ async function loadPressureChange() {
 
         if (currentRain > 0) {
             currentRainText =
-                `🌧️ 雨 ${currentRain.toFixed(1)}mm/h`;
+                `🌧️ 雨 ${currentRain.toFixed(1)}mm`;
         } else {
             currentRainText =
                 "🌤️ 雨なし";
@@ -1467,7 +1497,7 @@ async function loadPressureChange() {
                 `;
             } else {
                 currentWeatherCautionsElement.innerHTML =
-                    "<p>🐕 今のところ特に注意することはなさそうです</p>";
+                    "<p>今のところ注意することはなさそうです</p>";
             }
         }
 
@@ -1855,7 +1885,7 @@ async function loadPressureChange() {
             } else {
 
                 nextWalkCautionsElement.innerHTML =
-                    "<p>🐕 今のところ特に注意することはなさそうです</p>";
+                    "<p>今のところ注意することはなさそうです</p>";
 
             }
         }
@@ -2392,7 +2422,7 @@ async function loadPressureChange() {
             } else {
 
                 nextNextWalkCautionsElement.innerHTML =
-                    "<p>🐕 今のところ特に注意することはなさそうです</p>";
+                    "<p>今のところ注意することはなさそうです</p>";
 
             }
         }
