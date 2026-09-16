@@ -856,6 +856,62 @@ h2 {
     margin-bottom: 4px;
 }
 
+/* ==============================
+   ３時間天気カード
+============================== */
+
+.walk-hour-main {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    margin-bottom: 8px;
+}
+
+.walk-hour-weather-icon {
+    font-size: 20px;
+    margin-bottom: 0;
+}
+
+.walk-hour-temp {
+    font-size: 20px;
+    font-weight: bold;
+    color: #1684c7;
+    margin-bottom: 0;
+}
+
+.walk-hour-data {
+    gap: 4px;
+}
+
+.walk-hourly-cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+}
+
+.walk-hour-card {
+    padding: 12px 8px;
+    border: 1px solid #eeeeee;
+    border-radius: 12px;
+    background: #ffffff;
+    text-align: center;
+    box-sizing: border-box;
+}
+
+.walk-hour-data {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.walk-hour-data div {
+    font-size: 13px;
+    white-space: nowrap;
+}
+
+
+
 
 /* ==============================
    設定画面切り替え

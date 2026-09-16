@@ -154,6 +154,53 @@ function judgeTemperatureCondition(temp, humidity) {
 
 
 /**
+ * 天気に応じたアイコン
+ */
+function getWeatherIcon(item) {
+
+    const weatherId =
+        item.weather?.[0]?.id || 800;
+
+    if (weatherId >= 200 && weatherId < 300) {
+        return "⛈️";
+    }
+
+    if (weatherId >= 300 && weatherId < 400) {
+        return "🌦️";
+    }
+
+    if (weatherId >= 500 && weatherId < 600) {
+        return "🌧️";
+    }
+
+    if (weatherId >= 600 && weatherId < 700) {
+        return "❄️";
+    }
+
+    if (weatherId >= 700 && weatherId < 800) {
+        return "🌫️";
+    }
+
+    if (weatherId === 800) {
+        return "☀️";
+    }
+
+    if (weatherId === 801) {
+        return "🌤️";
+    }
+
+    if (weatherId === 802) {
+        return "⛅";
+    }
+
+    if (weatherId === 803 || weatherId === 804) {
+        return "☁️";
+    }
+
+    return "🌤️";
+}
+
+/**
  * コンディションに応じたメッセージを取得します。
  */
 function getConditionMessage(condition) {
@@ -1498,69 +1545,83 @@ async function loadPressureChange() {
         document.getElementById(
             "nextWalkHourlyWeather",
         ).innerHTML = `
-            <div class="walk-hourly-table">
+            <div class="walk-hourly-cards">
 
-                <div class="walk-hourly-row walk-hourly-header">
-                    <div></div>
-                    ${nextWalkWeather
-                        .map((item) => {
-                            const time =
-                                new Date(item.dt * 1000);
-                            return `<div>${time.getHours()}:00</div>`;
-                        })
-                        .join("")}
-                </div>
+                ${nextWalkWeather
+                    .map((item) => {
 
-                <div class="walk-hourly-row">
-                    <div>🌧️ 雨量</div>
-                    ${nextWalkWeather
-                        .map((item) => {
-                            const rain =
-                                item.rain?.["1h"] || 0;
-                            return `<div>${rain.toFixed(1)}mm</div>`;
-                        })
-                        .join("")}
-                </div>
+                        const time =
+                            new Date(item.dt * 1000);
 
-                <div class="walk-hourly-row">
-                    <div>☂️ 確率</div>
-                    ${nextWalkWeather
-                        .map((item) => {
-                            const pop =
-                                item.pop !== undefined
-                                    ? Math.round(item.pop * 100)
-                                    : 0;
-                            return `<div>${pop}%</div>`;
-                        })
-                        .join("")}
-                </div>
+                        const hour =
+                            time
+                                .getHours()
+                                .toString()
+                                .padStart(2, "0");
 
-                <div class="walk-hourly-row">
-                    <div>💨 風</div>
-                    ${nextWalkWeather
-                        .map((item) => {
-                            const wind =
-                                item.wind_speed || 0;
-                            return `<div>${wind.toFixed(1)}m/s</div>`;
-                        })
-                        .join("")}
-                </div>
+                        const temp =
+                            Math.round(item.temp);
 
-                <div class="walk-hourly-row">
-                    <div>🌀 気圧</div>
-                    ${nextWalkWeather
-                        .map((item) => {
-                            const pressure =
-                                item.pressure || 0;
-                            return `<div>${pressure}hPa</div>`;
-                        })
-                        .join("")}
-                </div>
+                        const pop =
+                            item.pop !== undefined
+                                ? Math.round(item.pop * 100)
+                                : 0;
+
+                        const humidity =
+                            item.humidity ?? 0;
+
+                        const wind =
+                            item.wind_speed || 0;
+
+                        const pressure =
+                            item.pressure || 0;
+
+                        return `
+                            <div class="walk-hour-card">
+
+                                <div class="walk-hour-time">
+                                    ${hour}:00
+                                </div>
+
+                                <div class="walk-hour-main">
+                                    <span class="walk-hour-weather-icon">
+                                        ${getWeatherIcon(item)}
+                                    </span>
+
+                                    <span class="walk-hour-temp">
+                                        ${temp}℃
+                                    </span>
+                                </div>
+
+                                <div class="walk-hour-data">
+                                    <div>
+                                        ☂️ ${pop}%
+                                    </div>
+
+                                    <div>
+                                        🌧️ ${(item.rain?.["1h"] || 0).toFixed(1)}mm
+                                    </div>
+
+                                    <div>
+                                        💧 ${humidity}%
+                                    </div>
+
+                                    <div>
+                                        💨 ${wind.toFixed(1)}
+                                    </div>
+
+                                    <div>
+                                        🌀 ${pressure}
+                                    </div>
+                                </div>
+
+                            </div>
+                        `;
+                    })
+                    .join("")}
 
             </div>
         `;
-
-
 
         // --------------------------------
         // 次の柴んぽ処理　注意点
