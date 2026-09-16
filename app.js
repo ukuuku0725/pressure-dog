@@ -321,7 +321,7 @@ function getRainSnowCaution(item) {
     } else if (snow > 0) {
         cautions.push({
             icon: "❄️",
-            message: "雪が降っています",
+            message: "雪が降ってます",
             value: `${snow.toFixed(1)} mm/h`,
         });
     }
@@ -336,7 +336,7 @@ function getRainSnowCaution(item) {
     } else if (rain > 0) {
         cautions.push({
             icon: "🌧️",
-            message: "雨が降っています",
+            message: "雨が降ってます",
             value: `${rain.toFixed(1)} mm/h`,
         });
     }
