@@ -461,8 +461,8 @@ h2 {
 }
 
 .future-weather-card {
-    flex: 0 0 62px;
-    width: 62px;
+    flex: 0 0 80px;
+    width: 80px;
     padding: 7px 4px;
     border: 1px solid #eeeeee;
     border-radius: 10px;
@@ -472,7 +472,7 @@ h2 {
 }
 
 .future-weather-time {
-    font-size: 12px;
+    font-size: 14px;
     font-weight: bold;
     margin-bottom: 4px;
 }
@@ -490,14 +490,14 @@ h2 {
 }
 
 .future-weather-temp {
-    font-size: 14px;
+    font-size: 18px;
     font-weight: bold;
     color: #1684c7;
 }
 
 .future-weather-pop {
     margin-top: 4px;
-    font-size: 12px;
+    font-size: 16px;
     font-weight: bold;
 }
 
@@ -513,7 +513,7 @@ h2 {
 }
 
 .future-weather-details div {
-    font-size: 11px;
+    font-size: 16px;
     white-space: nowrap;
 }
 
@@ -523,7 +523,7 @@ h2 {
     justify-content: center;
     gap: 2px;
     margin-top: 4px;
-    font-size: 10px;
+    font-size: 14px;
     color: #777777;
     cursor: pointer;
 }
@@ -566,7 +566,7 @@ h2 {
 
 .weather-card h2 {
     margin: 0 0 14px;
-    font-size: 21px;
+    font-size: 24px;
     font-weight: bold;
 }
 
@@ -579,7 +579,7 @@ h2 {
 
 #currentWeather {
     margin: 0;
-    font-size: 16px;
+    font-size: 20px;
     font-weight: normal;
     line-height: 1.8;
 }
@@ -603,22 +603,16 @@ h2 {
 }
 
 #currentWeatherDescription {
-    font-size: 16px;
+    font-size: 20px;
     font-weight: bold;
     margin-bottom: 8px;
 }
 
 #currentWeatherTemp {
     margin-top: 2px;
-    font-size: 32px;
+    font-size: 40px;
     font-weight: bold;
     color: #1684c7;
-}
-
-.current-weather-description {
-    margin-bottom: 12px;
-    font-size: 17px;
-    font-weight: bold;
 }
 
 .current-weather-details {
@@ -680,14 +674,14 @@ h2 {
 }
 
 .caution-message {
-    font-size: 13px;
+    font-size: 14px;
     font-weight: bold;
     line-height: 1.4;
 }
 
 .caution-value {
     margin-top: 3px;
-    font-size: 12px;
+    font-size: 14px;
     color: #777777;
 }
 
