@@ -634,9 +634,9 @@ h2 {
 }
 
 .belonging-card {
-    flex: 0 0 70px;
-    width: 70px;
-    height: 70px;
+    flex: 0 0 90px;
+    width: 90px;
+    height: 90px;
     padding: 8px;
     border: 1px solid #eeeeee;
     border-radius: 12px;
@@ -774,7 +774,7 @@ h2 {
     border: none;
     border-radius: 18px;
     background: #ffffff;
-    font-size: 16px;
+    font-size: 18px;
     font-weight: bold;
     color: #777;
     cursor: pointer;
@@ -820,7 +820,7 @@ h2 {
 
 .walk-tab-time {
     display: block;
-    font-size: 12px;
+    font-size: 14px;
     margin-top: 3px;
 }
 
