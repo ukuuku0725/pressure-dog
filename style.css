@@ -542,7 +542,7 @@ h2 {
 
 .future-weather h3 {
     margin: 0 0 12px;
-    font-size: 18px;
+    font-size: 16px;
     font-weight: bold;
 }
 
@@ -612,7 +612,6 @@ h2 {
     margin-top: 2px;
     font-size: 40px;
     font-weight: bold;
-    color: #1684c7;
 }
 
 .current-weather-details {
@@ -622,7 +621,8 @@ h2 {
 }
 
 .current-weather-details span {
-    font-size: 18px;
+    font-size: 20px;
+    font-weight: bold;
     line-height: 1.5;
 }
 
@@ -645,7 +645,7 @@ h2 {
     display: flex;
     gap: 10px;
     overflow-x: auto;
-    padding: 4px 2px 8px;
+    padding: 4px 2px 4px;
     scrollbar-width: none;
 }
 
@@ -655,8 +655,8 @@ h2 {
 
 .caution-card {
     flex: 0 0 180px;
-    min-height: 70px;
-    padding: 10px 12px;
+    min-height: 60px;
+    padding: 10px 8px;
     border: 1px solid #eeeeee;
     border-radius: 12px;
     background: #ffffff;
@@ -674,7 +674,7 @@ h2 {
 }
 
 .caution-message {
-    font-size: 14px;
+    font-size: 16px;
     font-weight: bold;
     line-height: 1.4;
 }
@@ -688,7 +688,7 @@ h2 {
 .current-weather-cautions,
 .next-walk-cautions{
     margin-top: 22px;
-    padding: 16px 18px;
+    padding: 12px 14px;
     background: #fff5f7;
     border: 2px solid #ffd6df;
     border-radius: 18px;
@@ -696,8 +696,8 @@ h2 {
 
 .current-weather-cautions h3,
 .next-walk-cautions h3 {
-    margin: 0 0 10px;
-    font-size: 18px;
+    margin: 0 0 5px;
+    font-size: 14px;
     font-weight: bold;
     color: #e85b6f;
 }
@@ -761,11 +761,11 @@ h2 {
 ============================== */
 
 .future-weather {
-    margin-top: 28px;
+    margin-top: 20px;
 }
 
 .future-weather h3 {
-    padding-top: 16px;
+    padding-top: 12px;
     border-top: 1px solid #eeeeee;
 }
 
@@ -787,7 +787,7 @@ h2 {
 }
 
 .walk-weather-details span {
-    font-size: 15px;
+    font-size: 12px;
     line-height: 1.5;
 }
 
@@ -937,7 +937,7 @@ h2 {
 .next-walk-condition
 #nextNextWalkMaxTemp {
     display: block;
-    font-size: 28px;
+    font-size: 40px;
     font-weight: bold;
     margin-bottom: 12px;
 }
