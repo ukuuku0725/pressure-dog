@@ -774,7 +774,7 @@ h2 {
     border: none;
     border-radius: 18px;
     background: #ffffff;
-    font-size: 13px;
+    font-size: 16px;
     font-weight: bold;
     color: #777;
     cursor: pointer;
@@ -820,7 +820,7 @@ h2 {
 
 .walk-tab-time {
     display: block;
-    font-size: 10px;
+    font-size: 12px;
     margin-top: 3px;
 }
 
