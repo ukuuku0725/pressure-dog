@@ -1594,25 +1594,36 @@ async function loadPressureChange() {
                                 </div>
 
                                 <div class="walk-hour-data">
+
                                     <div>
                                         ☂️ ${pop}%
                                     </div>
 
-                                    <div>
-                                        🌧️ ${(item.rain?.["1h"] || 0).toFixed(1)}mm
+                                    <div class="walk-hour-details">
+
+                                        <div>
+                                            🌧️ ${(item.rain?.["1h"] || 0).toFixed(1)}mm
+                                        </div>
+
+                                        <div>
+                                            💧 ${humidity}%
+                                        </div>
+
+                                        <div>
+                                            💨 ${wind.toFixed(1)}m/s
+                                        </div>
+
+                                        <div>
+                                            🌀 ${pressure}hPa
+                                        </div>
+
                                     </div>
 
-                                    <div>
-                                        💧 ${humidity}%
+                                    <div class="walk-hour-toggle">
+                                        <span>詳細</span>
+                                        <span class="walk-hour-arrow">▼</span>
                                     </div>
 
-                                    <div>
-                                        💨 ${wind.toFixed(1)}
-                                    </div>
-
-                                    <div>
-                                        🌀 ${pressure}
-                                    </div>
                                 </div>
 
                             </div>
@@ -1622,6 +1633,30 @@ async function loadPressureChange() {
 
             </div>
         `;
+
+        document
+            .querySelectorAll(".walk-hour-card")
+            .forEach((card) => {
+
+                card.addEventListener("click", () => {
+
+                    const isOpen =
+                        card.classList.contains("open");
+
+                    document
+                        .querySelectorAll(".walk-hour-card")
+                        .forEach((targetCard) => {
+
+                            targetCard.classList.toggle(
+                                "open",
+                                !isOpen
+                            );
+
+                        });
+
+                });
+
+            });
 
         // --------------------------------
         // 次の柴んぽ処理　注意点
