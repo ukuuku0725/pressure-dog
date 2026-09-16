@@ -622,7 +622,6 @@ h2 {
 
 .current-weather-details span {
     font-size: 20px;
-    font-weight: bold;
     line-height: 1.5;
 }
 
@@ -657,9 +656,8 @@ h2 {
     flex: 0 0 180px;
     min-height: 60px;
     padding: 10px 8px;
-    border: 1px solid #eeeeee;
     border-radius: 12px;
-    background: #ffffff;
+    background: #fffdfd;
     box-sizing: border-box;
 
     display: flex;
@@ -689,8 +687,8 @@ h2 {
 .next-walk-cautions{
     margin-top: 22px;
     padding: 12px 14px;
-    background: #fff5f7;
-    border: 2px solid #ffd6df;
+    background: #fff3f6;
+    border: 2px solid #fac2ce;
     border-radius: 18px;
 }
 
@@ -1076,13 +1074,13 @@ h2 {
 }
 
 .walk-hour-data div {
-    font-size: 13px;
+    font-size: 16px;
     white-space: nowrap;
 }
 
 .walk-hour-data .walk-hour-pop {
     font-size: 16px;
-    /* font-weight: bold; */
+    font-weight: bold;
 }
 
 .walk-hour-details {
