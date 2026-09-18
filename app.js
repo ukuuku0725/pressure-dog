@@ -400,6 +400,51 @@ function getWalkRainSnowCautions(walkWeather) {
     return cautions;
 }
 
+/**
+ * 暑さの注意を判定します。
+ */
+function getHeatCaution(item) {
+    const temp = Math.round(item.temp);
+
+    if (temp >= 25) {
+        return {
+            icon: "🌡️",
+            message: "暑さに注意",
+            value: `${temp}℃`,
+        };
+    }
+
+    return null;
+}
+
+/**
+ * 複数時間の暑さの注意をまとめます。
+ */
+function getWalkHeatCaution(walkWeather) {
+    const heatCautions = walkWeather
+        .map((item) => getHeatCaution(item))
+        .filter(Boolean);
+
+    if (heatCautions.length === 0) {
+        return [];
+    }
+
+    const hottest = heatCautions.reduce(
+        (highest, current) => {
+            const highestValue =
+                parseFloat(highest.value);
+
+            const currentValue =
+                parseFloat(current.value);
+
+            return currentValue > highestValue
+                ? current
+                : highest;
+        },
+    );
+
+    return [hottest];
+}
 
 /**
  * 湿度の注意ポイントを判定します。
@@ -623,16 +668,19 @@ function getWalkPressureCaution(
     return caution ? [caution] : [];
 }
 
+
 /**
  * 次のお散歩で気をつけたいことをまとめます。
  */
 function getWalkCautions(
+    heatCautions,
     rainSnowCautions,
     humidityCautions,
     windCautions,
     pressureCautions,
 ) {
     return [
+        ...heatCautions,
         ...rainSnowCautions,
         ...humidityCautions,
         ...windCautions,
@@ -1337,6 +1385,23 @@ async function loadPressureChange() {
             );
         }
 
+        // 🌡️ 暑さ
+        const heatCaution =
+            getHeatCaution(
+                currentWeather,
+            );
+
+        if (heatCaution) {
+            currentWeatherCautions.push(
+                heatCaution,
+            );
+        }
+
+        console.log(
+            "🌡️ 現在気温:",
+            currentWeather.temp,
+        );
+
         // 💨 風
         const windCaution =
             getWindCaution(
@@ -1731,6 +1796,16 @@ async function loadPressureChange() {
             nextWalkPressureCautions,
         );
 
+        const nextWalkHeatCautions =
+            getWalkHeatCaution(
+                nextWalkWeather,
+            );
+
+        console.log(
+            "🌞 次のお散歩の暑さ注意:",
+            nextWalkHeatCautions,
+        );
+
         const nextWalkRainSnowCautions =
             getWalkRainSnowCautions(
                 nextWalkWeather,
@@ -1763,6 +1838,7 @@ async function loadPressureChange() {
 
         const nextWalkCautions =
             getWalkCautions(
+                nextWalkHeatCautions,
                 nextWalkRainSnowCautions,
                 nextWalkHumidityCautions,
                 nextWalkWindCautions,
@@ -2070,9 +2146,17 @@ async function loadPressureChange() {
             nextNextWalkCondition,
         );
 
-        document.getElementById(
-            "nextNextWalkCondition",
-        ).textContent =
+        const nextNextWalkConditionImage =
+            document.getElementById(
+                "nextNextWalkCondition",
+            );
+
+        nextNextWalkConditionImage.src =
+            conditionImageMap[
+                nextNextWalkCondition.condition
+            ];
+
+        nextNextWalkConditionImage.alt =
             nextNextWalkCondition.condition;
 
         document.getElementById(
@@ -2278,6 +2362,11 @@ async function loadPressureChange() {
         // 次の次のお散歩　注意点
         // --------------------------------
 
+        const nextNextWalkHeatCautions =
+            getWalkHeatCaution(
+                nextNextWalkWeather,
+            );
+
         const nextNextWalkRainSnowCautions =
             getWalkRainSnowCautions(
                 nextNextWalkWeather,
@@ -2301,6 +2390,7 @@ async function loadPressureChange() {
 
         const nextNextWalkCautions =
             getWalkCautions(
+                nextNextWalkHeatCautions,
                 nextNextWalkRainSnowCautions,
                 nextNextWalkHumidityCautions,
                 nextNextWalkWindCautions,
