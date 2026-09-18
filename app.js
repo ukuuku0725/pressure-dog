@@ -2884,7 +2884,7 @@ async function registerPushNotification(
                     subscriptionData,
 
                 notificationEnabled:
-                    true,
+                    false,
 
                 lastUsedAt:
                     serverTimestamp(),

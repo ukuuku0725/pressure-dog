@@ -400,7 +400,7 @@
     // 地域データ
     let cityData = {};
 
-/*
+
     async function loadCityData() {
         try {
             const response = await fetch(
@@ -447,7 +447,7 @@
             throw error;
         }
     }
-    */
+
 
     // 市区町村の選択肢を作る
     function updateCitySelect(prefecture, selectedCity = "") {
@@ -522,7 +522,7 @@ async function initializeUser() {
             await setDoc(userRef, {
                 prefecture: "新潟県",
                 city: "五泉市",
-                notificationEnabled: true,
+                notificationEnabled: false,
                 createdAt: serverTimestamp(),
                 lastUsedAt: serverTimestamp()
             });
@@ -618,7 +618,7 @@ async function initializeUser() {
     }
 }
 
-/*
+
     // 都道府県が変更されたとき
     document
         .getElementById("prefectureSelect")
@@ -629,9 +629,9 @@ async function initializeUser() {
 
             updateCitySelect(prefecture);
         });
-*/
 
-/*
+
+
     // 保存ボタン
     document
         .getElementById("saveCity")
@@ -713,7 +713,7 @@ async function initializeUser() {
 
             }
         });
-*/
+
 /*
     document
         .getElementById("enableNotification")
@@ -779,7 +779,7 @@ async function initializeUser() {
 */
 
     // 最初に地域データを読み込む
-//    await loadCityData();
+    await loadCityData();
 
     // データ計測
     console.log(
