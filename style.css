@@ -913,6 +913,13 @@ h2 {
    次の散歩　気温湿度表示
 ============================== */
 
+.condition-judge-image {
+    display: block;
+    width: 140px;
+    height: auto;
+    margin: 0 0 12px -12px;
+}
+
 .next-walk-condition {
     margin-bottom: 16px;
 }

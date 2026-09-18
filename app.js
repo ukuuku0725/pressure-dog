@@ -583,7 +583,7 @@ function getWalkPressureCaution(
     hourly,
     walkWeather,
 ) {
-    const cautions = [];
+    let strongestChange = null;
 
     walkWeather.forEach((item) => {
         const sixHoursAgoDt =
@@ -602,15 +602,25 @@ function getWalkPressureCaution(
             item.pressure -
             sixHoursAgo.pressure;
 
-        const caution =
-            getPressureCaution(change);
-
-        if (caution) {
-            cautions.push(caution);
+        if (
+            strongestChange === null ||
+            Math.abs(change) >
+                Math.abs(strongestChange)
+        ) {
+            strongestChange = change;
         }
     });
 
-    return cautions;
+    if (strongestChange === null) {
+        return [];
+    }
+
+    const caution =
+        getPressureCaution(
+            strongestChange,
+        );
+
+    return caution ? [caution] : [];
 }
 
 /**
@@ -862,96 +872,6 @@ function needsWalkLight(
 }
 
 
-// ========================================
-// 気圧変化の判定
-// ========================================
-
-function judgePressureChange(change) {
-    const decrease = Math.max(0, -change);
-
-    if (decrease <= 2) {
-        return "🌤️ 影響は少なめ";
-    }
-
-    if (decrease <= 4) {
-        return "🌥️ 影響する可能性あり";
-    }
-
-    if (decrease <= 9) {
-        return "⚠️ 影響する可能性が高め";
-    }
-
-    return "🚨 影響する可能性がかなり高い";
-}
-
-function getWalkFace(change) {
-    const decrease = Math.max(0, -change);
-
-    if (decrease <= 2) {
-        return "images/shiba1.png";
-    }
-
-    if (decrease <= 4) {
-        return "images/shiba2.png";
-    }
-
-    if (decrease <= 9) {
-        return "images/shiba3.png";
-    }
-
-    return "images/shiba4.png";
-}
-
-// ========================================
-// 危険度バー
-// ========================================
-
-function setPressureBar(elementId, change) {
-    const decrease = Math.max(0, -change);
-
-    let width;
-
-    if (decrease <= 2) {
-        width = "12.5%";
-    } else if (decrease <= 4) {
-        width = "37.5%";
-    } else if (decrease <= 9) {
-        width = "68.75%";
-    } else {
-        width = "100%";
-    }
-
-    const bar =
-        document.getElementById(elementId);
-
-    if (bar) {
-        bar.style.width = width;
-    }
-}
-
-
-// ========================================
-// お散歩メッセージ
-// ========================================
-
-function getWalkMessage(change) {
-    const decrease = Math.max(0, -change);
-
-    if (decrease <= 2) {
-        return "いつも通りのお散歩で大丈夫そう";
-    }
-
-    if (decrease <= 4) {
-        return "お散歩は様子を見ながら";
-    }
-
-    if (decrease <= 9) {
-        return "無理せず様子を見て";
-    }
-
-    return "無理せず、体調に注意";
-}
-
 
 // ========================================
 // 気圧変化・天気データ取得
@@ -1001,19 +921,19 @@ async function loadPressureChange() {
 
     try {
 
-        //　データ計測に必要
+        //　データ計測開始
         const weatherStart = performance.now();
        
         console.log("⏱️ Cloud Functions呼び出し開始");
-        //　ここまで
 
+        //　データ取得（現在-6時間の時間から取得）
         const result =
             await window.getWeatherData({
                 latitude: Number(latitude),
                 longitude: Number(longitude),
             });
 
-            //　データ計測
+            //　データ計測結果表示
             console.log(
                 "⏱️ Cloud Functions＋OpenWeather:",
                 Math.round(performance.now() - weatherStart),
@@ -1021,9 +941,11 @@ async function loadPressureChange() {
             );
             //　ここまで
 
+        // データを変数に格納
         const hourly =
             result.data.data;
 
+        // 6時間後(現在)のデータを格納
         const currentWeather =
             hourly[6];
 
@@ -1620,9 +1542,21 @@ async function loadPressureChange() {
             nextWalkCondition,
         );
 
-        document.getElementById(
-            "nextWalkCondition",
-        ).textContent =
+        const nextWalkConditionImage =
+            document.getElementById("nextWalkCondition");
+
+        const conditionImageMap = {
+            "🌟 とても快適": "./images/judges/judge_1.png",
+            "🟢 快適": "./images/judges/judge_2.png",
+            "🟡 まずまず": "./images/judges/judge_3.png",
+            "🟠 少し注意": "./images/judges/judge_4.png",
+            "🔴 かなり注意": "./images/judges/judge_5.png",
+        };
+
+        nextWalkConditionImage.src =
+            conditionImageMap[nextWalkCondition.condition];
+
+        nextWalkConditionImage.alt =
             nextWalkCondition.condition;
 
         document.getElementById(
