@@ -386,26 +386,6 @@ h2 {
     font-size: 21px;
 }
 
-/* ==============================
-   おすすめコーデ
-============================== */
-
-.next-walk-condition-main {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
-
-.next-walk-condition-text {
-    flex: 1;
-}
-
-.walk-outfit-image {
-    display: block;
-    width: 130px;
-    height: auto;
-    margin: 0 0 4px -12px;
-}
 
 /* ==============================
    このあとの天気
@@ -631,7 +611,7 @@ h2 {
 
 #currentWeatherTemp {
     margin-top: 2px;
-    font-size: 40px;
+    font-size: 60px;
     font-weight: bold;
 }
 
@@ -650,6 +630,32 @@ h2 {
     width: 100%;
     height: 100%;
     object-fit: contain;
+}
+
+/* ==============================
+   おすすめコーデ
+============================== */
+
+.next-walk-condition-main {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 8px;
+}
+
+.next-walk-condition-text {
+    flex: 0 0 60%;
+}
+
+.next-walk-condition-text p {
+    margin: 2px 0 !important;
+}
+
+.walk-outfit-image {
+    display: block;
+    width: 100px;
+    height: auto;
+    margin: 0;
 }
 
 /* ==============================
@@ -936,9 +942,9 @@ h2 {
 
 .condition-judge-image {
     display: block;
-    width: 120px;
+    width: 130px;
     height: auto;
-    margin: 0 0 12px -12px;
+    margin: 0 0 12px -6px;
 }
 
 .next-walk-condition {
@@ -963,9 +969,8 @@ h2 {
 .next-walk-condition
 #nextNextWalkMaxTemp {
     display: block;
-    font-size: 40px;
+    font-size: 60px;
     font-weight: bold;
-    margin-bottom: 12px;
 }
 
 .next-walk-condition

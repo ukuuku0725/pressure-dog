@@ -736,6 +736,28 @@ function getWalkOutfit(walkWeather, cautions) {
     return "./images/outfits/normal.png";
 }
 
+function getWalkOutfitBackground(outfit) {
+    const backgroundMap = {
+        "./images/outfits/normal.png":
+            "./images/back/back_1.png",
+
+        "./images/outfits/hot.png":
+            "./images/back/back_2.png",
+
+        "./images/outfits/cold.png":
+            "./images/back/back_3.png",
+
+        "./images/outfits/rain.png":
+            "./images/back/back_4.png",
+
+        "./images/outfits/snow.png":
+            "./images/back/back_5.png",
+    };
+
+    return backgroundMap[outfit]
+        || "./images/back/back_1.png";
+}
+
 
 /**
  * 雨のもちもの
