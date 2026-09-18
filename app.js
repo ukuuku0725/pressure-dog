@@ -688,6 +688,54 @@ function getWalkCautions(
     ];
 }
 
+/**
+ * おすすめコーデ　優先度高い順
+ */
+function getWalkOutfit(walkWeather, cautions) {
+    // ❄️ 雪
+    const hasSnow =
+        walkWeather.some((item) => {
+            return (item.snow?.["1h"] || 0) > 0;
+        });
+
+    if (hasSnow) {
+        return "./images/outfits/snow.png";
+    }
+
+    // 🌧️ 雨
+    const hasRain =
+        walkWeather.some((item) => {
+            return (item.rain?.["1h"] || 0) > 0;
+        });
+
+    if (hasRain) {
+        return "./images/outfits/rain.png";
+    }
+
+    // 🌡️ 暑さ
+    const hasHeat =
+        cautions.some((caution) => {
+            return caution.message === "暑さに注意";
+        });
+
+    if (hasHeat) {
+        return "./images/outfits/hot.png";
+    }
+
+    // 🧣 寒さ
+    const hasCold =
+        walkWeather.some((item) => {
+            return item.temp <= 10;
+        });
+
+    if (hasCold) {
+        return "./images/outfits/cold.png";
+    }
+
+    // 🐕 いつもの服装
+    return "./images/outfits/normal.png";
+}
+
 
 /**
  * 雨のもちもの
@@ -1849,6 +1897,23 @@ async function loadPressureChange() {
             "🐕 次のお散歩の注意点",
             nextWalkCautions,
         );
+
+        // おすすめコーデ
+        const nextWalkOutfit =
+            getWalkOutfit(
+                nextWalkWeather,
+                nextWalkCautions,
+            );
+
+        const nextWalkOutfitImage =
+            document.getElementById(
+                "nextWalkOutfit",
+            );
+
+        if (nextWalkOutfitImage) {
+            nextWalkOutfitImage.src =
+                nextWalkOutfit;
+        }
 
         const nextWalkCautionsElement =
             document.getElementById(

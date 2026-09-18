@@ -387,6 +387,27 @@ h2 {
 }
 
 /* ==============================
+   おすすめコーデ
+============================== */
+
+.next-walk-condition-main {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.next-walk-condition-text {
+    flex: 1;
+}
+
+.walk-outfit-image {
+    display: block;
+    width: 130px;
+    height: auto;
+    margin: 0 0 4px -12px;
+}
+
+/* ==============================
    このあとの天気
 ============================== */
 
