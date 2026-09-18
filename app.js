@@ -996,6 +996,10 @@ function needsWalkLight(
 // ========================================
 
 async function loadPressureChange() {
+    console.time("loadPressureChange");
+
+    console.time("localStorage取得");
+
     const latitude =
         localStorage.getItem("latitude");
 
@@ -1006,6 +1010,8 @@ async function loadPressureChange() {
         console.error("緯度・経度がありません");
         return;
     }
+
+    console.timeEnd("localStorage取得");
 
     // --------------------------------
     // 現在時刻を正時にする
@@ -2659,6 +2665,8 @@ async function loadPressureChange() {
             error,
         );
     }
+
+    console.timeEnd("loadPressureChange");
 }
 
 
