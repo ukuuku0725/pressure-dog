@@ -1297,8 +1297,8 @@ async function loadPressureChange() {
                     const probability =
                         item.pop !== undefined
                             ? Math.round(
-                                item.pop * 100,
-                            )
+                                item.pop * 10,
+                            ) * 10
                             : 0;
 
                     return `${probability}%`;
@@ -1503,7 +1503,7 @@ async function loadPressureChange() {
 
         document.getElementById("currentWeather").innerHTML =
             `<div class="current-weather-details">
-                <span>🌧️ 降水確率 ${Math.round(currentWeather.pop * 100)}%</span>
+                <span>🌧️ 降水確率 ${Math.round(currentWeather.pop * 10,) * 10}%</span>
                 <span>🙂 体感 ${currentWeather.feels_like.toFixed(1)}℃</span>
                 <span>💧 湿度 ${currentWeather.humidity}%</span>
                 <span>💨 風 ${currentWeather.wind_speed.toFixed(1)}m/s</span>
@@ -1870,7 +1870,7 @@ async function loadPressureChange() {
 
                         const pop =
                             item.pop !== undefined
-                                ? Math.round(item.pop * 100)
+                                ? Math.round(item.pop * 10) * 10
                                 : 0;
 
                         const humidity =
@@ -2087,7 +2087,7 @@ async function loadPressureChange() {
                     return item.pop !== undefined;
                 })
                 .map((item) => {
-                    return Math.round(item.pop * 100);
+                    return Math.round(item.pop * 10) * 10;
                 });
 
         console.log(
@@ -2421,7 +2421,7 @@ async function loadPressureChange() {
 
                         const pop =
                             item.pop !== undefined
-                                ? Math.round(item.pop * 100)
+                                ? Math.round(item.pop * 10) * 10
                                 : 0;
 
                         const humidity =
@@ -2638,7 +2638,7 @@ async function loadPressureChange() {
                     return item.pop !== undefined;
                 })
                 .map((item) => {
-                    return Math.round(item.pop * 100);
+                    return Math.round(item.pop * 10) * 10;
                 });
 
         console.log(
