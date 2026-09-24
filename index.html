@@ -516,6 +516,8 @@ async function initializeUser() {
 
         if (!userSnap.exists()) {
 
+            window.weatherCache = null;
+
             // 初回アクセス
             const firestoreWriteStart = performance.now();
 
@@ -523,6 +525,7 @@ async function initializeUser() {
                 prefecture: "新潟県",
                 city: "五泉市",
                 notificationEnabled: false,
+                environment: "production",
                 createdAt: serverTimestamp(),
                 lastUsedAt: serverTimestamp()
             });
@@ -549,6 +552,9 @@ async function initializeUser() {
 
             // 2回目以降
             const userData = userSnap.data();
+
+            window.weatherCache =
+                userData.weatherCache || null;
 
             window.nextWalkPressure =
                 userData.nextWalkPressure || null;
@@ -598,6 +604,11 @@ async function initializeUser() {
 
             console.log("ユーザー情報を更新しました！");
         }
+
+        console.log(
+            "weatherCache確認:",
+            window.weatherCache,
+        );
 
         console.log(
             "現在のnextWalkPressure:",
@@ -813,22 +824,11 @@ async function initializeUser() {
 
     let weatherPromise;
 
-    // 緯度・経度がある場合は、Firebaseを待たずに天気取得開始
-    if (latitude && longitude) {
-        console.log("📍 保存されている地域情報を使用して天気取得を開始します");
+    // Firebaseからユーザー情報を取得
+    await initializeUser();
 
-        weatherPromise = window.loadPressureChange();
-
-        // Firebaseも並行して開始
-        await initializeUser();
-    } else {
-        // 初回アクセスなど、緯度・経度がない場合
-        // 先にFirebaseからユーザー情報を取得する
-        await initializeUser();
-
-        // Firebase完了後に天気取得
-        weatherPromise = window.loadPressureChange();
-    }
+    // Firebase完了後に天気取得
+    weatherPromise = window.loadPressureChange();
 
     // Firebase＋Firestoreの計測
     console.log(

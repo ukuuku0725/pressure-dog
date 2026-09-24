@@ -1,8 +1,5 @@
 {
-    "name": "柴んぽ",
-    "short_name": "柴んぽ",
-
-    "start_url": "./",
-
-    "display": "standalone"
+  "functions": {
+    "source": "functions"
+  }
 }

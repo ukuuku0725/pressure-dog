@@ -1039,35 +1039,118 @@ async function loadPressureChange() {
     console.log("現在:", now);
     console.log("取得開始:", start);
 
+
     // --------------------------------
-    // Cloud Functions経由で天気データ取得
+    // weatherCacheを優先して使用
     // --------------------------------
 
     try {
 
-        //　データ計測開始
-        const weatherStart = performance.now();
-       
-        console.log("⏱️ Cloud Functions呼び出し開始");
+        const CACHE_MAX_AGE =
+            2 * 60 * 60 * 1000; // 2時間
 
-        //　データ取得（現在-6時間の時間から取得）
-        const result =
-            await window.getWeatherData({
-                latitude: Number(latitude),
-                longitude: Number(longitude),
-            });
+        const cache =
+            window.weatherCache;
 
-            //　データ計測結果表示
+        let hourly = null;
+
+        const cacheUpdatedAt =
+            cache?.updatedAt?.toDate
+                ? cache.updatedAt.toDate()
+                : null;
+
+        const cacheAge =
+            cacheUpdatedAt
+                ? Date.now() - cacheUpdatedAt.getTime()
+                : Infinity;
+
+        console.log("weatherCache判定:", {
+            cacheExists: !!cache,
+            dataIsArray: Array.isArray(cache?.data),
+            dataLength: cache?.data?.length,
+            updatedAt: cache?.updatedAt,
+            cacheUpdatedAt: cacheUpdatedAt,
+            cacheAge: cacheAge,
+            cacheAgeMinutes: Math.round(cacheAge / 1000 / 60),
+        });
+
+        // --------------------------------
+        // 新しいキャッシュがあれば使用
+        // --------------------------------
+
+        if (
+            cache &&
+            Array.isArray(cache.data) &&
+            cache.data.length > 0 &&
+            cacheUpdatedAt &&
+            cacheAge <= CACHE_MAX_AGE
+        ) {
+
+            hourly =
+                cache.data;
+
+            console.log(
+                "✅ weatherCacheを使用します",
+            );
+
+            console.log(
+                "キャッシュ更新日時:",
+                cacheUpdatedAt,
+            );
+
+            console.log(
+                "キャッシュ経過時間:",
+                Math.round(
+                    cacheAge / 1000,
+                ),
+                "秒",
+            );
+
+            console.log(
+                "データ件数:",
+                hourly.length,
+            );
+
+        } else {
+
+            // --------------------------------
+            // キャッシュがない・古い場合
+            // Cloud Functions経由で取得
+            // --------------------------------
+
+            const weatherStart =
+                performance.now();
+
+            console.log(
+                "☁️ weatherCacheがない・古いため、Cloud Functionsから取得します",
+            );
+
+            const result =
+                await window.getWeatherData({
+                    latitude: Number(latitude),
+                    longitude: Number(longitude),
+                });
+
             console.log(
                 "⏱️ Cloud Functions＋OpenWeather:",
-                Math.round(performance.now() - weatherStart),
+                Math.round(
+                    performance.now() - weatherStart,
+                ),
                 "ms",
             );
-            //　ここまで
 
-        // データを変数に格納
-        const hourly =
-            result.data.data;
+            hourly =
+                result.data.data;
+
+            console.log(
+                "Cloud Functions経由で天気データ取得成功！",
+            );
+
+            console.log(
+                "データ件数:",
+                hourly.length,
+            );
+        }
 
         // 6時間後(現在)のデータを格納
         const currentWeather =
