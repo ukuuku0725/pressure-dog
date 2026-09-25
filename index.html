@@ -131,10 +131,10 @@
 
         <button
             type="button"
-            class="weather-tab active"
+            class="weather-tab current-weather-tab active"
             data-tab="current"
         >
-            🌤️ 今の天気
+            🌤️
         </button>
 
         <button
@@ -164,23 +164,19 @@
             <div class="current-weather-main-text">
                 <div id="currentWeatherDescription">お天気を確認中…</div>
                 <div id="currentWeatherTemp">--℃</div>
+                <div id="currentPrecipitation">降水確率 0%</div>
             </div>
 
-            <div class="current-weather-dog">
-                <img
-                    src="./images/shiba-main.png"
-                    alt="柴犬"
-                >
+            <div class="current-weather">
+                <div id="currentWeather">---</div>
             </div>
-        </div>
 
-        <div class="current-weather">
-            <div id="currentWeather">---</div>
         </div>
 
         <div class="current-weather-cautions">
 
             <h3>
+                <img src="./images/icons/caution.png" alt="">
                 注意ポイント
             </h3>
 
@@ -227,19 +223,26 @@
 
                     <p id="nextWalkWeatherDescription">柴んぽ確認中…</p>
                     <p id="nextWalkMaxTemp">--℃</p>
+                    <p id="nextWalkConditionMessage">---</p>
 
                 </div>
 
-                <img
-                    id="nextWalkOutfit"
-                    class="walk-outfit-image"
-                    src="./images/outfits/normal.png"
-                    alt="おすすめの服装"
-                >
+                <div class="next-walk-outfit">
+
+                    <h3 class="section-title outfit-title">
+                        <img src="./images/outfits/outfit.png" alt="">
+                        おすすめコーデ
+                    </h3>
+
+                    <img
+                        id="nextWalkOutfit"
+                        class="walk-outfit-image"
+                        src="./images/outfits/normal.png"
+                        alt="おすすめの服装"
+                    >
+                </div>
 
             </div>
-
-            <p id="nextWalkConditionMessage">---</p>
 
         </div>
 
@@ -247,6 +250,7 @@
         <div class="next-walk-cautions">
 
             <h3>
+                <img src="./images/icons/caution.png" alt="">
                 注意ポイント
             </h3>
 
@@ -264,6 +268,7 @@
         <!-- もちもの -->
         <div class="next-walk-belongings">
             <h3>
+                <img src="./images/icons/belongings.png" alt="">
                 もちもの
             </h3>
             <div id="nextWalkBelongings">
@@ -291,19 +296,19 @@
                 >
 
                 <p id="nextNextWalkWeatherDescription">柴んぽ確認中…</p>
-
                 <p id="nextNextWalkMaxTemp">--℃</p>
-
                 <p id="nextNextWalkConditionMessage">---</p>
-
             </div>
 
-            <div
-                id="nextNextWalkOutfitArea"
-                class="walk-outfit-area"
-            >
+            <div class="next-walk-outfit">
+
+                <h3 class="section-title outfit-title">
+                    <img src="./images/outfits/outfit.png" alt="">
+                    おすすめコーデ
+                </h3>
+
                 <img
-                    id="nextNextWalkOutfit"
+                    id="nextWalkOutfit"
                     class="walk-outfit-image"
                     src="./images/outfits/normal.png"
                     alt="おすすめの服装"
@@ -318,6 +323,7 @@
         <div class="next-walk-cautions">
 
             <h3>
+                <img src="./images/icons/caution.png" alt="">
                 注意ポイント
             </h3>
 
@@ -336,6 +342,7 @@
         <div class="next-walk-belongings">
 
             <h3>
+                <img src="./images/icons/belongings.png" alt="">
                 もちもの
             </h3>
 

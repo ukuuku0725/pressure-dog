@@ -1503,11 +1503,10 @@ async function loadPressureChange() {
 
         document.getElementById("currentWeather").innerHTML =
             `<div class="current-weather-details">
-                <span>🌧️ 降水確率 ${Math.round(currentWeather.pop * 10,) * 10}%</span>
                 <span>🙂 体感 ${currentWeather.feels_like.toFixed(1)}℃</span>
+                <span>${currentRainText}</span>
                 <span>💧 湿度 ${currentWeather.humidity}%</span>
                 <span>💨 風 ${currentWeather.wind_speed.toFixed(1)}m/s</span>
-                <span>${currentRainText}</span>
                 <span>🌀 気圧 ${currentWeather.pressure}hPa</span>
             </div>`;
 
@@ -1648,35 +1647,93 @@ async function loadPressureChange() {
         }
 
 
+// --------------------------------
+// タブボタンの文言
+// --------------------------------
+
+const schedules = getWalkSchedules();
+
+const today = new Date();
+
+const nextWalkDateLabel =
+    schedules.nextWalk.start.toDateString() !== today.toDateString()
+        ? "翌 "
+        : "";
+
+const nextNextWalkDateLabel =
+    schedules.nextNextWalk.start.toDateString() !== today.toDateString()
+        ? "翌 "
+        : "";
+
+
         // --------------------------------
-        // タブボタンの文言
+        // 次の散歩タブ
         // --------------------------------
-        
-        const schedules = getWalkSchedules();
 
-        const today = new Date();
+        const nextWalkTab =
+            document.getElementById("nextWalkTab");
 
-        const nextWalkDateLabel =
-            schedules.nextWalk.start.toDateString() !== today.toDateString()
-                ? "明日 "
-                : "";
+        nextWalkTab.classList.remove(
+            "morning-walk-tab",
+            "evening-walk-tab"
+        );
 
-        const nextNextWalkDateLabel =
-            schedules.nextNextWalk.start.toDateString() !== today.toDateString()
-                ? "明日 "
-                : "";
+        const nextWalkIcon =
+            schedules.nextWalk.label === "朝のさんぽ"
+                ? "./images/icons/tabicon-asa.png"
+                : "./images/icons/tabicon-yoru.png";
 
-        document.getElementById("nextWalkTab").innerHTML =
-            `<span class="walk-tab-label">${schedules.nextWalk.label}</span>` +
+        const nextWalkClass =
+            schedules.nextWalk.label === "朝のさんぽ"
+                ? "morning-walk-tab"
+                : "evening-walk-tab";
+
+        nextWalkTab.classList.add(nextWalkClass);
+
+        nextWalkTab.innerHTML =
+            `<span class="walk-tab-label">` +
+                `<img src="${nextWalkIcon}" alt="">` +
+                `${schedules.nextWalk.label}` +
+            `</span>` +
             `<span class="walk-tab-time">${nextWalkDateLabel}` +
-            `${schedules.nextWalk.start.getHours()}:00〜` +
-            `${schedules.nextWalk.end.getHours()}:00</span>`;
+                `${schedules.nextWalk.start.getHours()}:00〜` +
+                `${schedules.nextWalk.end.getHours()}:00` +
+            `</span>`;
 
-        document.getElementById("nextNextWalkTab").innerHTML =
-            `<span class="walk-tab-label">${schedules.nextNextWalk.label}</span>` +
+
+        // --------------------------------
+        // 次の次の散歩タブ
+        // --------------------------------
+
+        const nextNextWalkTab =
+            document.getElementById("nextNextWalkTab");
+
+        nextNextWalkTab.classList.remove(
+            "morning-walk-tab",
+            "evening-walk-tab"
+        );
+
+        const nextNextWalkIcon =
+            schedules.nextNextWalk.label === "朝のさんぽ"
+                ? "./images/icons/tabicon-asa.png"
+                : "./images/icons/tabicon-yoru.png";
+
+        const nextNextWalkClass =
+            schedules.nextNextWalk.label === "朝のさんぽ"
+                ? "morning-walk-tab"
+                : "evening-walk-tab";
+
+        nextNextWalkTab.classList.add(nextNextWalkClass);
+
+        nextNextWalkTab.innerHTML =
+            `<span class="walk-tab-label">` +
+                `<img src="${nextNextWalkIcon}" alt="">` +
+                `${schedules.nextNextWalk.label}` +
+            `</span>` +
             `<span class="walk-tab-time">${nextNextWalkDateLabel}` +
-            `${schedules.nextNextWalk.start.getHours()}:00〜` +
-            `${schedules.nextNextWalk.end.getHours()}:00</span>`;
+                `${schedules.nextNextWalk.start.getHours()}:00〜` +
+                `${schedules.nextNextWalk.end.getHours()}:00` +
+            `</span>`;
 
 
         // ========================================
