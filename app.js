@@ -1274,7 +1274,7 @@ async function loadPressureChange() {
 
             const temperatures =
                 futureWeather.map((item) =>
-                    `${item.temp.toFixed(1)}℃`
+                    `${Math.round(item.temp.toFixed(1))}℃`
                 );
 
             const humidities =
@@ -1503,7 +1503,7 @@ async function loadPressureChange() {
 
         document.getElementById("currentWeather").innerHTML =
             `<div class="current-weather-details">
-                <span>🙂 体感 ${currentWeather.feels_like.toFixed(1)}℃</span>
+                <span>🙂 体感 ${Math.round(currentWeather.feels_like.toFixed(1))}℃</span>
                 <span>${currentRainText}</span>
                 <span>💧 湿度 ${currentWeather.humidity}%</span>
                 <span>💨 風 ${currentWeather.wind_speed.toFixed(1)}m/s</span>
