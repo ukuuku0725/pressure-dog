@@ -1501,6 +1501,12 @@ async function loadPressureChange() {
         ).textContent =
             `${Math.round(currentWeather.temp)}℃`;
 
+        document.getElementById(
+            "currentPrecipitation",
+        ).innerHTML =
+            `<span class="precipitation-label">降水確率</span> 
+            ${Math.round(currentWeather.pop * 10) * 10}%`;
+
         document.getElementById("currentWeather").innerHTML =
             `<div class="current-weather-details">
                 <span>🙂 体感 ${Math.round(currentWeather.feels_like.toFixed(1))}℃</span>

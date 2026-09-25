@@ -237,12 +237,6 @@ h2 {
     flex: 1;
 }
 
-.current-weather-dog {
-    width: 120px;
-    margin-right: 30px;
-    flex-shrink: 0;
-}
-
 #currentWeatherDescription {
     font-size: 22px;
     font-weight: bold;
@@ -253,6 +247,10 @@ h2 {
     margin: 0;
     font-size: 60px;
     font-weight: bold;
+}
+
+.precipitation-label {
+    font-size: 0.7em;
 }
 
 #currentPrecipitation {
@@ -266,7 +264,7 @@ h2 {
 }
 
 .current-weather-details span {
-    font-size: 20px;
+    font-size: 18px;
     line-height: 1.5;
 }
 
@@ -311,11 +309,12 @@ h2 {
 .outfit-title {
     margin: 0;
     font-size: 14px;
+    white-space: nowrap;
     font-weight: bold;
     color: #8f683e;
     display: flex;
     align-items: flex-start;
-    gap: 6px;
+    gap: 4px;
 }
 
 .walk-outfit-image {
