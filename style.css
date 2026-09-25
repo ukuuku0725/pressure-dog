@@ -838,8 +838,9 @@ h2 {
 
 .app-header {
     position: relative;
-    width: calc(100% + 32px);
-    margin: -20px -16px 16px;
+    width: 100vw;
+    margin: -20px 0 16px;
+    margin-left: calc(50% - 50vw);
 }
 
 .header-image {
