@@ -846,8 +846,6 @@ h2 {
     display: block;
     width: 100%;
     height: auto;
-    aspect-ratio: 2240 / 478;
-    object-fit: cover;
 }
 
 .header-overlay {
