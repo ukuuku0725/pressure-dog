@@ -205,6 +205,12 @@ h2 {
     box-shadow: 0 3px 10px rgba(0, 0, 0, 0.06);
 }
 
+.current-weather-title {
+    margin: 0 0 8px;
+    font-size: 15px;
+    font-weight: 700;
+}
+
 .weather-card h2 {
     margin: 0 0 14px;
     font-size: 24px;
