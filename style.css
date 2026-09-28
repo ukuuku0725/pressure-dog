@@ -674,42 +674,36 @@ h2 {
     margin: 0;
 }
 
-.next-walk-condition
-#nextWalkWeatherDescription,
-.next-walk-condition
-#nextNextWalkWeatherDescription {
+.priority-caution {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin: 8px 0;
+    padding: 0;
+    background: transparent;
+    box-shadow: none;
+}
+
+.priority-caution-icon img {
+    width: 65px;
+    height: 65px;
+    object-fit: contain;
+}
+
+.priority-caution-text {
+    text-align: left;
+}
+
+.priority-caution-message {
     font-size: 18px;
-    font-weight: bold;
-    margin-bottom: 4px;
+    font-weight: 500;
 }
 
-.next-walk-condition
-#nextWalkMaxTemp,
-.next-walk-condition
-#nextNextWalkMaxTemp {
-    margin: 0;
-    line-height: 1.2;
-    display: block;
-    font-size: 60px;
-    font-weight: bold;
-}
-
-.next-walk-condition
-#nextWalkWeatherDescription,
-.next-walk-condition
-#nextNextWalkWeatherDescription {
-    font-size: 16px;
-    font-weight: bold;
-    margin-bottom: 8px;
-}
-
-.next-walk-condition
-#nextWalkCondition,
-.next-walk-condition
-#nextNextWalkCondition {
-    font-size: 24px;
-    font-weight: bold;
-    margin-bottom: 8px;
+.priority-caution-value {
+    font-size: 20px;
+    font-weight: 600;
 }
 
 /* ==============================
@@ -768,7 +762,7 @@ h2 {
 }
 
 .walk-hour-time {
-    font-size: 15px;
+    font-size: 20px;
     font-weight: bold;
     margin-bottom: 4px;
 }
@@ -791,12 +785,12 @@ h2 {
 }
 
 .walk-hour-weather-icon {
-    font-size: 20px;
+    font-size: 24px;
     margin-bottom: 0;
 }
 
 .walk-hour-temp {
-    font-size: 20px;
+    font-size: 24px;
     font-weight: bold;
     color: #1684c7;
     margin-bottom: 0;
@@ -828,12 +822,12 @@ h2 {
 }
 
 .walk-hour-data div {
-    font-size: 16px;
+    font-size: 20px;
     white-space: nowrap;
 }
 
 .walk-hour-data .walk-hour-pop {
-    font-size: 16px;
+    font-size: 18px;
     font-weight: bold;
 }
 

@@ -367,35 +367,39 @@ function getWalkRainSnowCautions(walkWeather) {
             0,
         );
 
-    // 雨
-    if (maxRain >= 10) {
-        cautions.push({
-            icon: "🌧️",
-            message: "雨が強め",
-            value: `${maxRain.toFixed(1)} mm/h`,
-        });
-    } else if (maxRain > 0) {
-        cautions.push({
-            icon: "🌧️",
-            message: "雨の時間あり",
-            value: `${maxRain.toFixed(1)} mm/h`,
-        });
-    }
+        // 雨
+        if (maxRain >= 10) {
+            cautions.push({
+                icon:  "./images/cautions/rain-heavy.png",
+                message: "雨が強め",
+                value: `${maxRain.toFixed(1)} mm/h`,
+                priority: 2,
+            });
+        } else if (maxRain > 0) {
+            cautions.push({
+                icon: "./images/cautions/rain.png",
+                message: "雨の時間あり",
+                value: `${maxRain.toFixed(1)} mm/h`,
+                priority: 6,
+            });
+        }
 
-    // 雪
-    if (maxSnow >= 3) {
-        cautions.push({
-            icon: "❄️",
-            message: "足元注意",
-            value: `${maxSnow.toFixed(1)} mm/h`,
-        });
-    } else if (maxSnow > 0) {
-        cautions.push({
-            icon: "❄️",
-            message: "雪の時間あり",
-            value: `${maxSnow.toFixed(1)} mm/h`,
-        });
-    }
+        // 雪
+        if (maxSnow >= 3) {
+            cautions.push({
+                icon: "❄️",
+                message: "足元注意",
+                value: `${maxSnow.toFixed(1)} mm/h`,
+                priority: 1,
+            });
+        } else if (maxSnow > 0) {
+            cautions.push({
+                icon: "❄️",
+                message: "雪の時間あり",
+                value: `${maxSnow.toFixed(1)} mm/h`,
+                priority: 5,
+            });
+        }
 
     return cautions;
 }
@@ -442,6 +446,8 @@ function getWalkHeatCaution(walkWeather) {
                 : highest;
         },
     );
+
+    hottest.priority = 3;
 
     return [hottest];
 }
@@ -494,6 +500,7 @@ function getWalkHumidityCautions(walkWeather) {
         });
 
     if (dryCaution) {
+        dryCaution.priority = 7;
         return [dryCaution];
     }
 
@@ -514,9 +521,10 @@ function getWalkHumidityCautions(walkWeather) {
             },
         );
 
+    highHumidityCaution.priority = 7;
+
     return [highHumidityCaution];
 }
-
 
 /**
  * 風の注意ポイントを判定します。
@@ -559,31 +567,19 @@ function getWalkWindCautions(walkWeather) {
         return [];
     }
 
-    // 強風が1時間でもあれば、強風を優先
+    // 強風が1時間でもあれば表示
     const strongWind =
         windCautions.find((caution) => {
             return caution.message === "強風に注意";
         });
 
     if (strongWind) {
+        strongWind.priority = 4;
         return [strongWind];
     }
 
-    // それ以外は最も風速が大きいものを表示
-    const strongestWind =
-        windCautions.reduce((strongest, current) => {
-            const strongestValue =
-                parseFloat(strongest.value);
-
-            const currentValue =
-                parseFloat(current.value);
-
-            return currentValue > strongestValue
-                ? current
-                : strongest;
-        });
-
-    return [strongestWind];
+    // 「風が強め」は注意ポイントには表示しない
+    return [];
 }
 
 
@@ -602,14 +598,6 @@ function getPressureCaution(change) {
     }
 
     if (decrease >= 4) {
-        return {
-            icon: "🌀",
-            message: "気圧が大きく変化",
-            value: `${change.toFixed(1)} hPa`,
-        };
-    }
-
-    if (decrease >= 2) {
         return {
             icon: "🌀",
             message: "気圧変化あり",
@@ -660,12 +648,18 @@ function getWalkPressureCaution(
         return [];
     }
 
-    const caution =
-        getPressureCaution(
-            strongestChange,
-        );
+   const caution =
+    getPressureCaution(
+        strongestChange,
+    );
 
-    return caution ? [caution] : [];
+    if (!caution) {
+        return [];
+    }
+
+    caution.priority = 8;
+
+    return [caution];
 }
 
 
@@ -679,13 +673,17 @@ function getWalkCautions(
     windCautions,
     pressureCautions,
 ) {
-    return [
+    const cautions = [
         ...heatCautions,
         ...rainSnowCautions,
         ...humidityCautions,
         ...windCautions,
         ...pressureCautions,
     ];
+
+    return cautions.sort((a, b) => {
+        return a.priority - b.priority;
+    });
 }
 
 /**
@@ -1848,8 +1846,7 @@ const nextNextWalkDateLabel =
 
         document.getElementById(
             "nextWalkWeatherDescription",
-        ).textContent =
-            nextWalkCondition.weatherDescription;
+        ).style.display = "none";
 
         document.getElementById(
             "nextWalkConditionMessage",
@@ -2094,21 +2091,82 @@ const nextNextWalkDateLabel =
                 "nextWalkCautions",
             );
 
+        const nextWalkPriorityCautionElement =
+            document.getElementById(
+                "nextWalkPriorityCaution",
+            );
+
+        if (nextWalkPriorityCautionElement) {
+
+            const nextWalkMaxTempElement =
+                document.getElementById(
+                    "nextWalkMaxTemp",
+                );
+
+            if (nextWalkCautions.length > 0) {
+
+                const priorityCaution =
+                    nextWalkCautions[0];
+
+                nextWalkPriorityCautionElement.innerHTML = `
+                    <div class="priority-caution">
+
+                        <div class="priority-caution-icon">
+                            <img
+                                src="${priorityCaution.icon}"
+                                alt=""
+                            >
+                        </div>
+
+                        <div class="priority-caution-text">
+
+                            <div class="priority-caution-message">
+                                ${priorityCaution.message}
+                            </div>
+
+                            <div class="priority-caution-value">
+                                ${priorityCaution.value}
+                            </div>
+
+                        </div>
+
+                    </div>
+                `;
+
+                if (nextWalkMaxTempElement) {
+                    nextWalkMaxTempElement.style.display = "none";
+                }
+
+            } else {
+
+                nextWalkPriorityCautionElement.innerHTML = "";
+
+                if (nextWalkMaxTempElement) {
+                    nextWalkMaxTempElement.style.display = "";
+                }
+            }
+        }
 
         if (nextWalkCautionsElement) {
 
-            if (nextWalkCautions.length > 0) {
+            const otherCautions =
+                nextWalkCautions.slice(1);
+
+            if (otherCautions.length > 0) {
 
                 nextWalkCautionsElement.innerHTML = `
                     <div class="caution-cards">
 
-                        ${nextWalkCautions
+                        ${otherCautions
                             .map((caution) => {
                                 return `
                                     <div class="caution-card">
 
                                         <div class="caution-icon">
-                                            ${caution.icon}
+                                            <img
+                                                src="${caution.icon}"
+                                                alt=""
+                                            >
                                         </div>
 
                                         <div class="caution-text">
@@ -2133,8 +2191,7 @@ const nextNextWalkDateLabel =
 
             } else {
 
-                nextWalkCautionsElement.innerHTML =
-                    "<p>今のところ注意することはなさそうです</p>";
+                nextWalkCautionsElement.innerHTML = "";
 
             }
         }
