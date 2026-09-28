@@ -358,10 +358,12 @@ h2 {
     gap: 10px;
 }
 
-.caution-icon {
-    flex: 0 0 auto;
-    font-size: 28px;
-    line-height: 1;
+
+.caution-card .caution-icon img {
+    width: 40px;
+    height: 40px;
+    max-width: none;
+    object-fit: contain;
 }
 
 .caution-message {
@@ -613,13 +615,11 @@ h2 {
 }
 
 .morning-walk-tab {
-    background: #fff4c2;
-    border: 1px solid #f0c94d;
+    background: #fdfdfa;
 }
 
 .evening-walk-tab {
-    background: #dceeff;
-    border: 1px solid #72aee0;
+    background: #fefeff;
 }
 
 .morning-walk-tab.active {
@@ -687,8 +687,8 @@ h2 {
 }
 
 .priority-caution-icon img {
-    width: 65px;
-    height: 65px;
+    width: 70px;
+    height: 70px;
     object-fit: contain;
 }
 
