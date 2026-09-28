@@ -177,7 +177,7 @@
 
             <h3>
                 <img src="./images/icons/caution.png" alt="">
-                その他の注意ポイント
+                注意ポイント
             </h3>
 
             <div id="currentWeatherCautions">
@@ -251,7 +251,10 @@
         </div>
 
         <!-- 気をつけたいこと -->
-        <div class="next-walk-cautions">
+        <div
+            id="nextWalkCautionsSection"
+            class="next-walk-cautions"
+        >
 
             <h3>
                 <img src="./images/icons/caution.png" alt="">
@@ -317,7 +320,7 @@
                     </h3>
 
                     <img
-                        id="nextWalkOutfit"
+                        id="nextNextWalkOutfit"
                         class="walk-outfit-image"
                         src="./images/outfits/normal.png"
                         alt="おすすめの服装"
@@ -386,6 +389,7 @@
         doc,
         setDoc,
         getDoc,
+        deleteField,
         serverTimestamp
     } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js";
     import {
@@ -711,13 +715,18 @@ async function initializeUser() {
                     city: city,
                     latitude: lat,
                     longitude: lng,
-                    lastUsedAt: serverTimestamp()
+                    lastUsedAt: serverTimestamp(),
+
+                    // 場所変更時は古い天気キャッシュを削除
+                    weatherCache: deleteField()
                 }, {
                     merge: true
                 });
 
                 localStorage.setItem("latitude", lat);
                 localStorage.setItem("longitude", lng);
+
+                window.weatherCache = null;
 
                 await window.loadPressureChange();
 

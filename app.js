@@ -684,6 +684,12 @@ function getWalkCautions(
  * おすすめコーデ　優先度高い順
  */
 function getWalkOutfit(walkWeather, cautions) {
+
+    console.log(
+        "👕 コーデ判定用の天気:",
+        walkWeather,
+    );
+
     // ❄️ 雪
     const hasSnow =
         walkWeather.some((item) => {
@@ -694,10 +700,17 @@ function getWalkOutfit(walkWeather, cautions) {
         return "./images/outfits/snow.png";
     }
 
+    console.log(
+        "🌧️ コーデ判定の雨量:",
+        walkWeather.map((item) => {
+            return item.rain?.["1h"] || 0;
+        }),
+    );
+
     // 🌧️ 雨
     const hasRain =
         walkWeather.some((item) => {
-            return (item.rain?.["1h"] || 0) > 0;
+            return (item.rain?.["1h"] || 0) > 1;
         });
 
     if (hasRain) {
@@ -1066,16 +1079,21 @@ async function loadPressureChange() {
             cacheAgeMinutes: Math.round(cacheAge / 1000 / 60),
         });
 
+        const cacheLocationMatches =
+            Number(cache?.latitude) === Number(latitude) &&
+            Number(cache?.longitude) === Number(longitude);
+
         // --------------------------------
         // 新しいキャッシュがあれば使用
         // --------------------------------
 
         if (
-            cache &&
-            Array.isArray(cache.data) &&
-            cache.data.length > 0 &&
-            cacheUpdatedAt &&
-            cacheAge <= CACHE_MAX_AGE
+        cache &&
+        Array.isArray(cache.data) &&
+        cache.data.length > 0 &&
+        cacheUpdatedAt &&
+        cacheAge <= CACHE_MAX_AGE &&
+        cacheLocationMatches
         ) {
 
             hourly =
@@ -1133,6 +1151,14 @@ async function loadPressureChange() {
 
             hourly =
                 result.data.data;
+
+            // 今回取得した天気データをキャッシュとして更新
+            window.weatherCache = {
+                data: hourly,
+                latitude: Number(latitude),
+                longitude: Number(longitude),
+                updatedAt: new Date(),
+            };
 
             console.log(
                 "Cloud Functions経由で天気データ取得成功！",
@@ -2061,7 +2087,9 @@ const nextNextWalkDateLabel =
             nextWalkCautions,
         );
 
-        // おすすめコーデ
+        // --------------------------------
+        // 次のお散歩　おすすめコーデ
+        // --------------------------------
         const nextWalkOutfit =
             getWalkOutfit(
                 nextWalkWeather,
@@ -2701,6 +2729,26 @@ const nextNextWalkDateLabel =
             "⚠️ 次の次のお散歩の注意点:",
             nextNextWalkCautions,
         );
+
+        // --------------------------------
+        // 次の次のお散歩　おすすめコーデ
+        // --------------------------------
+
+        const nextNextWalkOutfit =
+            getWalkOutfit(
+                nextNextWalkWeather,
+                nextNextWalkCautions,
+            );
+
+        const nextNextWalkOutfitElement =
+            document.getElementById(
+                "nextNextWalkOutfit",
+            );
+
+        if (nextNextWalkOutfitElement) {
+            nextNextWalkOutfitElement.src =
+                nextNextWalkOutfit;
+        }
 
         // --------------------------------
         // 次の次のお散歩　最優先注意

@@ -437,9 +437,10 @@ exports.refreshWeatherCache = onSchedule(
               {
                 weatherCache: {
                   data: combinedHourly,
-                  updatedAt:
-                            admin.firestore.FieldValue.serverTimestamp(),
-                },
+                  latitude: latitude,
+                  longitude: longitude,
+                  updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+                }
               },
               {
                 merge: true,
