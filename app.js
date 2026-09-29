@@ -1733,12 +1733,6 @@ const nextNextWalkDateLabel =
         const nextWalkConditionArea =
             document.querySelector(".next-walk-condition");
 
-        if (nextWalkConditionArea) {
-            nextWalkConditionArea.classList.toggle(
-                "night-background",
-                schedules.nextWalk.label === "夜のさんぽ"
-            );
-        }
 
         // --------------------------------
         // 次の次の散歩タブ
