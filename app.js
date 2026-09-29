@@ -101,15 +101,11 @@ function judgeTemperatureCondition(temp, humidity) {
             return "🟢 快適";
         }
 
-        if (temp >= 6) {
+        if (temp >= 3) {
             return "🟡 まずまず";
         }
 
-        if (temp >= 1) {
-            return "🟠 少し注意";
-        }
-
-        return "🔴 かなり注意";
+        return "🟠 少し注意";
     }
 
     // 暑さ判定
@@ -117,36 +113,27 @@ function judgeTemperatureCondition(temp, humidity) {
         return "🔴 かなり注意";
     }
 
+    // 25〜27℃
     if (temp >= 25) {
+        if (humidity >= 70) {
+            return "🔴 かなり注意";
+        }
+
         return "🟠 少し注意";
     }
 
+    // 21〜24℃
     if (temp >= 21) {
-        if (humidity <= 60) {
-            return "🌟 とても快適";
-        }
-
-        if (humidity <= 70) {
+        if (humidity >= 70) {
             return "🟢 快適";
         }
 
-        return "🟡 まずまず";
+        return "🌟 とても快適";
     }
 
+    // 16〜20℃
     if (temp >= 16) {
-        if (humidity <= 39) {
-            return "🟡 まずまず";
-        }
-
-        if (humidity <= 60) {
-            return "🌟 とても快適";
-        }
-
-        if (humidity <= 70) {
-            return "🟢 快適";
-        }
-
-        return "🟡 まずまず";
+        return "🌟 とても快適";
     }
 
     return "🟢 快適";
