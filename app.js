@@ -1508,6 +1508,10 @@ async function loadPressureChange() {
             currentPressureChange,
         );
 
+        document.getElementById(
+            "currentWeatherIcon",
+        ).textContent =
+            getWeatherIcon(currentWeather);
 
         document.getElementById(
             "currentWeatherDescription",

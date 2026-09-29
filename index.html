@@ -158,20 +158,41 @@
     </nav>
 
     <!-- 今の天気 -->
+
     <div class="weather-card" id="currentWeatherCard">
+
         <h3 class="current-weather-title">今の天気</h3>
+
         <div class="current-weather-main">
+
+            <!-- 左側：メインの天気 -->
             <div class="current-weather-main-text">
-                <div id="currentWeatherDescription">お天気を確認中…</div>
-                <div id="currentWeatherTemp">--℃</div>
-                <div id="currentPrecipitation">降水確率 --%</div>
+
+                <div class="current-weather-description">
+                    <span id="currentWeatherIcon"></span>
+
+                    <div id="currentWeatherDescription">
+                        お天気を確認中…
+                    </div>
+                </div>
+
+                <div id="currentWeatherTemp">
+                    --℃
+                </div>
+
+                <div id="currentPrecipitation">
+                    降水確率 --%
+                </div>
+
             </div>
 
+            <!-- 右側：詳細情報 -->
             <div class="current-weather">
                 <div id="currentWeather">---</div>
             </div>
 
         </div>
+
 
         <div class="current-weather-cautions">
 
@@ -186,21 +207,19 @@
 
         </div>
 
-    <!-- 33時間予報 -->
-    <div class="future-weather">
+        <!-- 33時間予報 -->
+        <div class="future-weather">
 
-        <h3>
-            このあとの天気
-        </h3>
+            <h3>
+                このあとの天気
+            </h3>
 
-        <div
-            id="futureWeather"
-            class="future-weather-scroll"
-        >
+            <div
+                id="futureWeather"
+                class="future-weather-scroll"
+            >
+            </div>
         </div>
-
-    </div>
-
     </div>
 
 
