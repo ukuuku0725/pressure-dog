@@ -222,7 +222,7 @@ h2 {
 
 .current-weather-main {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) 125px;
+    grid-template-columns: auto 145px;
     gap: 4px;
     align-items: center;
 }
