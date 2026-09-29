@@ -238,25 +238,20 @@ function getWorstCondition(conditions) {
 
 
 /**
- * 雨・雪による寒さ判定の補正を行います。
+ * 雨・雪による判定の補正を行います。
  */
-function adjustColdCondition(condition, item) {
-    // 15℃以下だけ寒さ補正を行う
-    if (item.temp > 15) {
-        return condition;
-    }
-
+function adjustRainSnowCondition(condition, item) {
     const rain = item.rain?.["1h"] || 0;
     const snow = item.snow?.["1h"] || 0;
 
     let correction = 0;
 
-    // 雨：3mm/h以上で寒さを1段階強くする
+    // 雨：3mm/h以上で1段階下げる
     if (rain >= 3) {
         correction = 1;
     }
 
-    // 雪：1mm/h以上で寒さを1段階強くする
+    // 雪：1mm/h以上で1段階下げる
     if (snow >= 1) {
         correction = 1;
     }
@@ -1128,6 +1123,22 @@ async function loadPressureChange() {
                     longitude: Number(longitude),
                 });
 
+
+            // --------------------------------
+            // 1分データ テスト
+            // --------------------------------
+
+            const minutelyResult =
+                await window.testMinutelyWeather({
+                    latitude: Number(latitude),
+                    longitude: Number(longitude),
+                });
+
+            console.log(
+                "🌧️ 1分データテスト結果:",
+                minutelyResult,
+            );
+
             console.log(
                 "⏱️ Cloud Functions＋OpenWeather:",
                 Math.round(
@@ -1719,6 +1730,16 @@ const nextNextWalkDateLabel =
             `</span>`;
 
 
+        const nextWalkConditionArea =
+            document.querySelector(".next-walk-condition");
+
+        if (nextWalkConditionArea) {
+            nextWalkConditionArea.classList.toggle(
+                "night-background",
+                schedules.nextWalk.label === "夜のさんぽ"
+            );
+        }
+
         // --------------------------------
         // 次の次の散歩タブ
         // --------------------------------
@@ -1793,7 +1814,7 @@ const nextNextWalkDateLabel =
                 );
 
             const condition =
-                adjustColdCondition(
+                adjustRainSnowCondition(
                     baseCondition,
                     item,
                 );
@@ -2428,7 +2449,7 @@ const nextNextWalkDateLabel =
                     );
 
                 const condition =
-                    adjustColdCondition(
+                    adjustRainSnowCondition(
                         baseCondition,
                         item,
                     );

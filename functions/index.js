@@ -473,3 +473,90 @@ exports.refreshWeatherCache = onSchedule(
       );
     },
 );
+
+
+//1分データテスト用
+exports.testMinutelyWeather = onCall(
+    {
+      secrets: [OPENWEATHER_API_KEY],
+    },
+    async (request) => {
+      // ログインしているユーザーだけ許可
+      if (!request.auth) {
+        throw new HttpsError(
+            "unauthenticated",
+            "ログインが必要です",
+        );
+      }
+
+      try {
+        const {latitude, longitude} =
+            request.data;
+
+        if (
+          latitude === undefined ||
+          longitude === undefined
+        ) {
+          throw new HttpsError(
+              "invalid-argument",
+              "緯度・経度が必要です",
+          );
+        }
+
+        // APIキー
+        const weatherApiKey =
+            OPENWEATHER_API_KEY.value();
+
+        // 現在時刻
+        const nowUnix =
+            Math.floor(
+                Date.now() / 1000,
+            );
+
+        // 1分単位の予報
+        const url =
+            `https://api.openweathermap.org/data/4.0/onecall/timeline/1min?` +
+            `lat=${latitude}` +
+            `&lon=${longitude}` +
+            `&appid=${weatherApiKey}` +
+            `&units=metric` +
+            `&lang=ja` +
+            `&start=${nowUnix}`;
+
+        const response =
+            await fetch(url);
+
+        if (!response.ok) {
+          throw new Error(
+              `OpenWeatherMap API error: ${response.status}`,
+          );
+        }
+
+        const weatherData =
+            await response.json();
+
+        console.log(
+            "🌧️ 1分データ:",
+            weatherData,
+        );
+
+        return {
+          success: true,
+          data: weatherData.data || [],
+        };
+      } catch (error) {
+        logger.error(
+            "1分天気データ取得エラー",
+            {
+              uid: request.auth.uid,
+              error: error,
+            },
+        );
+
+        throw new HttpsError(
+            "internal",
+            "1分天気データの取得に失敗しました",
+        );
+      }
+    },
+);

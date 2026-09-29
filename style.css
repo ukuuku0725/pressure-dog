@@ -576,7 +576,7 @@ h2 {
     padding: 20px;
     border-radius: 16px;
     background: #ffffff;
-    border: 1px solid #eeeeee;
+    border: 1px solid #c9e9fb;
 }
 
 /* ==============================
@@ -731,7 +731,34 @@ h2 {
 }
 
 .next-walk-condition {
-    margin-bottom: 16px;
+    margin: -20px -20px 16px;
+    padding: 20px;
+
+    background-image:
+        linear-gradient(
+            to bottom,
+            rgba(255, 255, 255, 0.1) 0%,
+            rgba(255, 255, 255, 0.1) 65%,
+            rgba(255, 255, 255, 1) 100%
+        ),
+        url("./images/backgrounds/back_1.png");
+
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+
+    border-radius: 16px 16px 0 0;
+}
+
+.next-walk-condition.night-background {
+    background-image:
+        linear-gradient(
+            to bottom,
+            rgba(255, 255, 255, 0.25) 0%,
+            rgba(255, 255, 255, 0.25) 65%,
+            rgba(255, 255, 255, 1) 100%
+        ),
+        url("./images/backgrounds/back_3.png");
 }
 
 .next-walk-condition > p {
