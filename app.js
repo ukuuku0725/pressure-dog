@@ -1296,11 +1296,14 @@ async function loadPressureChange() {
                          alt="雨予報"
                          class="rain-forecast-icon"
                     >
-                    ${minutesUntilRain}分後に雨が降る予報です `;
+                    <span class="rain-forecast-text">
+                        ${minutesUntilRain}分後に雨が降る予報です
+                    </span>
+                    `;
 
             } else {
-
-                rainForecastElement.textContent = "";
+                rainForecastElement.style.display = "none";
+                rainForecastElement.innerHTML = "";
 
             }
         }

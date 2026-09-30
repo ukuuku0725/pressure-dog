@@ -344,10 +344,24 @@ h2 {
 ========================= */
 
 .rain-forecast-icon {
-    width: 24px;
-    height: 24px;
+    width: 28px;
+    height: 28px;
     vertical-align: middle;
     margin-right: 4px;
+}
+
+#rainForecastMessage {
+    font-size: 18px;
+    font-weight: bold;
+    background: #f7efcc;
+    padding: 6px 12px;
+    border-radius: 10px;
+    margin-top: 12px;
+}
+
+#rainForecastMessage span {
+    position: relative;
+    top: 2px;
 }
 
 
@@ -793,7 +807,7 @@ h2 {
     height: auto;
     margin: 0 auto;
 
-    transform: translate(10px, -5px);
+    transform: translate(40px, -5px);
 }
 
 /* ==============================
