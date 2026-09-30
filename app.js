@@ -1249,6 +1249,63 @@ async function loadPressureChange() {
             );
         }
 
+
+        // --------------------------------
+        // 1分データ
+        // --------------------------------
+
+        const minutelyResult =
+            await window.testMinutelyWeather({
+                latitude: Number(latitude),
+                longitude: Number(longitude),
+            });
+
+        console.log(
+            "🌧️ 1分データテスト結果:",
+            minutelyResult,
+        );
+
+        const minutelyData =
+            minutelyResult.data.data;
+
+        const firstRain =
+            minutelyData.find((item) => {
+                return item.precipitation > 0;
+            });
+
+        const rainForecastElement =
+            document.getElementById(
+                "rainForecastMessage",
+            );
+
+        if (rainForecastElement) {
+
+            if (firstRain) {
+
+                const now =
+                    Math.floor(Date.now() / 1000);
+
+                const minutesUntilRain =
+                    Math.round(
+                        (firstRain.dt - now) / 60
+                    );
+
+                rainForecastElement.innerHTML = `
+                    <img
+                        src="./images/cautions/raintime.png"
+                         alt="雨予報"
+                         class="rain-forecast-icon"
+                    >
+                    ${minutesUntilRain}分後に雨が降る予報です `;
+
+            } else {
+
+                rainForecastElement.textContent = "";
+
+            }
+        }
+
+
         // 6時間後(現在)のデータを格納
         const currentWeather =
             hourly[6];
@@ -1267,6 +1324,7 @@ async function loadPressureChange() {
             "🌤️ 現在の天気データ時刻:",
             currentWeatherTime,
         );
+
 
         // ========================================
         // このあとの天気

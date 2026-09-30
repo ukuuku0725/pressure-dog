@@ -338,6 +338,19 @@ h2 {
     object-fit: contain;
 }
 
+
+/* =========================
+   降雨予報
+========================= */
+
+.rain-forecast-icon {
+    width: 24px;
+    height: 24px;
+    vertical-align: middle;
+    margin-right: 4px;
+}
+
+
 /* ==============================
    おすすめコーデ
 ============================== */
