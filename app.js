@@ -2945,17 +2945,20 @@ const nextNextWalkDateLabel =
                     </div>
                 `;
 
-                if (nextNextWalkMaxTempElement) {
-                    nextNextWalkMaxTempElement.style.display = "none";
-                }
-
             } else {
 
-                nextNextWalkPriorityCautionElement.innerHTML = "";
+                nextNextWalkPriorityCautionElement.innerHTML = `
+                    <img
+                        src="./images/cautions/msg.png"
+                        class="no-priority-caution-image"
+                        alt="特に注意することはありません"
+                    >
+                `;
+            }
 
-                if (nextNextWalkMaxTempElement) {
-                    nextNextWalkMaxTempElement.style.display = "";
-                }
+            // 気温表示は常に非表示
+            if (nextNextWalkMaxTempElement) {
+                nextNextWalkMaxTempElement.style.display = "none";
             }
         }
 
