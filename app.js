@@ -92,7 +92,7 @@ function getWalkWeatherData(hourly, walkSchedule) {
 
 
 /**
- * 気温と湿度から基本的なコンディションを判定します。
+ * 気温から基本的なコンディションを判定します。
  */
 function judgeTemperatureCondition(temp, humidity) {
     // 寒さ判定
@@ -113,7 +113,7 @@ function judgeTemperatureCondition(temp, humidity) {
         return "🔴 かなり注意";
     }
 
-    // 25〜27℃
+    // 25〜27℃は湿度によってはかなり危険にする
     if (temp >= 25) {
         if (humidity >= 70) {
             return "🔴 かなり注意";
@@ -122,7 +122,7 @@ function judgeTemperatureCondition(temp, humidity) {
         return "🟠 少し注意";
     }
 
-    // 21〜24℃
+    // 21〜24℃湿度によっては判定を一つ下げる
     if (temp >= 21) {
         if (humidity >= 70) {
             return "🟢 快適";
@@ -196,8 +196,8 @@ function getConditionMessage(condition) {
         "🌟 とても快適": "素晴らしいコンディションです",
         "🟢 快適": "気持ちよくお散歩できそう",
         "🟡 まずまず": "お散歩を楽しめそうです",
-        "🟠 少し注意": "少し気をつけてお散歩しましょう",
-        "🔴 かなり注意": "無理のないお散歩を心がけましょう",
+        "🟠 少し注意": "様子をみてお散歩を",
+        "🔴 かなり注意": "お散歩は短時間で",
     };
 
     return messages[condition] || "";
@@ -238,33 +238,77 @@ function getWorstCondition(conditions) {
 
 
 /**
- * 雨・雪による判定の補正を行います。
+ * 雨・雪・風による判定の補正を行います。
  */
-function adjustRainSnowCondition(condition, item) {
+function adjustWeatherCondition(condition, item) {
     const rain = item.rain?.["1h"] || 0;
     const snow = item.snow?.["1h"] || 0;
-
-    let correction = 0;
-
-    // 雨：3mm/h以上で1段階下げる
-    if (rain >= 3) {
-        correction = 1;
-    }
-
-    // 雪：1mm/h以上で1段階下げる
-    if (snow >= 1) {
-        correction = 1;
-    }
-
-    if (correction === 0) {
-        return condition;
-    }
+    const wind = item.wind_speed || 0;
 
     const currentLevel =
         getConditionLevel(condition);
 
-    const correctedLevel =
-        Math.min(currentLevel + correction, 4);
+    let correctedLevel = currentLevel;
+
+    // --------------------------------
+    // 雨
+    // --------------------------------
+
+    // 3mm/h以上なら最低「少し注意」
+    if (rain >= 3) {
+        correctedLevel = Math.max(
+            correctedLevel,
+            3
+        );
+    }
+
+    // 10mm/h以上ならさらに1段階下げる
+    if (rain >= 10) {
+        correctedLevel = Math.min(
+            correctedLevel + 1,
+            4
+        );
+    }
+
+    // --------------------------------
+    // 雪
+    // --------------------------------
+
+    // 1mm/h以上で1段階下げる
+    if (snow >= 1) {
+        correctedLevel = Math.min(
+            correctedLevel + 1,
+            4
+        );
+    }
+
+    // --------------------------------
+    // 風
+    // --------------------------------
+
+    // 8m/s以上なら最低「少し注意」
+    if (wind >= 8) {
+        correctedLevel = Math.max(
+            correctedLevel,
+            3
+        );
+    }
+
+    // 10m/s以上ならさらに1段階下げる
+    if (wind >= 10) {
+        correctedLevel = Math.min(
+            correctedLevel + 1,
+            4
+        );
+    }
+
+    // --------------------------------
+    // 補正なし
+    // --------------------------------
+
+    if (correctedLevel === currentLevel) {
+        return condition;
+    }
 
     const conditions = [
         "🌟 とても快適",
@@ -1103,6 +1147,59 @@ async function loadPressureChange() {
                 hourly.length,
             );
 
+            
+            // --------------------------------
+            // 1分データ テスト
+            // --------------------------------
+
+            const minutelyResult =
+                await window.testMinutelyWeather({
+                    latitude: Number(latitude),
+                    longitude: Number(longitude),
+                });
+
+            console.log(
+                "🌧️ 1分データテスト結果:",
+                minutelyResult,
+            );
+
+
+            // --------------------------------
+            // 雨が降り始める時間を確認
+            // --------------------------------
+
+            const minutelyData =
+                minutelyResult.data.data;
+
+            const firstRain =
+                minutelyData.find((item) => {
+                    return item.precipitation > 0;
+                });
+
+            if (firstRain) {
+
+                const now =
+                    Math.floor(Date.now() / 1000);
+
+                const minutesUntilRain =
+                    Math.round(
+                        (firstRain.dt - now) / 60
+                    );
+
+                console.log(
+                    "🌧️ 雨が降り始めるまで:",
+                    minutesUntilRain,
+                    "分後",
+                );
+
+            } else {
+
+                console.log(
+                    "🌧️ 60分以内に雨の予報なし",
+                );
+            }
+
+
         } else {
 
             // --------------------------------
@@ -1122,22 +1219,6 @@ async function loadPressureChange() {
                     latitude: Number(latitude),
                     longitude: Number(longitude),
                 });
-
-
-            // --------------------------------
-            // 1分データ テスト
-            // --------------------------------
-
-            const minutelyResult =
-                await window.testMinutelyWeather({
-                    latitude: Number(latitude),
-                    longitude: Number(longitude),
-                });
-
-            console.log(
-                "🌧️ 1分データテスト結果:",
-                minutelyResult,
-            );
 
             console.log(
                 "⏱️ Cloud Functions＋OpenWeather:",
@@ -1808,7 +1889,7 @@ const nextNextWalkDateLabel =
                 );
 
             const condition =
-                adjustRainSnowCondition(
+                adjustWeatherCondition(
                     baseCondition,
                     item,
                 );
@@ -2128,56 +2209,60 @@ const nextNextWalkDateLabel =
             );
         
 
-        if (nextWalkPriorityCautionElement) {
+    if (nextWalkPriorityCautionElement) {
 
-            const nextWalkMaxTempElement =
-                document.getElementById(
-                    "nextWalkMaxTemp",
-                );
+        const nextWalkMaxTempElement =
+            document.getElementById(
+                "nextWalkMaxTemp",
+            );
 
-            if (nextWalkCautions.length > 0) {
+        if (nextWalkCautions.length > 0) {
 
-                const priorityCaution =
-                    nextWalkCautions[0];
+            const priorityCaution =
+                nextWalkCautions[0];
 
-                nextWalkPriorityCautionElement.innerHTML = `
-                    <div class="priority-caution">
+            nextWalkPriorityCautionElement.innerHTML = `
+                <div class="priority-caution">
 
-                        <div class="priority-caution-icon">
-                            <img
-                                src="${priorityCaution.icon}"
-                                alt=""
-                            >
+                    <div class="priority-caution-icon">
+                        <img
+                            src="${priorityCaution.icon}"
+                            alt=""
+                        >
+                    </div>
+
+                    <div class="priority-caution-text">
+
+                        <div class="priority-caution-message">
+                            ${priorityCaution.message}
                         </div>
 
-                        <div class="priority-caution-text">
-
-                            <div class="priority-caution-message">
-                                ${priorityCaution.message}
-                            </div>
-
-                            <div class="priority-caution-value">
-                                ${priorityCaution.value}
-                            </div>
-
+                        <div class="priority-caution-value">
+                            ${priorityCaution.value}
                         </div>
 
                     </div>
-                `;
 
-                if (nextWalkMaxTempElement) {
-                    nextWalkMaxTempElement.style.display = "none";
-                }
+                </div>
+            `;
 
-            } else {
+        } else {
 
-                nextWalkPriorityCautionElement.innerHTML = "";
-
-                if (nextWalkMaxTempElement) {
-                    nextWalkMaxTempElement.style.display = "";
-                }
-            }
+            nextWalkPriorityCautionElement.innerHTML = `
+                <img
+                    src="./images/cautions/msg.png"
+                    class="no-priority-caution-image"
+                    alt="特に注意することはありません"
+                >
+            `;
         }
+
+        // 気温表示は常に非表示
+        if (nextWalkMaxTempElement) {
+            nextWalkMaxTempElement.style.display = "none";
+        }
+    }
+
 
         // --------------------------------
         // 次のお散歩　そのほかの注意
@@ -2443,7 +2528,7 @@ const nextNextWalkDateLabel =
                     );
 
                 const condition =
-                    adjustRainSnowCondition(
+                    adjustWeatherCondition(
                         baseCondition,
                         item,
                     );

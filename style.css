@@ -727,7 +727,7 @@ h2 {
     display: block;
     width: 150px;
     height: auto;
-    margin: 0 0 12px -6px;
+    margin: 0 0 12px 0;
 }
 
 .next-walk-condition {
@@ -772,6 +772,15 @@ h2 {
 .priority-caution-value {
     font-size: 20px;
     font-weight: 600;
+}
+
+.no-priority-caution-image {
+    display: block;
+    width: 140px;
+    height: auto;
+    margin: 0 auto;
+
+    transform: translate(10px, -5px);
 }
 
 /* ==============================
