@@ -27,8 +27,9 @@
 
     </div>
 
+
     <!-- ============================= -->
-    <!-- V1：地域設定 -->
+    <!-- 地域設定 -->
     <!-- ============================= -->
 
     <div
@@ -37,11 +38,12 @@
         style="display: none;"
     >
 
-        <h2>⚙️ 地域設定</h2>
+        <h2>地域設定</h2>
 
-        <div>
+        <div class="location-setting-item">
+
             <label for="prefectureSelect">
-                都道府県：
+                都道府県
             </label>
 
             <select id="prefectureSelect">
@@ -49,11 +51,13 @@
                     選択してください
                 </option>
             </select>
+
         </div>
 
-        <div>
+        <div class="location-setting-item">
+
             <label for="citySelect">
-                市区町村：
+                市区町村
             </label>
 
             <select id="citySelect">
@@ -61,6 +65,7 @@
                     先に都道府県を選択してください
                 </option>
             </select>
+
         </div>
 
         <button id="saveCity">

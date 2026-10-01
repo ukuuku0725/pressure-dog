@@ -166,7 +166,7 @@ function judgeTemperatureCondition(temp, humidity) {
         return "🟢 快適";
     }
 
-    // 21〜24℃湿度によっては判定を一つ下げる
+    // 21〜23℃湿度によっては判定を一つ下げる
     if (temp >= 21) {
         if (humidity >= 70) {
             return "🟢 快適";
