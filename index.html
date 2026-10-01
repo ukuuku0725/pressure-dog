@@ -416,6 +416,10 @@
     
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
     import {
+        initializeAppCheck,
+        ReCaptchaEnterpriseProvider
+    } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app-check.js";
+    import {
         getAuth,
         signInAnonymously
     } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js";
@@ -445,6 +449,27 @@
 
     // Firebase初期化
     const app = initializeApp(firebaseConfig);
+    //　
+    const appCheck = initializeAppCheck(app, {
+        provider: new ReCaptchaEnterpriseProvider(
+            "6Lc_-tgtAAAAALLFU1zp4S8mEWuiiddtNGIbfY2O"
+        ),
+        isTokenAutoRefreshEnabled: true
+    });
+
+    getToken(appCheck)
+        .then((result) => {
+            console.log(
+                "App Check token取得成功:",
+                !!result.token
+            );
+        })
+        .catch((error) => {
+            console.error(
+                "App Check token取得失敗:",
+                error
+            );
+        });
     const auth = getAuth(app);
     const db = getFirestore(app);
     const functions = getFunctions(app, "us-central1");
