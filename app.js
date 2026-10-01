@@ -1,6 +1,41 @@
+
+// グローバルAPIキー
 const VAPID_PUBLIC_KEY =
     "BB9oI0A5rn7GCwcqOlPW1yijUWUPAyYueDsUP0ClnyxQ1xgm7m3BQts_nNKYr-Y6KpSLW1WU259xajWrwpg60JE";
 
+// 待機メッセージ
+const loadingMessages = [
+    "🐾 お天気を確認しています",
+    "🐾 雨雲をチェックしています",
+    "🐾 風の強さを確認しています",
+    "🐾 気温を確認しています",
+    "🐾 湿度を確認しています",
+    "🐾 お散歩コンディションを確認しています",
+    "🐾 おすすめスタイルを考えています",
+    "🐾 持ち物を確認しています",
+    "🐾 今日のお散歩を準備しています",
+    "🐾 柴犬レーダー起動中…",
+    "🐾 お散歩日和を探しています",
+    "🐾 空の様子を確認しています",
+    "🐾 雨の気配を探しています",
+    "🐾 お散歩の準備中です",
+    "🐾 もうすぐ準備完了です",
+    "🐾 しっぽを振りながら準備中…",
+    "🐾 今日も楽しくお散歩しましょう",
+    "🐾 柴んぽの準備をしています",
+    "🐾 今日の天気を調べています",
+    "🐾 お散歩にちょうどいい時間を探しています",
+    "🐾 空模様を見ています",
+    "🐾 お散歩のコンディションを確認中…",
+    "🐾 ちょっとだけお待ちください",
+    "🐾 ただいま準備中です",
+    "🐾 柴んぽスタッフが準備中…",
+    "🐾 お散歩情報を集めています",
+    "🐾 今日のおすすめを考えています",
+    "🐾 もう少しで柴んぽ開始です",
+    "🐾 お天気情報を集めています",
+    "🐾 柴んぽ、もうすぐです！"
+];
 
 // ========================================
 // V2 お散歩時間帯
@@ -109,17 +144,26 @@ function judgeTemperatureCondition(temp, humidity) {
     }
 
     // 暑さ判定
-    if (temp >= 28) {
+    if (temp >= 30) {
         return "🔴 かなり注意";
     }
 
-    // 25〜27℃は湿度によってはかなり危険にする
-    if (temp >= 25) {
+    // 26〜29℃は湿度によってはかなり危険にする
+    if (temp >= 26) {
         if (humidity >= 70) {
             return "🔴 かなり注意";
         }
 
         return "🟠 少し注意";
+    }
+
+    // 24〜25℃は湿度によっては判定を一つ下げる
+    if (temp >= 24) {
+        if (humidity >= 70) {
+            return "🟡 まずまず";
+        }
+
+        return "🟢 快適";
     }
 
     // 21〜24℃湿度によっては判定を一つ下げる
@@ -1027,6 +1071,29 @@ function needsWalkLight(
 // ========================================
 
 async function loadPressureChange() {
+
+    // --------------------------------
+    // 柴んぽ準備中メッセージ
+    // --------------------------------
+
+    const loadingMessageElement =
+        document.getElementById(
+            "loadingMessage"
+        );
+
+    if (loadingMessageElement) {
+
+        const randomIndex =
+            Math.floor(
+                Math.random() *
+                loadingMessages.length
+            );
+
+        loadingMessageElement.textContent =
+            loadingMessages[randomIndex];
+    }
+
+
     console.time("loadPressureChange");
 
     console.time("localStorage取得");
@@ -3155,6 +3222,17 @@ const nextNextWalkDateLabel =
             "One Call 4.0 エラー:",
             error,
         );
+    }
+
+    // --------------------------------
+    // 柴んぽ準備中画面を終了
+    // --------------------------------
+
+    const loadingScreen =
+        document.getElementById("loadingScreen");
+
+    if (loadingScreen) {
+        loadingScreen.style.display = "none";
     }
 
     console.timeEnd("loadPressureChange");

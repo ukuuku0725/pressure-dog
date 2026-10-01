@@ -11,6 +11,22 @@
 
 <body>
 
+    <!-- ================================
+     柴んぽ準備中画面
+    ================================ -->
+
+    <div id="loadingScreen">
+
+        <div class="loading-title">
+            柴んぽ
+        </div>
+
+        <div id="loadingMessage">
+            準備中…
+        </div>
+
+    </div>
+
     <!-- ============================= -->
     <!-- V1：地域設定 -->
     <!-- ============================= -->
@@ -171,24 +187,19 @@
                 <div class="current-weather-description">
                     <span id="currentWeatherIcon"></span>
 
-                    <div id="currentWeatherDescription">
-                        お天気を確認中…
-                    </div>
+                    <div id="currentWeatherDescription"></div>
+
                 </div>
 
-                <div id="currentWeatherTemp">
-                    --℃
-                </div>
+                <div id="currentWeatherTemp"></div>
 
-                <div id="currentPrecipitation">
-                    降水確率 --%
-                </div>
+                <div id="currentPrecipitation"></div>
 
             </div>
 
             <!-- 右側：詳細情報 -->
             <div class="current-weather">
-                <div id="currentWeather">---</div>
+                <div id="currentWeather"></div>
             </div>
 
         </div>
@@ -203,9 +214,7 @@
                 注意ポイント
             </h3>
 
-            <div id="currentWeatherCautions">
-                ---
-            </div>
+            <div id="currentWeatherCautions"></div>
 
         </div>
 

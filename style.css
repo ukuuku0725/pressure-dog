@@ -25,6 +25,27 @@ h2 {
     font-size: 21px;
 }
 
+/* ==============================
+   読み込み画面
+============================== */
+
+#loadingScreen {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    background: #f1fffa;
+}
+
+#loadingMessage {
+    font-size: 20px;
+}
+
 
 /* ==============================
    このあとの天気
