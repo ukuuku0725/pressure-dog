@@ -1144,6 +1144,7 @@ async function loadPressureChange() {
     // --------------------------------
 
     try {
+alert("try開始");
 
         const CACHE_MAX_AGE =
             2 * 60 * 60 * 1000; // 2時間
@@ -1189,7 +1190,7 @@ async function loadPressureChange() {
         cacheAge <= CACHE_MAX_AGE &&
         cacheLocationMatches
         ) {
-
+alert("キャッシュある");
             hourly =
                 cache.data;
 
@@ -1269,7 +1270,7 @@ async function loadPressureChange() {
 
 
         } else {
-
+alert("キャッシュなし");
             // --------------------------------
             // キャッシュがない・古い場合
             // Cloud Functions経由で取得
@@ -1396,7 +1397,7 @@ async function loadPressureChange() {
             currentWeatherTime,
         );
 
-
+alert("1分データ処理完了");
         // ========================================
         // このあとの天気
         // ========================================
@@ -1886,23 +1887,23 @@ async function loadPressureChange() {
         }
 
 
-// --------------------------------
-// タブボタンの文言
-// --------------------------------
+        // --------------------------------
+        // タブボタンの文言
+        // --------------------------------
 
-const schedules = getWalkSchedules();
+        const schedules = getWalkSchedules();
 
-const today = new Date();
+        const today = new Date();
 
-const nextWalkDateLabel =
-    schedules.nextWalk.start.toDateString() !== today.toDateString()
-        ? "翌 "
-        : "";
+        const nextWalkDateLabel =
+            schedules.nextWalk.start.toDateString() !== today.toDateString()
+                ? "翌 "
+                : "";
 
-const nextNextWalkDateLabel =
-    schedules.nextNextWalk.start.toDateString() !== today.toDateString()
-        ? "翌 "
-        : "";
+        const nextNextWalkDateLabel =
+            schedules.nextNextWalk.start.toDateString() !== today.toDateString()
+                ? "翌 "
+                : "";
 
 
         // --------------------------------
