@@ -591,7 +591,7 @@ alert("④ Firestore読み込み完了");
 
 
         if (!userSnap.exists()) {
-
+alert("⑥ 新規ユーザー");
             window.weatherCache = null;
 
             // 初回アクセス
@@ -625,16 +625,16 @@ alert("④ Firestore読み込み完了");
             console.log("新しいユーザーをFirestoreに保存しました！");
 
         } else {
-
+alert("⑥ 既存ユーザー");
             // 2回目以降
             const userData = userSnap.data();
-
+alert("⑦ userData取得完了");
             window.weatherCache =
                 userData.weatherCache || null;
 
             window.nextWalkPressure =
                 userData.nextWalkPressure || null;
-
+alert("⑧ キャッシュ・気圧データ設定完了");
             console.log(
                 "Firestoreから取得したnextWalkPressure:",
                 window.nextWalkPressure
