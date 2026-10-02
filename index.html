@@ -580,9 +580,9 @@ alert("① Firebase初期化開始");
         const userRef = doc(db, "users", user.uid);
 
         const firestoreReadStart = performance.now();
-alert("④ Firestore読み込み完了");
-        const userSnap = await getDoc(userRef);
 
+        const userSnap = await getDoc(userRef);
+alert("④ Firestore読み込み完了");
         console.log(
             "⏱️ Firestore読み込み:",
             Math.round(performance.now() - firestoreReadStart),
