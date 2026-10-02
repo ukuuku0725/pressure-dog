@@ -27,7 +27,6 @@
 
     </div>
 
-
     <!-- ============================= -->
     <!-- 地域設定 -->
     <!-- ============================= -->
@@ -562,8 +561,10 @@ async function initializeUser() {
     try {
 
         const authStart = performance.now();
-
+alert("① Firebase初期化開始");
+        
         const userCredential = await signInAnonymously(auth);
+
         window.currentUser = userCredential.user;
         const user = window.currentUser;
 
@@ -576,11 +577,10 @@ async function initializeUser() {
             "ms",
         );
 
-
         const userRef = doc(db, "users", user.uid);
 
         const firestoreReadStart = performance.now();
-
+alert("④ Firestore読み込み完了");
         const userSnap = await getDoc(userRef);
 
         console.log(
