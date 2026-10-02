@@ -299,8 +299,15 @@ function adjustWeatherCondition(condition, item) {
     // 雨
     // --------------------------------
 
-    // 3mm/h以上なら最低「少し注意」
-    if (rain >= 3) {
+    // 3mm/h以上なら最低「まずまず」
+    if (rain >= 1) {
+        correctedLevel = Math.max(
+            correctedLevel,
+            2
+        );
+    }
+    // 5mm/h以上なら最低「少し注意」
+    if (rain >= 5) {
         correctedLevel = Math.max(
             correctedLevel,
             3
