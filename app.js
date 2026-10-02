@@ -3228,12 +3228,16 @@ const nextNextWalkDateLabel =
     // --------------------------------
     // 柴んぽ準備中画面を終了
     // --------------------------------
-
+alert("⑮ ローディング解除処理開始");
     const loadingScreen =
         document.getElementById("loadingScreen");
-
+alert(
+    "⑯ loadingScreen: " +
+    (loadingScreen ? "見つかった" : "見つからない")
+);
     if (loadingScreen) {
         loadingScreen.style.display = "none";
+        alert("⑰ ローディング解除完了");
     }
 
     console.timeEnd("loadPressureChange");
