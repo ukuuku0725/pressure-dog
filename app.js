@@ -1072,7 +1072,7 @@ function needsWalkLight(
 // ========================================
 
 async function loadPressureChange() {
-alert("loadPressureChange開始");
+
     // --------------------------------
     // 柴んぽ準備中メッセージ
     // --------------------------------
@@ -1106,7 +1106,7 @@ alert("loadPressureChange開始");
         localStorage.getItem("longitude");
 
     if (!latitude || !longitude) {
-alert("緯度経度がありません");
+
         console.error("緯度・経度がありません");
         return;
     }
@@ -1145,7 +1145,6 @@ alert("緯度経度がありません");
     // --------------------------------
 
     try {
-alert("try開始");
 
         const CACHE_MAX_AGE =
             2 * 60 * 60 * 1000; // 2時間
@@ -1191,7 +1190,7 @@ alert("try開始");
         cacheAge <= CACHE_MAX_AGE &&
         cacheLocationMatches
         ) {
-alert("キャッシュある");
+
             hourly =
                 cache.data;
 
@@ -1271,7 +1270,7 @@ alert("キャッシュある");
 
 
         } else {
-alert("キャッシュなし");
+
             // --------------------------------
             // キャッシュがない・古い場合
             // Cloud Functions経由で取得
@@ -1398,7 +1397,7 @@ alert("キャッシュなし");
             currentWeatherTime,
         );
 
-alert("1分データ処理完了");
+
         // ========================================
         // このあとの天気
         // ========================================
@@ -2304,7 +2303,7 @@ alert("1分データ処理完了");
             "🐕 次のお散歩の注意点",
             nextWalkCautions,
         );
-alert("次のお散歩注意処理完了");
+
         // --------------------------------
         // 次のお散歩　おすすめコーデ
         // --------------------------------
@@ -2951,7 +2950,7 @@ alert("次のお散歩注意処理完了");
             "⚠️ 次の次のお散歩の注意点:",
             nextNextWalkCautions,
         );
-alert("次の次のお散歩注意処理完了");
+
         // --------------------------------
         // 次の次のお散歩　おすすめコーデ
         // --------------------------------
@@ -3221,11 +3220,7 @@ alert("次の次のお散歩注意処理完了");
 
 
     } catch (error) {
-alert(
-    "❌ loadPressureChange内でエラー\n" +
-    error.name + "\n" +
-    error.message
-);
+
         console.error(
             "One Call 4.0 エラー:",
             error,
@@ -3235,16 +3230,12 @@ alert(
     // --------------------------------
     // 柴んぽ準備中画面を終了
     // --------------------------------
-alert("⑮ ローディング解除処理開始");
+
     const loadingScreen =
         document.getElementById("loadingScreen");
-alert(
-    "⑯ loadingScreen: " +
-    (loadingScreen ? "見つかった" : "見つからない")
-);
+
     if (loadingScreen) {
         loadingScreen.style.display = "none";
-        alert("⑰ ローディング解除完了");
     }
 
     console.timeEnd("loadPressureChange");

@@ -561,7 +561,6 @@ async function initializeUser() {
     try {
 
         const authStart = performance.now();
-alert("① Firebase初期化開始");
         
         const userCredential = await signInAnonymously(auth);
 
@@ -582,7 +581,7 @@ alert("① Firebase初期化開始");
         const firestoreReadStart = performance.now();
 
         const userSnap = await getDoc(userRef);
-alert("④ Firestore読み込み完了");
+
         console.log(
             "⏱️ Firestore読み込み:",
             Math.round(performance.now() - firestoreReadStart),
@@ -591,20 +590,36 @@ alert("④ Firestore読み込み完了");
 
 
         if (!userSnap.exists()) {
-alert("⑥ 新規ユーザー");
+
             window.weatherCache = null;
 
             // 初回アクセス
             const firestoreWriteStart = performance.now();
+            const DEFAULT_PREFECTURE = "新潟県";
+            const DEFAULT_CITY = "新潟市";
+            const DEFAULT_LATITUDE = 37.91611111;
+            const DEFAULT_LONGITUDE = 139.0363889;
 
             await setDoc(userRef, {
-                prefecture: "新潟県",
-                city: "五泉市",
+                prefecture: DEFAULT_PREFECTURE,
+                city: DEFAULT_CITY,
                 notificationEnabled: false,
                 environment: "production",
+                latitude: DEFAULT_LATITUDE,
+                longitude: DEFAULT_LONGITUDE,
                 createdAt: serverTimestamp(),
                 lastUsedAt: serverTimestamp()
             });
+
+            localStorage.setItem(
+                "latitude",
+                DEFAULT_LATITUDE
+            );
+
+            localStorage.setItem(
+                "longitude",
+                DEFAULT_LONGITUDE
+            );
 
             console.log(
                 "⏱️ 初回Firestore保存:",
@@ -625,36 +640,25 @@ alert("⑥ 新規ユーザー");
             console.log("新しいユーザーをFirestoreに保存しました！");
 
         } else {
-alert("⑥ 既存ユーザー");
+
             // 2回目以降
             const userData = userSnap.data();
-alert("⑦ userData取得完了");
             window.weatherCache =
                 userData.weatherCache || null;
 
             window.nextWalkPressure =
                 userData.nextWalkPressure || null;
-alert("⑧ キャッシュ・気圧データ設定完了");
+
             console.log(
                 "Firestoreから取得したnextWalkPressure:",
                 window.nextWalkPressure
             );
 
             if (userData.prefecture && userData.city) {
-/*
-                document.getElementById("prefectureSelect").value =
-                    userData.prefecture;
-
-                updateCitySelect(
-                    userData.prefecture,
-                    userData.city
-                );
-                */
 
                 document.getElementById("currentCity").textContent =
                     "📍 " + userData.prefecture + userData.city;
             }
-alert("⑩ 地域表示完了");
 
             if (userData.latitude && userData.longitude) {
                 console.log("保存されている緯度:", userData.latitude);
@@ -807,69 +811,6 @@ alert("⑩ 地域表示完了");
             }
         });
 
-/*
-    document
-        .getElementById("enableNotification")
-        .addEventListener("click", async () => {
-        try {
-            console.log("通知登録を開始します");
-
-            await registerPushNotification(
-                window.currentUser,
-                db,
-                doc,
-                setDoc,
-                serverTimestamp
-            );
-
-            alert("通知の登録が完了しました！");
-
-        } catch (error) {
-            console.error(
-                "通知登録エラー:",
-                error,
-            );
-
-            alert(
-                "通知登録に失敗しました: " +
-                error.message,
-            );
-        }
-    });
-*/
-/*
-    document
-        .getElementById("testNotification")
-        .addEventListener("click", async () => {
-        try {
-            console.log("テスト通知を送信します");
-
-            const sendTestNotification =
-                httpsCallable(
-                    functions,
-                    "sendTestNotification",
-                );
-
-            const result =
-                await sendTestNotification();
-
-            console.log(result.data);
-
-            alert("テスト通知を送信しました！");
-
-        } catch (error) {
-            console.error(
-                "テスト通知エラー:",
-                error,
-            );
-
-            alert(
-                "テスト通知に失敗しました: " +
-                error.message,
-            );
-        }
-    });
-*/
 
     // 最初に地域データを読み込む
     await loadCityData();
@@ -908,11 +849,10 @@ alert("⑩ 地域表示完了");
 
     // Firebaseからユーザー情報を取得
     await initializeUser();
-alert("⑬ initializeUser完了");
 
     // Firebase完了後に天気取得
     weatherPromise = window.loadPressureChange();
-alert("⑫ loadPressureChange呼び出し完了");
+
     // Firebase＋Firestoreの計測
     console.log(
         "⏱️ Firebase＋Firestore:",
@@ -922,7 +862,7 @@ alert("⑫ loadPressureChange呼び出し完了");
 
     // 天気データ取得完了を待つ
     const result = await weatherPromise;
-alert("⑭ 天気データ取得完了");
+
     // データ計測
     console.log(
         "⏱️ 天気データ取得＋画面表示:",
