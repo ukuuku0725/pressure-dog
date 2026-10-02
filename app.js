@@ -1072,7 +1072,7 @@ function needsWalkLight(
 // ========================================
 
 async function loadPressureChange() {
-
+alert("loadPressureChange開始");
     // --------------------------------
     // 柴んぽ準備中メッセージ
     // --------------------------------
@@ -1106,6 +1106,7 @@ async function loadPressureChange() {
         localStorage.getItem("longitude");
 
     if (!latitude || !longitude) {
+alert("緯度経度がありません");
         console.error("緯度・経度がありません");
         return;
     }
