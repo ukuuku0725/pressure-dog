@@ -3219,6 +3219,11 @@ const nextNextWalkDateLabel =
 
 
     } catch (error) {
+alert(
+    "❌ loadPressureChange内でエラー\n" +
+    error.name + "\n" +
+    error.message
+);
         console.error(
             "One Call 4.0 エラー:",
             error,
