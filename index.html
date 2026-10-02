@@ -908,10 +908,11 @@ alert("⑩ 地域表示完了");
 
     // Firebaseからユーザー情報を取得
     await initializeUser();
+alert("⑬ initializeUser完了");
 
     // Firebase完了後に天気取得
     weatherPromise = window.loadPressureChange();
-
+alert("⑫ loadPressureChange呼び出し完了");
     // Firebase＋Firestoreの計測
     console.log(
         "⏱️ Firebase＋Firestore:",
@@ -921,7 +922,7 @@ alert("⑩ 地域表示完了");
 
     // 天気データ取得完了を待つ
     const result = await weatherPromise;
-
+alert("⑭ 天気データ取得完了");
     // データ計測
     console.log(
         "⏱️ 天気データ取得＋画面表示:",
