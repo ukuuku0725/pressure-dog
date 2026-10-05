@@ -237,9 +237,8 @@ h2 {
     flex: 0 0 80px;
     width: 80px;
     padding: 7px 4px;
-    border: 1px solid #eeeeee;
+    border: 1px solid #d2d1d1;
     border-radius: 10px;
-    background: #ffffff;
     box-sizing: border-box;
     text-align: center;
 }
@@ -498,7 +497,7 @@ h2 {
 .rain-forecast-icon {
     width: 28px;
     height: 28px;
-    vertical-align: middle;
+    vertical-aoutfit-titlelign: middle;
     margin-right: 4px;
 }
 
@@ -932,14 +931,16 @@ h2 {
     margin: 0;
 }
 
-#nextWalkPriorityCaution,
-#nextNextWalkPriorityCaution {
-    margin: 10px 0px  10px;
+.next-walk-priority-caution {
+    width: 100%;
+    box-sizing: border-box;
+    margin: 10px auto;
     padding: 0 8px;
     background: #edf8ff;
     border-radius: 20px;
     font-size: 12px;
     font-weight: 600;
+    text-align: center;
 }
 
 .priority-caution {
@@ -955,8 +956,8 @@ h2 {
 }
 
 .priority-caution-icon img {
-    width: 60px;
-    height: 60px;
+    width: 55px;
+    height: 55px;
     object-fit: contain;
 }
 
@@ -965,13 +966,14 @@ h2 {
 }
 
 .priority-caution-message {
-    font-size: 18px;
+    font-size: 14px;
     font-weight: 500;
 }
 
 .priority-caution-value {
-    font-size: 30px;
+    font-size: 20px;
     font-weight: borld;
+    color: #269ce5;
 }
 
 .no-priority-caution-image {
@@ -1085,7 +1087,8 @@ h2 {
 
 .walk-hour-card {
     padding: 8px 6px;
-    border: 1px solid #eeeeee;
+    border: 1px solid;
+    border: 1px solid #d2d1d1;
     border-radius: 12px;
     background: #ffffff;
     text-align: center;
@@ -1099,7 +1102,7 @@ h2 {
 }
 
 .walk-hour-data div {
-    font-size: 20px;
+    font-size: 16px;
     white-space: nowrap;
 }
 
