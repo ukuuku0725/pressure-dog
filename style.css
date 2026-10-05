@@ -365,6 +365,23 @@ h2 {
    左側
 ========================= */
 
+.condition-title {
+    display: flex;
+    gap: 6px;
+
+    margin: 0 0 8px 0;
+    font-size: 12px;
+    line-height: 1.2;
+    white-space: nowrap;
+}
+
+.condition-title img {
+    width: 15px;
+    height: 15px;
+    object-fit: contain;
+    flex-shrink: 0;
+}
+
 .current-weather-main-text {
     display: flex;
     flex-direction: column;
@@ -507,25 +524,23 @@ h2 {
 .next-walk-condition-main {
     display: flex;
     align-items: flex-start;
-    gap: 4px;
+    gap: 0;
 }
 
 .next-walk-condition-text {
-    flex: 1;
+    flex: 0 0 50%;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .next-walk-outfit {
-    flex: 1;
-}
-
-.outfit-title img {
-    width: 20px;
-    height: 20px;
-    object-fit: contain;
-}
-
-.next-walk-condition-text {
-    flex: 0 0 60%;
+    flex: 0 0 50%;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .next-walk-condition-text p {
@@ -533,7 +548,7 @@ h2 {
 }
 
 .outfit-title {
-    margin: 0;
+    margin: 5px 0 0 0;
     font-size: 14px;
     white-space: nowrap;
     font-weight: bold;
@@ -541,6 +556,16 @@ h2 {
     display: flex;
     align-items: flex-start;
     gap: 4px;
+
+    background: #fef9e0;
+    padding: 4px 12px;
+    border-radius: 14px;
+}
+
+.outfit-title img {
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
 }
 
 .walk-outfit-image {
@@ -890,9 +915,9 @@ h2 {
 
 .condition-judge-image {
     display: block;
-    width: 150px;
+    width: 180px;
     height: auto;
-    margin: 0 0 12px 0;
+    margin: 0 auto 0;
 }
 
 .next-walk-condition {
@@ -907,12 +932,22 @@ h2 {
     margin: 0;
 }
 
+#nextWalkPriorityCaution,
+#nextNextWalkPriorityCaution {
+    margin: 10px 0px  10px;
+    padding: 0 8px;
+    background: #edf8ff;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
 .priority-caution {
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: center;
-    gap: 12px;
+    gap: 0px;
     margin: 8px 0;
     padding: 0;
     background: transparent;
@@ -920,8 +955,8 @@ h2 {
 }
 
 .priority-caution-icon img {
-    width: 70px;
-    height: 70px;
+    width: 60px;
+    height: 60px;
     object-fit: contain;
 }
 
@@ -935,8 +970,8 @@ h2 {
 }
 
 .priority-caution-value {
-    font-size: 20px;
-    font-weight: 600;
+    font-size: 30px;
+    font-weight: borld;
 }
 
 .no-priority-caution-image {
