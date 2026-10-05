@@ -87,8 +87,8 @@ exports.sendTestNotification = onCall(
         const userData =
                 userDoc.data();
 
-        // ※※development⇔production切り替え　本番ではここをコメントアウトする※※
-        if (userData.environment !== "development") {
+        // ※※テスト通知　development⇔production切り替え　本番ではここをコメントアウトする※※
+        if (userData.environment !== "production") {
             throw new HttpsError(
                 "permission-denied",
                 "開発環境のユーザーのみ実行できます",
@@ -315,12 +315,12 @@ exports.refreshWeatherCache = onSchedule(
     async () => {
       const db = admin.firestore();
 
-      // ※※developmentユーザーだけ取得
+      // ※※定期取得関数　テストの際はdevelopmentユーザーだけ取得するよう修正する
       // ※※development⇔production切り替え※※
       const usersSnapshot =
             await db
                 .collection("users")
-                .where("environment", "==", "development")
+                .where("environment", "==", "production")
                 .get();
 
       logger.info(
