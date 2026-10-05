@@ -477,7 +477,7 @@ h2 {
 /* =========================
    降雨予報
 ========================= */
-
+/* 
 .rain-forecast-icon {
     width: 28px;
     height: 28px;
@@ -497,7 +497,7 @@ h2 {
 #rainForecastMessage span {
     position: relative;
     top: 2px;
-}
+} */
 
 
 /* ==============================
