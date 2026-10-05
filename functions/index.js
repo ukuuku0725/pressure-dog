@@ -147,6 +147,7 @@ exports.sendTestNotification = onCall(
 exports.getWeatherData = onCall(
     {
       secrets: [OPENWEATHER_API_KEY],
+      enforceAppCheck: true,
     },
     async (request) => {
       // ログインしているユーザーだけ許可

@@ -2904,14 +2904,6 @@ async function loadPressureChange() {
                 });
 
             });
-        console.log(
-            "Cloud Functions経由で天気データ取得成功！",
-        );
-
-        console.log(
-            "データ件数:",
-            hourly.length,
-        );
 
         
         // --------------------------------
