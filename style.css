@@ -366,7 +366,10 @@ h2 {
 
 .condition-title {
     display: flex;
+    align-items: center;
     gap: 6px;
+
+    align-self: flex-start;
 
     margin: 0 0 8px 0;
     font-size: 12px;
