@@ -3234,7 +3234,7 @@ function displayWalkSunInfo(
             formatSunTime(sunrise);
 
         message.innerHTML =
-            "明るくなる前のお散歩は<br>足元に気をつけてね";
+            "明るくなる前は<br>ゆっくり安全にお散歩しよう";
 
     } else {
 
