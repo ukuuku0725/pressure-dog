@@ -2529,90 +2529,12 @@ async function loadPressureChange() {
         // 日の出・日の入り表示
         // --------------------------------
 
-        const nextWalkSunInfoElement =
-            document.getElementById(
-                "nextWalkSunInfo",
-            );
-
-        if (nextWalkSunInfoElement) {
-
-            const nextWalkSunIcon =
-                document.getElementById(
-                    "nextWalkSunIcon",
-                );
-
-            const nextWalkSunLabel =
-                document.getElementById(
-                    "nextWalkSunLabel",
-                );
-
-            const nextWalkSunTime =
-                document.getElementById(
-                    "nextWalkSunTime",
-                );
-
-            const nextWalkSunMessage =
-                document.getElementById(
-                    "nextWalkSunMessage",
-                );
-
-            // いったんクラスをリセット
-            nextWalkSunInfoElement.classList.remove(
-                "sunrise",
-                "sunset",
-            );
-
-            // 朝のさんぽ
-            if (schedules.nextWalk.type === "morning") {
-
-                nextWalkSunInfoElement.classList.add(
-                    "sunrise",
-                );
-
-                nextWalkSunIcon.textContent =
-                    "🌅";
-
-                nextWalkSunLabel.textContent =
-                    "日の出";
-
-                nextWalkSunTime.textContent =
-                    sun.sunrise.toLocaleTimeString(
-                        "ja-JP",
-                        {
-                            hour: "2-digit",
-                            minute: "2-digit",
-                        },
-                    );
-
-                nextWalkSunMessage.innerHTML =
-                    "明るくなってから<br>お散歩を始めましょう";
-
-            // 夜のさんぽ
-            } else {
-
-                nextWalkSunInfoElement.classList.add(
-                    "sunset",
-                );
-
-                nextWalkSunIcon.textContent =
-                    "🌇";
-
-                nextWalkSunLabel.textContent =
-                    "日の入り";
-
-                nextWalkSunTime.textContent =
-                    sun.sunset.toLocaleTimeString(
-                        "ja-JP",
-                        {
-                            hour: "2-digit",
-                            minute: "2-digit",
-                        },
-                    );
-
-                nextWalkSunMessage.innerHTML =
-                    "暗くなる前に<br>お散歩を終えましょう";
-            }
-        }
+        displayWalkSunInfo(
+            "nextWalkSunInfo",
+            schedules.nextWalk.type,
+            sun.sunrise,
+            sun.sunset,
+        );
 
         // ========================================
         // 次の次のお散歩処理
@@ -3210,98 +3132,17 @@ async function loadPressureChange() {
             }
         }
 
+
         // --------------------------------
-        // 次の次のお散歩　日の出・日の入り表示
+        // 日の出・日の入り表示
         // --------------------------------
 
-        const nextNextWalkSunInfoElement =
-            document.getElementById(
-                "nextNextWalkSunInfo",
-            );
-
-        if (nextNextWalkSunInfoElement) {
-
-            const nextNextWalkSunIcon =
-                document.getElementById(
-                    "nextNextWalkSunIcon",
-                );
-
-            const nextNextWalkSunLabel =
-                document.getElementById(
-                    "nextNextWalkSunLabel",
-                );
-
-            const nextNextWalkSunTime =
-                document.getElementById(
-                    "nextNextWalkSunTime",
-                );
-
-            const nextNextWalkSunMessage =
-                document.getElementById(
-                    "nextNextWalkSunMessage",
-                );
-
-            nextNextWalkSunInfoElement.classList.remove(
-                "sunrise",
-                "sunset",
-            );
-
-
-            // 朝のさんぽ
-            if (
-                schedules.nextNextWalk.type ===
-                "morning"
-            ) {
-
-                nextNextWalkSunInfoElement.classList.add(
-                    "sunrise",
-                );
-
-                nextNextWalkSunIcon.textContent =
-                    "🌅";
-
-                nextNextWalkSunLabel.textContent =
-                    "日の出";
-
-                nextNextWalkSunTime.textContent =
-                    nextNextSun.sunrise.toLocaleTimeString(
-                        "ja-JP",
-                        {
-                            hour: "2-digit",
-                            minute: "2-digit",
-                        },
-                    );
-
-                nextNextWalkSunMessage.innerHTML =
-                    "明るくなってから<br>お散歩を始めましょう";
-
-
-            // 夜のさんぽ
-            } else {
-
-                nextNextWalkSunInfoElement.classList.add(
-                    "sunset",
-                );
-
-                nextNextWalkSunIcon.textContent =
-                    "🌇";
-
-                nextNextWalkSunLabel.textContent =
-                    "日の入り";
-
-                nextNextWalkSunTime.textContent =
-                    nextNextSun.sunset.toLocaleTimeString(
-                        "ja-JP",
-                        {
-                            hour: "2-digit",
-                            minute: "2-digit",
-                        },
-                    );
-
-                nextNextWalkSunMessage.innerHTML =
-                    "暗くなる前に<br>お散歩を終えましょう";
-            }
-        }
+        displayWalkSunInfo(
+            "nextNextWalkSunInfo",
+            schedules.nextNextWalk.type,
+            sun.sunrise,
+            sun.sunset,
+        );
 
 
     } catch (error) {
@@ -3384,30 +3225,44 @@ function displayWalkSunInfo(
 
         element.classList.add("sunrise");
 
-        icon.textContent = "🌅";
+        icon.innerHTML =
+            '<img src="./images/icons/sunrise.png" alt="日の出">';
 
         label.textContent = "日の出";
 
         time.textContent =
-            formatTime(sunrise);
+            formatSunTime(sunrise);
 
         message.innerHTML =
-            "明るくなってから<br>お散歩を始めましょう";
+            "明るくなる前のお散歩は<br>足元に気をつけてね";
 
     } else {
 
         element.classList.add("sunset");
 
-        icon.textContent = "🌇";
+        icon.innerHTML =
+            '<img src="./images/icons/sunset.png" alt="日の入り">';
 
         label.textContent = "日の入り";
 
         time.textContent =
-            formatTime(sunset);
+            formatSunTime(sunset);
 
         message.innerHTML =
-            "暗くなる前に<br>お散歩を終えましょう";
+            "暗くても元気にお散歩♪<br>足元に気をつけてね";
     }
+}
+
+function formatSunTime(date) {
+
+    return date.toLocaleTimeString(
+        "ja-JP",
+        {
+            hour: "2-digit",
+            minute: "2-digit",
+        },
+    );
+
 }
 
 function formatSunTime(date) {

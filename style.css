@@ -1187,6 +1187,7 @@ h2 {
 /* アイコン */
 .walk-sun-icon {
     width: 48px;
+    height: 48px;
     flex-shrink: 0;
 
     display: flex;
@@ -1194,6 +1195,13 @@ h2 {
     justify-content: center;
 
     font-size: 32px;
+}
+
+.walk-sun-icon img {
+    width: 32px;
+    height: 32px;
+    object-fit: contain;
+    transform: translateY(4px);
 }
 
 /* 日の出・日の入り */
