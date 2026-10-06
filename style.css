@@ -572,9 +572,9 @@ h2 {
 
 .walk-outfit-image {
     display: block;
-    width: 180px;
+    width: 170px;
     height: auto;
-    margin: 0;
+    padding: 4px 12px;
 }
 
 /* ==============================
