@@ -157,6 +157,11 @@ exports.getWeatherData = onCall(
             "ログインが必要です",
         );
       }
+      console.log("🔐 認証確認", {
+        hasAuth: !!request.auth,
+        uid: request.auth?.uid || null,
+        hasAppCheck: !!request.app,
+      });
 
       try {
         const {latitude, longitude} =
