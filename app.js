@@ -1223,58 +1223,6 @@ async function loadPressureChange() {
                 hourly.length,
             );
 
-            
-            // // --------------------------------
-            // // 1分データ テスト
-            // // --------------------------------
-
-            // const minutelyResult =
-            //     await window.testMinutelyWeather({
-            //         latitude: Number(latitude),
-            //         longitude: Number(longitude),
-            //     });
-
-            // console.log(
-            //     "🌧️ 1分データテスト結果:",
-            //     minutelyResult,
-            // );
-
-
-            // // --------------------------------
-            // // 雨が降り始める時間を確認
-            // // --------------------------------
-
-            // const minutelyData =
-            //     minutelyResult.data.data;
-
-            // const firstRain =
-            //     minutelyData.find((item) => {
-            //         return item.precipitation > 0;
-            //     });
-
-            // if (firstRain) {
-
-            //     const now =
-            //         Math.floor(Date.now() / 1000);
-
-            //     const minutesUntilRain =
-            //         Math.round(
-            //             (firstRain.dt - now) / 60
-            //         );
-
-            //     console.log(
-            //         "🌧️ 雨が降り始めるまで:",
-            //         minutesUntilRain,
-            //         "分後",
-            //     );
-
-            // } else {
-
-            //     console.log(
-            //         "🌧️ 60分以内に雨の予報なし",
-            //     );
-            // }
-
 
         } else {
 
@@ -1324,65 +1272,6 @@ async function loadPressureChange() {
                 hourly.length,
             );
         }
-
-
-        // // --------------------------------
-        // // 1分データ
-        // // --------------------------------
-
-        // const minutelyResult =
-        //     await window.testMinutelyWeather({
-        //         latitude: Number(latitude),
-        //         longitude: Number(longitude),
-        //     });
-
-        // console.log(
-        //     "🌧️ 1分データテスト結果:",
-        //     minutelyResult,
-        // );
-
-        // const minutelyData =
-        //     minutelyResult.data.data;
-
-        // const firstRain =
-        //     minutelyData.find((item) => {
-        //         return item.precipitation > 0;
-        //     });
-
-        // const rainForecastElement =
-        //     document.getElementById(
-        //         "rainForecastMessage",
-        //     );
-
-        // if (rainForecastElement) {
-
-        //     if (firstRain) {
-
-        //         const now =
-        //             Math.floor(Date.now() / 1000);
-
-        //         const minutesUntilRain =
-        //             Math.round(
-        //                 (firstRain.dt - now) / 60
-        //             );
-
-        //         rainForecastElement.innerHTML = `
-        //             <img
-        //                 src="./images/cautions/raintime.png"
-        //                  alt="雨予報"
-        //                  class="rain-forecast-icon"
-        //             >
-        //             <span class="rain-forecast-text">
-        //                 ${minutesUntilRain}分後に雨が降る予報です
-        //             </span>
-        //             `;
-
-        //     } else {
-        //         rainForecastElement.style.display = "none";
-        //         rainForecastElement.innerHTML = "";
-
-        //     }
-        // }
 
 
         // 6時間後(現在)のデータを格納
@@ -2355,6 +2244,10 @@ async function loadPressureChange() {
 
         if (nextWalkCautions.length > 0) {
 
+            nextWalkPriorityCautionElement.classList.remove(
+                "no-priority-caution"
+            );
+
             const priorityCaution =
                 nextWalkCautions[0];
 
@@ -2385,6 +2278,10 @@ async function loadPressureChange() {
 
         } else {
 
+            nextWalkPriorityCautionElement.classList.add(
+                "no-priority-caution"
+            );
+
             nextWalkPriorityCautionElement.innerHTML = `
                 <img
                     src="./images/cautions/msg.png"
@@ -2392,6 +2289,7 @@ async function loadPressureChange() {
                     alt="特に注意することはありません"
                 >
             `;
+           
         }
 
         // 気温表示は常に非表示
@@ -2988,6 +2886,10 @@ async function loadPressureChange() {
 
             if (nextNextWalkCautions.length > 0) {
 
+                nextNextWalkPriorityCautionElement.classList.remove(
+                    "no-priority-caution"
+                );
+
                 const priorityCaution =
                     nextNextWalkCautions[0];
 
@@ -3018,6 +2920,10 @@ async function loadPressureChange() {
 
             } else {
 
+                nextNextWalkPriorityCautionElement.classList.add(
+                    "no-priority-caution"
+                );
+
                 nextNextWalkPriorityCautionElement.innerHTML = `
                     <img
                         src="./images/cautions/msg.png"
@@ -3025,6 +2931,7 @@ async function loadPressureChange() {
                         alt="特に注意することはありません"
                     >
                 `;
+                
             }
 
             // 気温表示は常に非表示

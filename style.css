@@ -988,6 +988,10 @@ h2 {
     transform: translate(40px, -5px);
 }
 
+.next-walk-priority-caution.no-priority-caution {
+    background: transparent;
+}
+
 /* ==============================
    次の散歩　３時間ごとの天気
 ============================== */
