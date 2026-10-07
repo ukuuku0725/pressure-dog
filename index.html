@@ -493,7 +493,8 @@
 
     // localでもApp Checkを扱うために必要（ないとfunctionのgetWeatherData到達しない）
     // デバッグトークンはFireBaseAppCheckのデバッグトークンに追加済み”72da4157-9602-43d5-9b0e-704e341e0170”
-    self.FIREBASE_APPCHECK_DEBUG_TOKEN = true;
+    // テスト時のみ使用
+    //self.FIREBASE_APPCHECK_DEBUG_TOKEN = true;
 
     // Firebase初期化
     const app = initializeApp(firebaseConfig);
