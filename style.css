@@ -989,8 +989,6 @@ h2 {
     width: 140px;
     height: auto;
     margin: 0 auto;
-
-    transform: translate(40px, -5px);
 }
 
 .next-walk-priority-caution.no-priority-caution {

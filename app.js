@@ -2279,13 +2279,13 @@ async function loadPressureChange() {
                 "no-priority-caution"
             );
 
-            nextWalkPriorityCautionElement.innerHTML = `
-                <img
-                    src="./images/cautions/msg.png"
-                    class="no-priority-caution-image"
-                    alt="特に注意することはありません"
-                >
-            `;
+            // nextWalkPriorityCautionElement.innerHTML = `
+            //     <img
+            //         src="./images/cautions/safe.png"
+            //         class="no-priority-caution-image"
+            //         alt="特に注意することはありません"
+            //     >
+            // `;
            
         }
 
@@ -2929,13 +2929,13 @@ async function loadPressureChange() {
                     "no-priority-caution"
                 );
 
-                nextNextWalkPriorityCautionElement.innerHTML = `
-                    <img
-                        src="./images/cautions/msg.png"
-                        class="no-priority-caution-image"
-                        alt="特に注意することはありません"
-                    >
-                `;
+                // nextNextWalkPriorityCautionElement.innerHTML = `
+                //     <img
+                //         src="./images/cautions/safe.png"
+                //         class="no-priority-caution-image"
+                //         alt="特に注意することはありません"
+                //     >
+                // `;
                 
             }
 
