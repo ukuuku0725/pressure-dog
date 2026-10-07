@@ -1,8 +1,4 @@
 
-// グローバルAPIキー
-const VAPID_PUBLIC_KEY =
-    "BB9oI0A5rn7GCwcqOlPW1yijUWUPAyYueDsUP0ClnyxQ1xgm7m3BQts_nNKYr-Y6KpSLW1WU259xajWrwpg60JE";
-
 // 待機メッセージ
 const loadingMessages = [
     "🐾 お天気を確認しています",
@@ -736,7 +732,8 @@ function getWalkPressureCaution(
 
 
 /**
- * 次のお散歩で気をつけたいことをまとめます。
+ * 次のお散歩で気をつけたいことを
+ * まとめます。
  */
 function getWalkCautions(
     heatCautions,
@@ -3366,188 +3363,6 @@ nextNextWalkCard.style.display =
 window.loadPressureChange =
     loadPressureChange;
 
-
-// ========================================
-// Push通知登録
-// ========================================
-
-async function registerPushNotification(
-    user,
-    db,
-    doc,
-    setDoc,
-    serverTimestamp,
-) {
-    const userRef = doc(
-        db,
-        "users",
-        user.uid,
-    );
-
-    try {
-        // ① Push登録開始
-        await setDoc(
-            userRef,
-            {
-                pushDebug: {
-                    step: "start",
-                    updatedAt: serverTimestamp(),
-                },
-            },
-            {merge: true},
-        );
-
-        if (!("Notification" in window)) {
-            await setDoc(
-                userRef,
-                {
-                    pushDebug: {
-                        step: "notification_not_supported",
-                        updatedAt: serverTimestamp(),
-                    },
-                },
-                {merge: true},
-            );
-
-            console.error(
-                "このブラウザは通知に対応していません",
-            );
-            return;
-        }
-
-        // ② 通知許可
-        const permission =
-            await Notification.requestPermission();
-
-        console.log(
-            "通知許可:",
-            permission,
-        );
-
-        if (permission !== "granted") {
-            await setDoc(
-                userRef,
-                {
-                    pushDebug: {
-                        step: "permission_not_granted",
-                        permission: permission,
-                        updatedAt: serverTimestamp(),
-                    },
-                },
-                {merge: true},
-            );
-
-            console.log(
-                "通知が許可されませんでした",
-            );
-            return;
-        }
-
-        // ③ Service Worker登録
-        await setDoc(
-            userRef,
-            {
-                pushDebug: {
-                    step: "registering_service_worker",
-                    updatedAt: serverTimestamp(),
-                },
-            },
-            {merge: true},
-        );
-
-        const registration =
-            await navigator.serviceWorker.register(
-                "./service-worker.js",
-            );
-
-        console.log(
-            "Service Worker登録成功！",
-        );
-
-        // ④ Push Subscription作成
-        await setDoc(
-            userRef,
-            {
-                pushDebug: {
-                    step: "creating_subscription",
-                    updatedAt: serverTimestamp(),
-                },
-            },
-            {merge: true},
-        );
-
-        const subscription =
-            await registration.pushManager.subscribe({
-                userVisibleOnly: true,
-                applicationServerKey:
-                    VAPID_PUBLIC_KEY,
-            });
-
-        console.log(
-            "Push Subscription作成成功！",
-        );
-
-        console.log(subscription);
-
-        // ⑤ Firestore保存
-        const subscriptionData =
-            subscription.toJSON();
-
-        await setDoc(
-            userRef,
-            {
-                pushSubscription:
-                    subscriptionData,
-
-                notificationEnabled:
-                    false,
-
-                lastUsedAt:
-                    serverTimestamp(),
-
-                pushDebug: {
-                    step: "saved",
-                    updatedAt: serverTimestamp(),
-                },
-            },
-            {
-                merge: true,
-            },
-        );
-
-        console.log(
-            "Push SubscriptionをFirestoreに保存しました！",
-        );
-
-    } catch (error) {
-
-        console.error(
-            "Push通知登録エラー:",
-            error,
-        );
-
-        // エラー内容をFirestoreに保存
-        await setDoc(
-            userRef,
-            {
-                pushDebug: {
-                    step: "error",
-                    message:
-                        error.message ||
-                        String(error),
-                    name:
-                        error.name ||
-                        "UnknownError",
-                    updatedAt:
-                        serverTimestamp(),
-                },
-            },
-            {
-                merge: true,
-            },
-        );
-    }
-}
 
 // =============================
 // 設定画面の切り替え

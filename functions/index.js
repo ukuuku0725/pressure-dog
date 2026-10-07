@@ -6,7 +6,6 @@ const {defineSecret} = require("firebase-functions/params");
 const logger = require("firebase-functions/logger");
 
 const admin = require("firebase-admin");
-const webpush = require("web-push");
 
 setGlobalOptions({maxInstances: 10});
 
@@ -14,26 +13,8 @@ setGlobalOptions({maxInstances: 10});
 admin.initializeApp();
 
 // Secret Manager
-const VAPID_PRIVATE_KEY =
-    defineSecret("VAPID_PRIVATE_KEY");
-
 const OPENWEATHER_API_KEY =
     defineSecret("OPENWEATHER_API_KEY");
-
-// VAPID公開鍵
-const VAPID_PUBLIC_KEY_PART1 =
-    "BB9oI0A5rn7GCwcqOlPW1yijUWUPAyYueDsUP0ClnyxQ1xgm7m3BQts_";
-
-const VAPID_PUBLIC_KEY_PART2 =
-    "nNKYr-Y6KpSLW1WU259xajWrwpg60JE";
-
-const VAPID_PUBLIC_KEY =
-    VAPID_PUBLIC_KEY_PART1 +
-    VAPID_PUBLIC_KEY_PART2;
-
-// VAPIDの送信者情報
-const VAPID_EMAIL =
-    "mailto:deguchi.a.t@gmail.com";
 
 
 // ========================================
