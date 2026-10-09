@@ -3,195 +3,467 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>わんこのための気圧予報</title>
-    <link rel="icon" href="images/icon.png">
+    <title>お散歩コンディションアプリ【柴んぽ】</title>
+    <link rel="icon" href="./images/icons/shiba-logo.png">
     <link rel="manifest" href="./manifest.json">
     <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-    <h1>わんこのための気圧予報</h1>
+    <!-- ================================
+     柴んぽ準備中画面
+    ================================ -->
 
-    <!-- 現在地 -->
-    <div class="location">
+    <div id="loadingScreen">
 
-        <p id="currentCity">---</p>
-
-    </div>
-
-
-    <!-- 今のお散歩 -->
-    <div class="walk-card">
-
-        <h2>🐕 今のお散歩</h2>
-
-        <div class="walk-face">
-            <img id="currentWalkFace" src="images/shiba1.png" alt="わんこの表情">
+        <div class="loading-title">
+            柴んぽ
         </div>
 
-        <p id="currentWalkMessage">
-            ---
-        </p>
-
-        <p class="walk-pressure">
-            🌀 <span id="currentPressure">---</span> hPa
-            （気圧変化 <span id="currentWalkChange">---</span>）
-        </p>
-
-        <div class="pressure-level">
-            <div class="pressure-level-title">注意度</div>
-
-            <div class="pressure-bar">
-                <span id="currentPressureBar"></span>
-            </div>
-
-            <div class="pressure-level-label">
-                <span>少なめ</span>
-                <span>かなり注意</span>
-            </div>
-        </div>
-
-        <p class="walk-weather">
-            🌡️ <span id="currentTemperature">---</span>℃　
-            💧 <span id="currentHumidity">---</span>%　
-            ☔ <span id="currentRainProbability">---</span>%
-        </p>
-
-    </div>
-    <details class="pressure-info">
-
-        <summary>💡 気圧とわんこの体調について</summary>
-
-        <p>
-            気圧が大きく変化すると、わんこによっては
-            元気がない、落ち着かない、食欲がないなど、
-            いつもと違う様子が見られることがあります。
-        </p>
-
-        <p>
-            気圧の変化が大きい日は、
-            いつもよりゆっくり様子を見てあげましょう。
-        </p>
-    </details>
-
-    <!-- これから3時間の降水確率 -->
-    <div id="rainProbability">
-
-        <h2>☔ 今後3時間の降水確率</h2>
-
-        <div class="rain-hours">
-
-            <div>
-                <p id="rain1hTime">1時間後</p>
-                <p id="rain1h">---</p>
-            </div>
-
-            <div>
-                <p id="rain2hTime">2時間後</p>
-                <p id="rain2h">---</p>
-            </div>
-
-            <div>
-                <p id="rain3hTime">3時間後</p>
-                <p id="rain3h">---</p>
-            </div>
-
+        <div id="loadingMessage">
+            準備中…
         </div>
 
     </div>
 
-
-    <!-- 次のお散歩 -->
-    <div class="walk-card">
-
-        <h2 id="nextWalkTitle">
-            🌆 次のお散歩
-        </h2>
-
-        <div class="walk-face">
-            <img id="nextWalkFace" src="images/shiba1.png" alt="わんこの表情">
-        </div>
-
-        <p id="nextWalkMessage">
-            ---
-        </p>
-
-        <p class="walk-pressure">
-            🌀 <span id="nextPressure">---</span> hPa
-            （気圧変化 <span id="nextWalkChange">---</span>）
-        </p>
-
-        <div class="pressure-level">
-            <div class="pressure-level-title">注意度</div>
-
-            <div class="pressure-bar">
-                <span id="nextPressureBar"></span>
-            </div>
-
-            <div class="pressure-level-label">
-                <span>少なめ</span>
-                <span>かなり注意</span>
-            </div>
-        </div>
-
-        <p class="walk-weather">
-            🌡️ <span id="nextTemperature">---</span>℃　
-            💧 <span id="nextHumidity">---</span>%　
-            ☔ <span id="nextRain">---</span>%
-        </p>
-
-    </div>
-
+    <!-- ============================= -->
     <!-- 地域設定 -->
-    <div class="location-settings">
+    <!-- ============================= -->
 
-        <h2>⚙️ 地域設定</h2>
+    <div
+        class="location-settings"
+        id="locationSettings"
+        style="display: none;"
+    >
 
-        <div>
-            <label for="prefectureSelect">都道府県：</label>
+        <h2>地域設定</h2>
+
+        <div class="location-setting-item">
+
+            <label for="prefectureSelect">
+                都道府県
+            </label>
+
             <select id="prefectureSelect">
-                <option value="">選択してください</option>
+                <option value="">
+                    選択してください
+                </option>
             </select>
+
         </div>
 
-        <div>
-            <label for="citySelect">市区町村：</label>
+        <div class="location-setting-item">
+
+            <label for="citySelect">
+                市区町村
+            </label>
+
             <select id="citySelect">
                 <option value="">
                     先に都道府県を選択してください
                 </option>
             </select>
+
         </div>
 
-        <button id="saveCity">保存</button>
-
-    </div>
-
-    <!-- 設定・テスト -->
-    <div class="settings">
-
-        <button id="enableNotification">
-            🔔 通知を受け取る
+        <button id="saveCity">
+            保存
         </button>
 
-        <button id="testNotification">
-            🔔 テスト通知を送る
+        <button
+            type="button"
+            id="backToMain"
+        >
+            戻る
         </button>
 
     </div>
 
-    <p class="medical-note">
-        ※この情報は、気圧の変化と愛犬の体調との関係を参考にしていただくためのものです。<br>
-        体調が悪い、いつもと違う様子が続くなどの場合は、気圧の影響と自己判断せず、動物病院にご相談ください。
-    </p>
+
+    <!-- ======================================== -->
+    <!-- V2：柴んぽ -->
+    <!-- ======================================== -->
+
+    <!-- ヘッダー -->
+    <header class="app-header">
+
+        <img
+            src="./images/headerback.png"
+            alt="柴んぽ"
+            class="header-image"
+        >
+
+        <div class="header-overlay">
+
+            <button
+                type="button"
+                id="settingsButton"
+                class="settings-button"
+            >
+                ⚙️地域設定
+            </button>
+
+            <div class="location">
+                <span></span>
+                <p id="currentCity">---</p>
+            </div>
+
+        </div>
+
+    </header>
+
+    <!-- タブ -->
+    <nav class="weather-tabs">
+
+        <button
+            type="button"
+            class="weather-tab current-weather-tab active"
+            data-tab="current"
+        >
+            🌤️
+        </button>
+
+        <button
+            type="button"
+            class="weather-tab"
+            data-tab="next"
+            id="nextWalkTab"
+        >
+            ---
+        </button>
+
+        <button
+            type="button"
+            class="weather-tab"
+            data-tab="nextNext"
+            id="nextNextWalkTab"
+        >
+            ---
+        </button>
+
+    </nav>
+
+    <!-- 今の天気 -->
+
+    <div class="weather-card" id="currentWeatherCard">
+
+        <h3 class="current-weather-title">今の天気</h3>
+
+        <div class="current-weather-main">
+
+            <!-- 左側：メインの天気 -->
+            <div class="current-weather-main-text">
+
+                <div class="current-weather-description">
+                    <span id="currentWeatherIcon"></span>
+
+                    <div id="currentWeatherDescription"></div>
+
+                </div>
+
+                <div id="currentWeatherTemp"></div>
+
+                <div id="currentPrecipitation"></div>
+
+            </div>
+
+            <!-- 右側：詳細情報 -->
+            <div class="current-weather">
+                <div id="currentWeather"></div>
+            </div>
+
+        </div>
+
+        <!-- 降雨予報
+        <div id="rainForecastMessage"></div> -->
+
+        <div class="current-weather-cautions">
+
+            <h3>
+                <img src="./images/icons/caution.png" alt="">
+                注意ポイント
+            </h3>
+
+            <div id="currentWeatherCautions"></div>
+
+        </div>
+
+        <!-- 33時間予報 -->
+        <div class="future-weather">
+
+            <h3>
+                このあとの天気
+            </h3>
+
+            <div
+                id="futureWeather"
+                class="future-weather-scroll"
+            >
+            </div>
+        </div>
+    </div>
+
+
+    <!-- 次のお散歩 -->
+    <div class="walk-card" id="nextWalkCard">
+
+        <!-- 総合コンディション -->
+        <div class="next-walk-condition">
+
+            <div class="next-walk-condition-main">
+
+                <div class="next-walk-condition-text">
+                    <h3 class="section-title condition-title">
+                        <img src="./images/icons/titleicon.png" alt="">
+                        お散歩コンディション
+                    </h3>
+
+                    <img
+                        id="nextWalkCondition"
+                        class="condition-judge-image"
+                        src="./images/judges/judge_3.png"
+                        alt="お散歩コンディション"
+                    >
+
+                    <p id="nextWalkWeatherDescription">柴んぽ確認中…</p>
+                    <p id="nextWalkMaxTemp">--℃</p>
+
+                    <div
+                        id="nextWalkPriorityCaution"
+                        class="next-walk-priority-caution"
+                    ></div>
+
+                </div>
+
+                <div class="next-walk-outfit">
+
+                    <h3 class="section-title outfit-title">
+                        <img src="./images/outfits/outfit.png" alt="">
+                        おすすめスタイル
+                    </h3>
+
+                    <img
+                        id="nextWalkOutfit"
+                        class="walk-outfit-image"
+                        src="./images/outfits/normal.png"
+                        alt="おすすめの服装"
+                    >
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- 気をつけたいこと -->
+        <div
+            id="nextWalkCautionsSection"
+            class="next-walk-cautions"
+        >
+
+            <h3>
+                <img src="./images/icons/caution.png" alt="">
+                その他の注意ポイント
+            </h3>
+
+            <div id="nextWalkCautions">
+                ---
+            </div>
+
+        </div>
+
+        <!-- ３時間天気 -->
+        <div class="walk-hourly-weather">
+            <div id="nextWalkHourlyWeather"></div>
+        </div>
+
+        <!-- ============================= -->
+        <!-- 日の出・日の入り -->
+        <!-- ============================= -->
+
+        <div
+            id="nextWalkSunInfo"
+            class="walk-sun-info"
+        >
+            <div class="walk-sun-icon">
+                <span id="nextWalkSunIcon">🌇</span>
+            </div>
+
+            <div class="walk-sun-main">
+                <span
+                    id="nextWalkSunLabel"
+                    class="walk-sun-label"
+                >
+                    日の入り
+                </span>
+
+                <span
+                    id="nextWalkSunTime"
+                    class="walk-sun-time"
+                >
+                    --:--
+                </span>
+            </div>
+
+            <div
+                id="nextWalkSunMessage"
+                class="walk-sun-message"
+            >
+            </div>
+        </div>
+        
+        <!-- もちもの -->
+        <div class="next-walk-belongings">
+            <h3>
+                <img src="./images/icons/belongings.png" alt="">
+                もちもの
+            </h3>
+            <div id="nextWalkBelongings">
+                ---
+            </div>
+        </div>
+
+    </div>
+
+    <!-- 次の次のお散歩 -->
+    <div class="walk-card" id="nextNextWalkCard">
+
+        <!-- 総合コンディション -->
+        <div class="next-walk-condition">
+
+            <div class="next-walk-condition-main">
+
+                <div class="next-walk-condition-text">
+                    <h3 class="section-title condition-title">
+                        <img src="./images/icons/titleicon.png" alt="">
+                        お散歩コンディション
+                    </h3>
+
+                    <img
+                        id="nextNextWalkCondition"
+                        class="condition-judge-image"
+                        src="./images/judges/judge_3.png"
+                        alt="お散歩コンディション"
+                    >
+
+                    <p id="nextNextWalkWeatherDescription">柴んぽ確認中…</p>
+                    <p id="nextNextWalkMaxTemp">--℃</p>
+
+                    <div
+                        id="nextNextWalkPriorityCaution"
+                        class="next-walk-priority-caution"
+                    ></div>
+
+                </div>
+
+                <div class="next-walk-outfit">
+
+                    <h3 class="section-title outfit-title">
+                        <img src="./images/outfits/outfit.png" alt="">
+                        おすすめスタイル
+                    </h3>
+
+                    <img
+                        id="nextNextWalkOutfit"
+                        class="walk-outfit-image"
+                        src="./images/outfits/normal.png"
+                        alt="おすすめの服装"
+                    >
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- 気をつけたいこと -->
+        <div
+            id="nextNextWalkCautionsSection"
+            class="next-walk-cautions"
+        >
+
+            <h3>
+                <img src="./images/icons/caution.png" alt="">
+                そのほかの注意ポイント
+            </h3>
+
+            <div id="nextNextWalkCautions">
+                ---
+            </div>
+
+        </div>
+
+        <!-- 3時間天気 -->
+        <div class="walk-hourly-weather">
+            <div id="nextNextWalkHourlyWeather"></div>
+        </div>
+
+        <!-- ============================= -->
+        <!-- 日の出・日の入り -->
+        <!-- ============================= -->
+
+        <div
+            id="nextNextWalkSunInfo"
+            class="walk-sun-info"
+        >
+            <div class="walk-sun-icon">
+                <span id="nextNextWalkSunIcon">🌇</span>
+            </div>
+
+            <div class="walk-sun-main">
+                <span
+                    id="nextNextWalkSunLabel"
+                    class="walk-sun-label"
+                >
+                    日の入り
+                </span>
+
+                <span
+                    id="nextNextWalkSunTime"
+                    class="walk-sun-time"
+                >
+                    --:--
+                </span>
+            </div>
+
+            <div
+                id="nextNextWalkSunMessage"
+                class="walk-sun-message"
+            >
+            </div>
+        </div>
+
+        <!-- もちもの -->
+        <div class="next-walk-belongings">
+
+            <h3>
+                <img src="./images/icons/belongings.png" alt="">
+                もちもの
+            </h3>
+
+            <div id="nextNextWalkBelongings">
+                ---
+            </div>
+
+        </div>
+
+    </div>
 
 </body>
 
 </html>
 
 <script type="module">
+    // データ計測
+    const startupTime = performance.now();
+    console.log("🚀 起動計測開始");
+    
+    
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
+    import {
+        initializeAppCheck,
+        ReCaptchaEnterpriseProvider,
+        getToken
+    } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app-check.js";
     import {
         getAuth,
         signInAnonymously
@@ -201,6 +473,7 @@
         doc,
         setDoc,
         getDoc,
+        deleteField,
         serverTimestamp
     } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js";
     import {
@@ -218,9 +491,21 @@
         appId: "1:17166963868:web:d693c0c7d232e7b0604959"
     };
 
+    // localでもApp Checkを扱うために必要（ないとfunctionのgetWeatherData到達しない）
+    // デバッグトークンはFireBaseAppCheckのデバッグトークンに追加済み”72da4157-9602-43d5-9b0e-704e341e0170”
+    // テスト時のみ使用
+    //self.FIREBASE_APPCHECK_DEBUG_TOKEN = true;
 
     // Firebase初期化
     const app = initializeApp(firebaseConfig);
+    //　
+    const appCheck = initializeAppCheck(app, {
+        provider: new ReCaptchaEnterpriseProvider(
+            "6Lc_-tgtAAAAALLFU1zp4S8mEWuiiddtNGIbfY2O"
+        ),
+        isTokenAutoRefreshEnabled: true
+    });
+
     const auth = getAuth(app);
     const db = getFirestore(app);
     const functions = getFunctions(app, "us-central1");
@@ -229,6 +514,7 @@
         functions,
         "getWeatherData"
     );
+
 
     // 地域データ
     let cityData = {};
@@ -281,6 +567,7 @@
         }
     }
 
+
     // 市区町村の選択肢を作る
     function updateCitySelect(prefecture, selectedCity = "") {
         const citySelect = document.getElementById("citySelect");
@@ -310,103 +597,162 @@
     }
 
 
-    // Firebaseのログインとユーザー情報の処理
-    async function initializeUser() {
+// Firebaseのログインとユーザー情報の処理
+async function initializeUser() {
 
-        try {
+    const firebaseStart = performance.now();
 
-            const userCredential = await signInAnonymously(auth);
-            window.currentUser = userCredential.user;
-            const user = window.currentUser;
+    try {
 
-            console.log("匿名ログイン成功！");
-            console.log("UID:", user.uid);
+        const authStart = performance.now();
+        
+        const userCredential = await signInAnonymously(auth);
 
+        window.currentUser = userCredential.user;
+        const user = window.currentUser;
 
-            const userRef = doc(db, "users", user.uid);
-            const userSnap = await getDoc(userRef);
+        console.log("匿名ログイン成功！");
+        console.log("UID:", user.uid);
 
+        console.log(
+            "⏱️ 匿名ログイン:",
+            Math.round(performance.now() - authStart),
+            "ms",
+        );
 
-            if (!userSnap.exists()) {
+        const userRef = doc(db, "users", user.uid);
 
-                // 初回アクセス
-                await setDoc(userRef, {
-                    prefecture: "新潟県",
-                    city: "五泉市",
-                    notificationEnabled: true,
-                    createdAt: serverTimestamp(),
-                    lastUsedAt: serverTimestamp()
-                });
+        const firestoreReadStart = performance.now();
 
+        const userSnap = await getDoc(userRef);
 
-                // 画面に初期値を表示
-                document.getElementById("prefectureSelect").value = "新潟県";
-
-                updateCitySelect("新潟県", "五泉市");
-
-                document.getElementById("currentCity").textContent =
-                    "新潟県五泉市";
+        console.log(
+            "⏱️ Firestore読み込み:",
+            Math.round(performance.now() - firestoreReadStart),
+            "ms",
+        );
 
 
-                console.log("新しいユーザーをFirestoreに保存しました！");
+        if (!userSnap.exists()) {
 
-            } else {
+            window.weatherCache = null;
 
-                // 2回目以降
-                const userData = userSnap.data();
+            // 初回アクセス
+            const firestoreWriteStart = performance.now();
+            const DEFAULT_PREFECTURE = "新潟県";
+            const DEFAULT_CITY = "新潟市";
+            const DEFAULT_LATITUDE = 37.91611111;
+            const DEFAULT_LONGITUDE = 139.0363889;
 
-                window.nextWalkPressure =
-                    userData.nextWalkPressure || null;
+            await setDoc(userRef, {
+                prefecture: DEFAULT_PREFECTURE,
+                city: DEFAULT_CITY,
+                notificationEnabled: false,
+                environment: "production",
+                latitude: DEFAULT_LATITUDE,
+                longitude: DEFAULT_LONGITUDE,
+                createdAt: serverTimestamp(),
+                lastUsedAt: serverTimestamp()
+            });
 
-                console.log(
-                    "Firestoreから取得したnextWalkPressure:",
-                    window.nextWalkPressure
-                );
+            localStorage.setItem(
+                "latitude",
+                DEFAULT_LATITUDE
+            );
 
-                if (userData.prefecture && userData.city) {
-
-                    document.getElementById("prefectureSelect").value =
-                        userData.prefecture;
-
-                    updateCitySelect(
-                        userData.prefecture,
-                        userData.city
-                    );
-
-                    document.getElementById("currentCity").textContent =
-                        "📍 " + userData.prefecture + userData.city;
-                }
-
-                if (userData.latitude && userData.longitude) {
-                    console.log("保存されている緯度:", userData.latitude);
-                    console.log("保存されている経度:", userData.longitude);
-
-                    localStorage.setItem("latitude", userData.latitude);
-                    localStorage.setItem("longitude", userData.longitude);
-                }
-
-                await setDoc(userRef, {
-                    lastUsedAt: serverTimestamp()
-                }, {
-                    merge: true
-                });
-
-
-                console.log("ユーザー情報を更新しました！");
-            }
+            localStorage.setItem(
+                "longitude",
+                DEFAULT_LONGITUDE
+            );
 
             console.log(
-                "現在のnextWalkPressure:",
+                "⏱️ 初回Firestore保存:",
+                Math.round(performance.now() - firestoreWriteStart),
+                "ms",
+            );
+
+
+            // 画面に初期値を表示
+            document.getElementById("prefectureSelect").value = "新潟県";
+
+            updateCitySelect("新潟県", "新潟市");
+
+            document.getElementById("currentCity").textContent =
+                "新潟県新潟市";
+
+
+            console.log("新しいユーザーをFirestoreに保存しました！");
+
+        } else {
+
+            // 2回目以降
+            const userData = userSnap.data();
+            window.weatherCache =
+                userData.weatherCache || null;
+
+            window.nextWalkPressure =
+                userData.nextWalkPressure || null;
+
+            console.log(
+                "Firestoreから取得したnextWalkPressure:",
                 window.nextWalkPressure
             );
-            console.log("Firestoreへの保存成功！");
 
-        } catch (error) {
+            if (userData.prefecture && userData.city) {
 
-            console.error("エラー:", error);
+                document.getElementById("currentCity").textContent =
+                    "📍 " + userData.prefecture + userData.city;
+            }
 
+            if (userData.latitude && userData.longitude) {
+                console.log("保存されている緯度:", userData.latitude);
+                console.log("保存されている経度:", userData.longitude);
+
+                localStorage.setItem("latitude", userData.latitude);
+                localStorage.setItem("longitude", userData.longitude);
+            }
+
+            const firestoreUpdateStart = performance.now();
+
+            setDoc(userRef, {
+                lastUsedAt: serverTimestamp()
+            }, {
+                merge: true
+            });
+
+            console.log(
+                "⏱️ 最終利用日時のFirestore更新:",
+                Math.round(performance.now() - firestoreUpdateStart),
+                "ms",
+            );
+
+
+            console.log("ユーザー情報を更新しました！");
         }
+
+        console.log(
+            "weatherCache確認:",
+            window.weatherCache,
+        );
+
+        console.log(
+            "現在のnextWalkPressure:",
+            window.nextWalkPressure
+        );
+        console.log("Firestoreへの保存成功！");
+
+        console.log(
+            "⏱️ initializeUser全体:",
+            Math.round(performance.now() - firebaseStart),
+            "ms",
+        );
+
+    } catch (error) {
+
+        console.error("エラー:", error);
+
     }
+}
 
 
     // 都道府県が変更されたとき
@@ -419,6 +765,7 @@
 
             updateCitySelect(prefecture);
         });
+
 
 
     // 保存ボタン
@@ -471,13 +818,18 @@
                     city: city,
                     latitude: lat,
                     longitude: lng,
-                    lastUsedAt: serverTimestamp()
+                    lastUsedAt: serverTimestamp(),
+
+                    // 場所変更時は古い天気キャッシュを削除
+                    weatherCache: deleteField()
                 }, {
                     merge: true
                 });
 
                 localStorage.setItem("latitude", lat);
                 localStorage.setItem("longitude", lng);
+
+                window.weatherCache = null;
 
                 await window.loadPressureChange();
 
@@ -503,74 +855,19 @@
             }
         });
 
-        document
-        .getElementById("enableNotification")
-        .addEventListener("click", async () => {
-        try {
-            console.log("通知登録を開始します");
-
-            await registerPushNotification(
-                window.currentUser,
-                db,
-                doc,
-                setDoc,
-                serverTimestamp
-            );
-
-            alert("通知の登録が完了しました！");
-
-        } catch (error) {
-            console.error(
-                "通知登録エラー:",
-                error,
-            );
-
-            alert(
-                "通知登録に失敗しました: " +
-                error.message,
-            );
-        }
-    });
-
-    document
-        .getElementById("testNotification")
-        .addEventListener("click", async () => {
-        try {
-            console.log("テスト通知を送信します");
-
-            const sendTestNotification =
-                httpsCallable(
-                    functions,
-                    "sendTestNotification",
-                );
-
-            const result =
-                await sendTestNotification();
-
-            console.log(result.data);
-
-            alert("テスト通知を送信しました！");
-
-        } catch (error) {
-            console.error(
-                "テスト通知エラー:",
-                error,
-            );
-
-            alert(
-                "テスト通知に失敗しました: " +
-                error.message,
-            );
-        }
-    });
-
 
     // 最初に地域データを読み込む
     await loadCityData();
 
+    // データ計測
+    console.log(
+        "⏱️ 地域データ読み込み:",
+        Math.round(performance.now() - startupTime),
+        "ms",
+    );
+
     // app.jsを読み込む
     await new Promise((resolve, reject) => {
-
         const script = document.createElement("script");
 
         script.src = "app.js";
@@ -581,11 +878,47 @@
         document.body.appendChild(script);
     });
 
-    // Firebaseを開始
+    // データ計測
+    console.log(
+        "⏱️ app.js読み込み:",
+        Math.round(performance.now() - startupTime),
+        "ms",
+    );
+
+    // localStorageに緯度・経度があるか確認
+    const latitude = localStorage.getItem("latitude");
+    const longitude = localStorage.getItem("longitude");
+
+    let weatherPromise;
+
+    // Firebaseからユーザー情報を取得
     await initializeUser();
 
-    // Firebaseからユーザー情報を取得した後に気圧変化を読み込む
-    const result = await window.loadPressureChange();
+    // Firebase完了後に天気取得
+    weatherPromise = window.loadPressureChange();
+
+    // Firebase＋Firestoreの計測
+    console.log(
+        "⏱️ Firebase＋Firestore:",
+        Math.round(performance.now() - startupTime),
+        "ms",
+    );
+
+    // 天気データ取得完了を待つ
+    const result = await weatherPromise;
+
+    // データ計測
+    console.log(
+        "⏱️ 天気データ取得＋画面表示:",
+        Math.round(performance.now() - startupTime),
+        "ms",
+    );
+
+    console.log(
+        "⏱️ アプリ起動完了:",
+        Math.round(performance.now() - startupTime),
+        "ms",
+    );
 
     console.log("気圧変化の結果:", result);
 

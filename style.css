@@ -1,356 +1,1261 @@
-/* ==============================
-ウクの気圧予報
-============================== */
+@import url('https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;500;700&display=swap');
 
-body {
-margin: 0;
-padding: 24px 16px 40px;
-font-family: sans-serif;
-background: #f5f7f6;
-color: #333;
-line-height: 1.6;
-}
 
-/* ------------------------------
-タイトル
------------------------------- */
+/* ================================
+   地域設定
+================================ */
 
-h1 {
-margin: 0 0 12px;
-text-align: center;
-font-size: 28px;
-}
-
-h2 {
-margin: 0 0 5px;
-font-size: 21px;
-}
-
-/* ------------------------------
-地域
------------------------------- */
-
-.location {
-max-width: 520px;
-margin: 0 auto 24px;
-text-align: center;
-}
-
-#currentCity {
-margin: 0 0 16px;
-font-size: 18px;
-font-weight: bold;
-}
-
+/* 地域設定 */
 .location-settings {
-    max-width: 520px;
-    margin: 18px auto;
-    padding: 12px 16px;
-    background: white;
-    border-radius: 12px;
-    text-align: center;
+    max-width: 420px;
+    margin: 50px auto 30px;
+    padding: 24px 20px 28px;
+
+    background: #ffffff;
+    border-radius: 18px;
+
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.06);
 }
+
+
+/* タイトル */
 
 .location-settings h2 {
-    margin: 0 0 10px;
-    font-size: 17px;
+    margin: 0 0 24px;
+
+    text-align: center;
+
+    font-size: 21px;
+    font-weight: bold;
 }
 
-.location-settings div {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 8px;
+/* 各設定項目 */
+
+.location-setting-item {
+    margin-bottom: 18px;
 }
 
-.location-settings label {
-    width: 100px;
-    min-width: 100px;
-    text-align: right;
-    margin-right: 8px;
-    white-space: nowrap;
+.location-setting-item label {
+    display: block;
+
+    margin-bottom: 7px;
+
+    font-size: 14px;
+    font-weight: bold;
 }
 
-.location-settings select {
-    width: 220px;
-    max-width: 220px;
-    padding: 6px;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    background: white;
+/* セレクト */
+
+.location-setting-item select {
+    width: 100%;
+    box-sizing: border-box;
+
+    padding: 12px 14px;
+
+    border: 1px solid #d8e5df;
+    border-radius: 12px;
+
+    background: #f8fbfa;
+
+    font-family: inherit;
+    font-size: 15px;
+
+    color: #333;
+
+    outline: none;
 }
+
+/* 選択時 */
+
+.location-setting-item select:focus {
+    border-color: #9bcfbc;
+    background: #ffffff;
+}
+
+/* 保存ボタン */
 
 #saveCity {
-    margin-top: 2px;
-    padding: 6px 22px;
+    width: 100%;
+
+    margin-top: 6px;
+    padding: 12px;
+
     border: none;
-    border-radius: 8px;
+    border-radius: 12px;
+
+    background: #9ed8c2;
+    color: #ffffff;
+
+    font-family: inherit;
+    font-size: 15px;
+    font-weight: bold;
+
     cursor: pointer;
 }
 
-/* ------------------------------
-現在の気圧
------------------------------- */
+/* 戻るボタン */
 
-.current-weather {
-max-width: 520px;
-margin: 0 auto 24px;
-padding: 24px 20px;
-background: white;
-border-radius: 16px;
-text-align: center;
-}
-
-.current-weather h2 {
-margin-bottom: 8px;
-}
-
-#pressure {
-margin: 0 0 10px;
-font-size: 42px;
-font-weight: bold;
-}
-
-.weather-details {
-display: flex;
-justify-content: center;
-gap: 28px;
-font-size: 18px;
-}
-
-
-/* ------------------------------
-気圧変化
------------------------------- */
-
-#pressureChange {
-    max-width: 520px;
-    margin: 0 auto 24px;
-}
-
-.walk-face {
-    margin: 10px auto;
-    text-align: center;
-}
-
-.walk-face img {
-    width: 180px;
-    max-width: 60%;
-    height: auto;
-}
-
-.walk-card #currentWalkMessage {
-    font-size: 22px;
-    font-weight: 600;
-}
-
-.walk-card {
-    margin-bottom: 14px;
-    padding: 18px;
-    background: white;
-    border-radius: 16px;
-    text-align: center;
-}
-
-.walk-card h3 {
-    margin: 0 0 8px;
-    font-size: 18px;
-}
-
-.walk-card p {
-    margin: 5px 0;
-}
-
-/* 気圧の影響の判定 */
-.walk-card p:first-of-type {
-    font-size: 20px;
-    font-weight: bold;
-}
-
-/* 現在の気圧 */
-.walk-pressure {
-    margin: 10px 0 14px;
-    font-size: 16px;
-    font-weight: normal;
-}
-
-/* お散歩メッセージ */
-.walk-card p:nth-of-type(3) {
-    font-size: 18px;
-    font-weight: 600;
-}
-
-/* 気圧変化 */
-.walk-detail {
-    font-size: 14px;
-}
-
-/* 気温・湿度・降水確率 */
-.walk-weather {
-    font-size: 20px;
-    font-weight: bold;
-}
-
-.walk-card #nextWalkMessage {
-    font-size: 22px !important;
-    font-weight: 600;
-}
-
-/* ------------------------------
-   気圧 注意度バー
------------------------------- */
-
-.pressure-level {
-    max-width: 360px;
-    margin: 14px auto 18px;
-}
-
-.pressure-level-title {
-    margin-bottom: 5px;
-    font-size: 14px;
-    font-weight: bold;
-    text-align: left;
-}
-
-.pressure-bar {
+#backToMain {
     width: 100%;
-    height: 10px;
-    background: #eeeeee;
-    border-radius: 5px;
-    overflow: hidden;
+
+    margin-top: 10px;
+    padding: 11px;
+
+    border: 1px solid #d8e5df;
+    border-radius: 12px;
+
+    background: #ffffff;
+    color: #666;
+
+    font-family: inherit;
+    font-size: 14px;
+
+    cursor: pointer;
 }
 
-.pressure-bar span {
-    display: block;
-    width: 50%;
-    height: 100%;
-    background: #f5c542;
-    border-radius: 5px;
-    transition: width 0.3s ease;
-}
-
-.pressure-level-label {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 4px;
-    font-size: 11px;
-}
-
-/* ------------------------------
-降水確率
------------------------------- */
-
-#rainProbability {
-max-width: 520px;
-margin: 10px auto 24px;
-padding: 20px;
-background: white;
-border-radius: 16px;
-}
-
-.rain-hours {
-display: flex;
-justify-content: space-around;
-text-align: center;
-}
-
-.rain-hours > div {
-flex: 1;
-}
-
-.rain-hours p {
-margin: 4px 0;
-}
-
-.rain-hours p:last-child {
-font-size: 24px;
-font-weight: bold;
-}
-
-
-
-/* ------------------------------
-気圧とわんこの体調について
------------------------------- */
-
-.pressure-info summary {
-    font-size: 16px;
-    font-weight: bold;
-}
-
-/* ------------------------------
-注意書き
------------------------------- */
-
-.medical-note {
-    max-width: 520px;
-    margin: 12px auto 20px;
-    padding: 0 16px;
-    font-size: 12px;
-    line-height: 1.6;
-    text-align: left;
-}
-
-/* ------------------------------
-設定
------------------------------- */
-
-.settings {
-max-width: 520px;
-margin: 0 auto;
-text-align: center;
-}
-
-#enableNotification {
-padding: 10px 18px;
-border: none;
-border-radius: 8px;
-cursor: pointer;
-}
-
-#testNotification {
-padding: 10px 18px;
-border: none;
-border-radius: 8px;
-cursor: pointer;
-}
-
-/* ------------------------------
-スマホ用
------------------------------- */
-
-@media (max-width: 600px) {
+/* ==============================
+   柴んぽ V2
+============================== */
 
 body {
-    padding: 20px 12px 32px;
+    margin: 0;
+    padding: 10px 8px 40px;
+    font-family: "M PLUS Rounded 1c", sans-serif;
+    background: #f5f7f6;
+    color: #333;
+    line-height: 1.6;
 }
 
 h1 {
-    font-size: 25px;
+    margin: 0 0 12px;
+    text-align: center;
+    font-size: 28px;
 }
 
-#pressure {
-    font-size: 38px;
-}
-
-.weather-details {
-    gap: 20px;
-    font-size: 16px;
-}
-
-.location-settings label {
-    width: auto;
-    text-align: left;
-}
-
-.location-settings select {
-    width: 100%;
-    max-width: none;
-    margin-top: 4px;
-}
-
-.rain-hours p:last-child {
+h2 {
+    margin: 0 0 8px;
     font-size: 21px;
 }
 
+/* ==============================
+   読み込み画面
+============================== */
+
+#loadingScreen {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    background: #f1fffa;
+}
+
+#loadingMessage {
+    font-size: 20px;
+}
+
+
+/* ==============================
+   このあとの天気
+============================== */
+
+.future-weather-table-wrapper {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+}
+
+.future-weather-table {
+    width: max-content;
+}
+
+.future-weather-row {
+    display: grid;
+    grid-template-columns: 70px repeat(33, 80px);
+}
+
+.future-weather-row > div {
+    padding: 8px 4px;
+    text-align: center;
+    font-size: 13px;
+    white-space: nowrap;
+}
+
+.future-weather-row > div:first-child {
+    text-align: left;
+    font-weight: bold;
+    position: sticky;
+    left: 0;
+    background: #fff;
+    z-index: 2;
+}
+
+
+/* ==============================
+   33時間予報の表
+============================== */
+
+.future-weather-table th,
+.future-weather-table td {
+    padding: 8px 10px;
+    text-align: center;
+    font-size: 14px;
+}
+
+.future-weather-table thead th {
+    font-weight: bold;
+}
+
+.future-weather-table tbody th {
+    font-weight: bold;
+    text-align: left;
+    background: #f8f8f8;
+}
+
+.future-weather-table tbody td {
+    font-weight: normal;
+}
+
+
+.future-weather-cards {
+    display: flex;
+    gap: 6px;
+    overflow-x: auto;
+    padding: 4px 2px 8px;
+    scrollbar-width: none;
+}
+
+.future-weather-cards::-webkit-scrollbar {
+    display: none;
+}
+
+.future-weather-card {
+    flex: 0 0 80px;
+    width: 80px;
+    padding: 7px 4px;
+    border: 1px solid #d2d1d1;
+    border-radius: 10px;
+    box-sizing: border-box;
+    text-align: center;
+}
+
+.future-weather-time {
+    font-size: 14px;
+    font-weight: bold;
+    margin-bottom: 4px;
+}
+
+.future-weather-main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+}
+
+.future-weather-icon {
+    font-size: 22px;
+    line-height: 1;
+}
+
+.future-weather-temp {
+    font-size: 18px;
+    font-weight: bold;
+    color: #1684c7;
+}
+
+.future-weather-pop {
+    margin-top: 4px;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.future-weather-details {
+    display: none;
+    flex-direction: column;
+    gap: 2px;
+    margin-top: 5px;
+}
+
+.future-weather-card.open .future-weather-details {
+    display: flex;
+}
+
+.future-weather-details div {
+    font-size: 16px;
+    white-space: nowrap;
+}
+
+.future-weather-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    margin-top: 4px;
+    font-size: 14px;
+    color: #777777;
+    cursor: pointer;
+}
+
+.future-weather-arrow {
+    font-size: 8px;
+}
+
+.future-weather-card.open .future-weather-arrow {
+    transform: rotate(180deg);
+}
+
+/* ==============================
+   このあとの天気 見出し
+============================== */
+
+.future-weather h3 {
+    margin: 0 0 12px;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.future-weather-table th,
+.future-weather-table td {
+    border-bottom: 1px solid #eeeeee;
+}
+
+/* ==============================
+   今の天気
+============================== */
+
+.weather-card {
+    max-width: 520px;
+    margin: 0 auto 24px;
+    padding: 20px;
+    background: #ffffff;
+    border-radius: 20px;
+    border: 2px solid #deeffb;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.06);
+}
+
+
+/* タイトル */
+
+.current-weather-title {
+    margin: 0 0 10px;
+    font-size: 16px;
+    font-weight: 700;
+    text-align: center;
+}
+
+
+/* =========================
+   メイン部分
+========================= */
+
+.current-weather-main {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4px;
+    align-items: center;
+}
+
+
+/* =========================
+   左側
+========================= */
+
+.condition-title {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+
+    align-self: flex-start;
+
+    margin: 0 0 8px 0;
+    font-size: 12px;
+    line-height: 1.2;
+    white-space: nowrap;
+}
+
+.condition-title img {
+    width: 15px;
+    height: 15px;
+    object-fit: contain;
+    flex-shrink: 0;
+}
+
+.current-weather-main-text {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0;
+    min-width: 0;
+}
+
+
+/* 天気 */
+
+.current-weather-description {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 10px;
+}
+
+#currentWeatherIcon {
+    font-size: 50px;
+    line-height: 1;
+}
+
+#currentWeatherDescription {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+
+/* 気温 */
+
+#currentWeatherTemp {
+    margin: 2px 0 10px;
+    font-size: 52px;
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: -1px;
+}
+
+
+/* 降水確率 */
+
+#currentPrecipitation {
+    margin: 6px 0 0;
+    font-size: 24px;
+    font-weight: bold;
+    line-height: 1.2;
+    color: #444;
+}
+
+
+.precipitation-label {
+    font-size: 16px;
+    font-weight: bold;
+    margin-right: 4px;
+}
+
+
+/* =========================
+   右側：詳細情報
+========================= */
+
+.current-weather {
+    width: 100%;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    background: transparent;
+    border-radius: 0;
+}
+
+
+#currentWeather {
+    margin: 0;
+    font-size: inherit;
+    font-weight: normal;
+    line-height: normal;
+}
+
+
+.current-weather-details {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.current-weather-details span {
+    display: block;
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 1.35;
+    white-space: nowrap;
+    color: #444;
+}
+
+
+/* =========================
+   柴犬画像
+========================= */
+
+.current-weather-dog img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+
+/* =========================
+   降雨予報
+========================= */
+/* 
+.rain-forecast-icon {
+    width: 28px;
+    height: 28px;
+    vertical-aoutfit-titlelign: middle;
+    margin-right: 4px;
+}
+
+#rainForecastMessage {
+    font-size: 18px;
+    font-weight: bold;
+    background: #f7efcc;
+    padding: 6px 12px;
+    border-radius: 10px;
+    margin-top: 12px;
+}
+
+#rainForecastMessage span {
+    position: relative;
+    top: 2px;
+} */
+
+
+/* ==============================
+   おすすめコーデ
+============================== */
+
+.next-walk-condition-main {
+    display: flex;
+    align-items: flex-start;
+    gap: 0;
+}
+
+.next-walk-condition-text {
+    flex: 0 0 50%;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.next-walk-outfit {
+    flex: 0 0 50%;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.next-walk-condition-text p {
+    margin: 2px 0 !important;
+}
+
+.outfit-title {
+    margin: 5px 0 0 0;
+    font-size: 14px;
+    white-space: nowrap;
+    font-weight: bold;
+    color: #8f683e;
+    display: flex;
+    align-items: flex-start;
+    gap: 4px;
+
+    background: #fef9e0;
+    padding: 4px 12px;
+    border-radius: 14px;
+}
+
+.outfit-title img {
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+}
+
+.walk-outfit-image {
+    display: block;
+    width: 170px;
+    height: auto;
+    padding: 4px 12px;
+}
+
+/* ==============================
+   注意ポイント
+============================== */
+
+.caution-text {
+    flex: 1;
+    min-width: 0;
+}
+
+.caution-cards {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    padding: 4px 2px 4px;
+    scrollbar-width: none;
+}
+
+.caution-cards::-webkit-scrollbar {
+    display: none;
+}
+
+.caution-card {
+    flex: 0 0 180px;
+    min-height: 60px;
+    padding: 10px 8px;
+    border-radius: 12px;
+    background: #fffdfd;
+    box-sizing: border-box;
+
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+
+.caution-card .caution-icon img {
+    width: 40px;
+    height: 40px;
+    max-width: none;
+    object-fit: contain;
+}
+
+.caution-message {
+    font-size: 16px;
+    font-weight: bold;
+    line-height: 1.4;
+}
+
+.caution-value {
+    margin-top: 3px;
+    font-size: 14px;
+    color: #777777;
+}
+
+.current-weather-cautions,
+.next-walk-cautions{
+    margin-top: 22px;
+    padding: 10px 12px;
+    background: #fff3f6;
+    border: 1px solid #fac2ce;
+    border-radius: 18px;
+}
+
+.current-weather-cautions h3,
+.next-walk-cautions h3 {
+    margin: 0;
+    font-size: 14px;
+    font-weight: bold;
+    color: #e85b6f;
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+}
+
+.current-weather-cautions img,
+.next-walk-cautions img {
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+}
+
+/* ==============================
+   もちもの
+============================== */
+
+.belonging-cards {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    padding: 4px 2px 8px;
+    scrollbar-width: none;
+}
+
+.belonging-cards::-webkit-scrollbar {
+    display: none;
+}
+
+.belonging-card {
+    flex: 0 0 85px;
+    width: 85px;
+    height: 85px;
+    padding: 8px;
+    border: 1px solid #eeeeee;
+    border-radius: 12px;
+    background: #ffffff;
+    box-sizing: border-box;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.belonging-card img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.next-walk-belongings {
+    padding: 10px 12px;
+    background: #f5fbff;
+    border: 1px solid #c9e9fb;
+    border-radius: 18px;
+}
+
+
+.next-walk-belongings h3 {
+    margin: 0;
+    font-size: 14px;
+    font-weight: bold;
+    color: #1684c7;
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+}
+
+.next-walk-belongings h3 img {
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+}
+
+
+/* ==============================
+   このあとの天気
+============================== */
+
+.future-weather {
+    margin-top: 20px;
+}
+
+.future-weather h3 {
+    padding-top: 12px;
+    border-top: 1px solid #eeeeee;
+}
+
+.future-weather-table th:first-child {
+    position: sticky;
+    left: 0;
+    background: white;
+    z-index: 2;
+}
+
+.future-weather-table thead th:first-child {
+    z-index: 3;
+}
+
+.walk-weather-details {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px 12px;
+}
+
+.walk-weather-details span {
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+
+/* ==============================
+   次の散歩カード枠
+============================== */
+
+.walk-card {
+    padding: 20px;
+    border-radius: 16px;
+    background: #ffffff;
+    border: 1px solid #c9e9fb;
+}
+
+/* ==============================
+   ヘッダー
+============================== */
+
+.app-header {
+    position: relative;
+    width: 100vw;
+    margin: -10px 0 5px;
+    margin-left: calc(50% - 50vw);
+}
+
+.header-image {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
+.header-overlay {
+    position: absolute;
+    inset: 0;
+
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    padding: 8px 10px;
+    box-sizing: border-box;
+}
+
+.settings-button {
+    background: rgba(255, 255, 255, 0.85);
+    border: 1px solid rgba(255, 255, 255, 0.9);
+    border-radius: 20px;
+    padding: 5px 12px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #555;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.location {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-top: 4px;
+    font-size: 14px;
+    font-weight: bolder;
+}
+
+.location p {
+    margin: 0;
+}
+
+/* ==============================
+   タブ
+============================== */
+
+.weather-tabs {
+    max-width: 520px;
+    margin: 10px auto 10px;
+    display: flex;
+    gap: 8px;
+}
+
+.weather-tab.current-weather-tab {
+    flex: 0.25;
+    font-size: 20px;
+}
+
+.weather-tab {
+    flex: 1;
+    padding: 5px 6px;
+    border: none;
+    border-radius: 18px;
+    background: #ffffff;
+    font-size: 16px;
+    font-weight: bold;
+    color: #777;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+}
+
+.weather-tab.active {
+    background: #e8f6ff;
+    color: #1684c7;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.08);
+}
+
+
+.walk-tab-label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+}
+
+.walk-tab-label img {
+    width: 22px;
+    height: 22px;
+    object-fit: contain;
+}
+
+.morning-walk-tab {
+    background: #fdfdfa;
+}
+
+.evening-walk-tab {
+    background: #fefeff;
+}
+
+.morning-walk-tab.active {
+    background: #ffe58a;
+    color: #b87900;
+}
+
+.evening-walk-tab.active {
+    background: #c9e3ff;
+    color: #1769aa;
+}
+
+.walk-tab-time {
+    display: block;
+    font-size: 12px;
+    margin-top: 0px;
+}
+
+
+.app-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.app-title img {
+    width: 48px;
+    height: 48px;
+    object-fit: contain;
+}
+
+.app-title h1 {
+    margin: 0;
+}
+
+/* タブをタップしたときの青いハイライトを消す */
+.weather-tab {
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* ==============================
+   次の散歩　気温湿度表示
+============================== */
+
+.condition-judge-image {
+    display: block;
+    width: 180px;
+    height: auto;
+    margin: 0 auto 0;
+}
+
+.next-walk-condition {
+    margin: -20px -20px 16px;
+    padding: 20px;
+
+    border-radius: 16px 16px 0 0;
+}
+
+
+.next-walk-condition > p {
+    margin: 0;
+}
+
+.next-walk-priority-caution {
+    width: 100%;
+    box-sizing: border-box;
+    margin: 10px auto;
+    padding: 0 8px;
+    background: #edf8ff;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    text-align: center;
+}
+
+.priority-caution {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 0px;
+    margin: 8px 0;
+    padding: 0;
+    background: transparent;
+    box-shadow: none;
+}
+
+.priority-caution-icon img {
+    width: 55px;
+    height: 55px;
+    object-fit: contain;
+}
+
+.priority-caution-text {
+    text-align: left;
+}
+
+.priority-caution-message {
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.priority-caution-value {
+    font-size: 20px;
+    font-weight: borld;
+    color: #269ce5;
+}
+
+.no-priority-caution-image {
+    display: block;
+    width: 140px;
+    height: auto;
+    margin: 0 auto;
+}
+
+.next-walk-priority-caution.no-priority-caution {
+    background: transparent;
+}
+
+/* ==============================
+   次の散歩　３時間ごとの天気
+============================== */
+
+.walk-hourly-weather {
+    overflow-x: auto;
+    margin-top: 16px;
+}
+
+#nextWalkHourlyWeather {
+    width: 100%;
+}
+
+.walk-hourly-table {
+    width: 100%;
+}
+
+.walk-hourly-row {
+    display: grid;
+    grid-template-columns: 70px repeat(3, 1fr);
+    align-items: center;
+    border-bottom: 1px solid #eeeeee;
+}
+
+.walk-hourly-row > div {
+    padding: 8px 4px;
+    text-align: center;
+    font-size: 13px;
+}
+
+.walk-hourly-row > div:first-child {
+    text-align: left;
+    font-weight: bold;
+}
+
+.walk-hourly-header > div {
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.walk-hourly-header > div:first-child {
+    font-weight: normal;
+}
+
+#nextNextWalkHourlyWeather {
+    width: 100%;
+}
+
+.walk-hour {
+    text-align: center;
+    font-size: 13px;
+    line-height: 1.8;
+    padding: 8px 4px;
+}
+
+.walk-hour-time {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 4px;
+}
+
+.walk-hour-weather {
+    font-weight: bold;
+    margin-bottom: 4px;
+}
+
+/* ==============================
+   ３時間天気カード
+============================== */
+
+.walk-hour-main {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    margin-bottom: 4px;
+}
+
+.walk-hour-weather-icon {
+    font-size: 24px;
+    margin-bottom: 0;
+}
+
+.walk-hour-temp {
+    font-size: 24px;
+    font-weight: bold;
+    color: #1684c7;
+    margin-bottom: 0;
+}
+
+.walk-hour-data {
+    gap: 2px;
+}
+
+.walk-hourly-cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+}
+
+.walk-hour-card {
+    padding: 8px 6px;
+    border: 1px solid;
+    border: 1px solid #d2d1d1;
+    border-radius: 12px;
+    background: #ffffff;
+    text-align: center;
+    box-sizing: border-box;
+}
+
+.walk-hour-data {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.walk-hour-data div {
+    font-size: 16px;
+    white-space: nowrap;
+}
+
+.walk-hour-data .walk-hour-pop {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.walk-hour-details {
+    display: none;
+    flex-direction: column;
+    gap: 2px;
+    margin-top: 4px;
+}
+
+.walk-hour-card.open .walk-hour-details {
+    display: flex;
+}
+
+.walk-hour-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    margin-top: 4px;
+    font-size: 12px;
+    color: #777;
+    cursor: pointer;
+}
+
+.walk-hour-arrow {
+    font-size: 9px;
+}
+
+.walk-hour-card.open .walk-hour-arrow {
+    transform: rotate(180deg);
+}
+
+
+/* ==============================
+   設定画面切り替え
+============================== */
+
+#locationSettings {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    background: #ffffff;
+    padding: 24px 16px;
+    box-sizing: border-box;
+    overflow-y: auto;
+}
+
+/* ========================================
+   日の出・日の入り
+======================================== */
+
+.walk-sun-info {
+    display: flex;
+    align-items: center;
+
+    width: 100%;
+    box-sizing: border-box;
+
+    margin: 15px 0 15px;
+    padding: 10px 14px;
+
+    border-radius: 18px;
+
+    background: #fff7e8;
+    border: 1px solid #ffd9a8;
+
+    box-sizing: border-box;
+}
+
+/* アイコン */
+.walk-sun-icon {
+    width: 48px;
+    height: 48px;
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 32px;
+}
+
+.walk-sun-icon img {
+    width: 32px;
+    height: 32px;
+    object-fit: contain;
+    transform: translateY(4px);
+}
+
+/* 日の出・日の入り */
+.walk-sun-main {
+    display: flex;
+    align-items: baseline;
+
+    gap: 7px;
+
+    white-space: nowrap;
+}
+
+.walk-sun-label {
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.walk-sun-time {
+    font-size: 22px;
+    font-weight: 700;
+}
+
+/* 補足メッセージ */
+.walk-sun-message {
+    margin-left: auto;
+
+    font-size: 11px;
+    line-height: 1.4;
+
+    text-align: center;
+
+    color: #7b6348;
+}
+
+/* 夜のさんぽ */
+.walk-sun-info.sunset {
+    background: #fff4e5;
+    border-color: #ffd09a;
+}
+
+.walk-sun-info.sunset .walk-sun-time {
+    color: #e87522;
+}
+
+/* 朝のさんぽ */
+.walk-sun-info.sunrise {
+    background: #fff9df;
+    border-color: #f3d66b;
+}
+
+.walk-sun-info.sunrise .walk-sun-time {
+    color: #d89b00;
 }
