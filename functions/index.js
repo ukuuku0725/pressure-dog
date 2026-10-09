@@ -107,12 +107,6 @@ exports.getWeatherData = onCall(
         const hourly =
             weatherData.data || [];
 
-
-        console.log(
-            "🌅 OpenWeatherのレスポンス:",
-            weatherData,
-        );
-
         // 2回目のデータを取得
         let nextHourly = [];
 
@@ -203,7 +197,7 @@ exports.refreshWeatherCache = onSchedule(
       const usersSnapshot =
             await db
                 .collection("users")
-                .where("environment", "==", "production")
+                .where("environment", "==", "development")
                 .get();
 
       logger.info(

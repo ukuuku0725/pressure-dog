@@ -1,5 +1,8 @@
 {
   "projects": {
-    "default": "pressure-dog"
+    "default": "pressure-dog-dev",
+    "production": "pressure-dog",
+    "development": "pressure-dog-dev"
   }
 }
+

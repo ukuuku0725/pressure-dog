@@ -1235,6 +1235,10 @@ async function loadPressureChange() {
                 "☁️ weatherCacheがない・古いため、Cloud Functionsから取得します",
             );
 
+            console.log("window.currentUser:", window.currentUser);
+            console.log("window.auth:", window.auth);
+            console.log("天気取得関数:", typeof window.getWeatherData);
+
             const result =
                 await window.getWeatherData({
                     latitude: Number(latitude),

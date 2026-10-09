@@ -466,7 +466,8 @@
     } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app-check.js";
     import {
         getAuth,
-        signInAnonymously
+        signInAnonymously,
+        onAuthStateChanged
     } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js";
     import {
         getFirestore,
@@ -481,14 +482,24 @@
         httpsCallable
     } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-functions.js";
 
-    // Firebaseの設定
+    // Firebaseの設定（本番用"pressure-dog"）
+    // const firebaseConfig = {
+    //     apiKey: "AIzaSyAcmHty1o1MYvSVY5bWr45FF4VU2A41LF0",
+    //     authDomain: "pressure-dog.firebaseapp.com",
+    //     projectId: "pressure-dog",
+    //     storageBucket: "pressure-dog.firebasestorage.app",
+    //     messagingSenderId: "17166963868",
+    //     appId: "1:17166963868:web:d693c0c7d232e7b0604959"
+    // };
+
+    // Firebaseの設定（開発用"pressure-dog-dev"）
     const firebaseConfig = {
-        apiKey: "AIzaSyAcmHty1o1MYvSVY5bWr45FF4VU2A41LF0",
-        authDomain: "pressure-dog.firebaseapp.com",
-        projectId: "pressure-dog",
-        storageBucket: "pressure-dog.firebasestorage.app",
-        messagingSenderId: "17166963868",
-        appId: "1:17166963868:web:d693c0c7d232e7b0604959"
+        apiKey: "AIzaSyBEImhmQyUd7iR_6t_11QKygieFM11QgEU",
+        authDomain: "pressure-dog-dev.firebaseapp.com",
+        projectId: "pressure-dog-dev",
+        storageBucket: "pressure-dog-dev.firebasestorage.app",
+        messagingSenderId: "196684697112",
+        appId: "1:196684697112:web:498afe577f560df1e33d6d"
     };
 
     // localでもApp Checkを扱うために必要（ないとfunctionのgetWeatherData到達しない）
@@ -498,13 +509,29 @@
 
     // Firebase初期化
     const app = initializeApp(firebaseConfig);
-    //　
+    //　本番用reCAPTCHAサイトキー設定
+    // const appCheck = initializeAppCheck(app, {
+    //     provider: new ReCaptchaEnterpriseProvider(
+    //         "6Lc_-tgtAAAAALLFU1zp4S8mEWuiiddtNGIbfY2O"
+    //     ),
+    //     isTokenAutoRefreshEnabled: true
+    // });
+    // 開発用reCAPTCHAサイトキー設定
     const appCheck = initializeAppCheck(app, {
         provider: new ReCaptchaEnterpriseProvider(
-            "6Lc_-tgtAAAAALLFU1zp4S8mEWuiiddtNGIbfY2O"
+            "6LeUNOYtAAAAAIIv9UT1kFrRGkDWs-cP-UQTLeJT"
         ),
         isTokenAutoRefreshEnabled: true
     });
+
+    try {
+        const tokenResult = await getToken(appCheck, false);
+        console.log("App Checkトークン取得:", {
+            hasToken: !!tokenResult.token
+        });
+    } catch (error) {
+        console.error("App Checkトークン取得失敗:", error);
+    }
 
     const auth = getAuth(app);
     const db = getFirestore(app);
@@ -514,6 +541,20 @@
         functions,
         "getWeatherData"
     );
+
+    console.log(
+        "getWeatherData 呼び出し直前のユーザー:",
+        auth.currentUser?.uid ?? null
+    );
+
+    console.log("Callable確認:", {
+        projectId: app.options.projectId,
+        currentUser: auth.currentUser?.uid ?? null
+    });
+
+    onAuthStateChanged(auth, (user) => {
+        console.log("Auth状態変化:", user?.uid ?? "未ログイン");
+    });
 
 
     // 地域データ
@@ -609,10 +650,25 @@ async function initializeUser() {
         const userCredential = await signInAnonymously(auth);
 
         window.currentUser = userCredential.user;
+
+        try {
+            const tokenResult =
+                await userCredential.user.getIdTokenResult();
+
+            console.log("Firebase IDトークン取得:", {
+                hasToken: !!tokenResult.token,
+                signInProvider: tokenResult.signInProvider
+            });
+        } catch (error) {
+            console.error("Firebase IDトークン取得失敗:", error);
+        }
+
         const user = window.currentUser;
 
         console.log("匿名ログイン成功！");
         console.log("UID:", user.uid);
+        console.log("Firebase project:", app.options.projectId);
+        console.log("Auth user:", auth.currentUser?.uid);
 
         console.log(
             "⏱️ 匿名ログイン:",
