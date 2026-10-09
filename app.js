@@ -534,7 +534,7 @@ function getHumidityCaution(item) {
         };
     }
 
-    if (item.temp >= 21 && humidity >= 60) {
+    if (item.temp >= 21 && humidity >= 70) {
         return {
             icon: "./images/cautions/humidity-high.png",
             message: "湿度が高め",
