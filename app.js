@@ -2279,6 +2279,9 @@ async function loadPressureChange() {
                 "no-priority-caution"
             );
 
+            // 前の地域の最優先注意表示をクリア
+            nextWalkPriorityCautionElement.innerHTML = "";
+
             // nextWalkPriorityCautionElement.innerHTML = `
             //     <img
             //         src="./images/cautions/safe.png"
@@ -2928,6 +2931,9 @@ async function loadPressureChange() {
                 nextNextWalkPriorityCautionElement.classList.add(
                     "no-priority-caution"
                 );
+
+                // 前の地域の最優先注意表示をクリア
+                nextNextWalkPriorityCautionElement.innerHTML = "";
 
                 // nextNextWalkPriorityCautionElement.innerHTML = `
                 //     <img
