@@ -665,7 +665,7 @@ function getPressureCaution(change) {
         };
     }
 
-    if (decrease >= 4) {
+    if (decrease >= 5) {
         return {
             icon: "./images/cautions/pressure.png",
             message: "気圧変化あり",
