@@ -608,13 +608,13 @@ function getWindCaution(item) {
         };
     }
 
-    if (windSpeed >= 5) {
-        return {
-            icon: "./images/cautions/strong-wind.png",
-            message: "風が強め",
-            value: `${windSpeed.toFixed(1)} m/s`,
-        };
-    }
+    // if (windSpeed >= 5) {
+    //     return {
+    //         icon: "./images/cautions/strong-wind.png",
+    //         message: "風が強め",
+    //         value: `${windSpeed.toFixed(1)} m/s`,
+    //     };
+    // }
 
     return null;
 }
