@@ -3383,10 +3383,86 @@ const locationSettings =
 const backToMain =
     document.getElementById("backToMain");
 
+const helpButton =
+    document.getElementById("helpButton");
+
+const helpScreen =
+    document.getElementById("helpScreen");
+
+const backFromHelp =
+    document.getElementById("backFromHelp");
+
+const usageButton =
+    document.getElementById("usageButton");
+
+const backFromUsage =
+    document.getElementById("backFromUsage");
+
+const welcomeScreen =
+    document.getElementById("welcomeScreen");
+
+// このアプリについて
+const aboutButton =
+    document.getElementById("aboutButton");
+
+const aboutScreen =
+    document.getElementById("aboutScreen");
+
+const backFromAbout =
+    document.getElementById("backFromAbout");
+
+
+// 地域設定を開く
 settingsButton.addEventListener("click", () => {
+    helpScreen.style.display = "none";
     locationSettings.style.display = "block";
 });
 
+// 地域設定を閉じる
 backToMain.addEventListener("click", () => {
     locationSettings.style.display = "none";
+});
+
+// ヘルプ画面を開く
+helpButton.addEventListener("click", () => {
+    locationSettings.style.display = "none";
+    helpScreen.style.display = "block";
+});
+
+// ヘルプ画面を閉じる
+backFromHelp.addEventListener("click", () => {
+    helpScreen.style.display = "none";
+});
+
+// ヘルプから「柴んぽの使い方」を開く
+// Help -> usage
+usageButton.addEventListener("click", () => {
+    helpScreen.style.display = "none";
+    welcomeScreen.style.display = "block";
+
+    // 初回起動用のボタンを隠す
+    startAppButton.style.display = "none";
+
+    // ヘルプに戻るボタンを表示
+    backFromUsage.style.display = "block";
+});
+
+// 使い方画面からヘルプに戻る
+backFromUsage.addEventListener("click", () => {
+    welcomeScreen.style.display = "none";
+    backFromUsage.style.display = "none";
+    helpScreen.style.display = "block";
+});
+
+
+// ヘルプ → このアプリについて
+aboutButton.addEventListener("click", () => {
+    helpScreen.style.display = "none";
+    aboutScreen.style.display = "block";
+});
+
+// このアプリについて → ヘルプ
+backFromAbout.addEventListener("click", () => {
+    aboutScreen.style.display = "none";
+    helpScreen.style.display = "block";
 });

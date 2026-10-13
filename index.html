@@ -28,6 +28,127 @@
     </div>
 
     <!-- ============================= -->
+    <!-- 初回起動：柴んぽの使い方 -->
+    <!-- ============================= -->
+
+    <div id="welcomeScreen" style="display: none;">
+
+        <div class="welcome-content">
+
+            <h1>柴んぽの使い方🐾</h1>
+
+            <p>
+                愛犬とのお散歩を、もっと快適に。
+            </p>
+
+            <div class="welcome-item">
+                <h3>🌤️ 次のお散歩をチェック</h3>
+                <p>
+                    朝と夜のお散歩に合わせて、
+                    天気や気温、体感温度を確認できるよ。
+                </p>
+            </div>
+
+            <div class="welcome-item">
+                <h3>⚠️ 注意ポイントを確認</h3>
+                <p>
+                    暑さ・雨・風・雪・気圧の変化など、
+                    お散歩前に気をつけたいことがわかるよ。
+                </p>
+            </div>
+
+            <div class="welcome-item">
+                <h3>🐕 おすすめの服装や持ちもの</h3>
+                <p>
+                    その日の天気に合わせて、
+                    愛犬のお散歩スタイルを考えよう！
+                </p>
+            </div>
+
+            <div class="welcome-item">
+                <h3>📍 地域を設定しよう</h3>
+                <p>
+                    地域設定からお住まいの地域を選ぶと、
+                    その場所の天気を確認できるよ。
+                </p>
+            </div>
+
+            <p class="welcome-note">
+                天気情報は目安だよ。
+                愛犬の体調や路面の状態にも気を配りながら、
+                お散歩を楽しんでね。
+            </p>
+
+            <button type="button" id="startAppButton">
+                さっそく使ってみる！
+            </button>
+
+            <button
+                type="button"
+                id="backFromUsage"
+                style="display: none;"
+            >
+                ヘルプに戻る
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- =============================
+        このアプリについて
+    ============================= -->
+    <div class="help-screen" id="aboutScreen" style="display: none;">
+
+        <h2>🐕 このアプリについて</h2>
+
+        <div class="about-content">
+
+            <h3>🐕 柴んぽについて</h3>
+
+            <p>
+                柴んぽは、愛犬とのお散歩をもっと快適に、
+                もっと安心して楽しむために、
+                <strong>飼い主が独断と偏見で作った
+                お散歩コンディションアプリです。</strong>
+            </p>
+
+            <p>
+                天気・気温・雨・風・気圧などの情報をもとに、
+                次のお散歩のコンディションや注意ポイント、
+                おすすめの服装・持ちものを案内します。
+            </p>
+
+            <p>
+                天気の情報を参考にしながら、
+                愛犬とのお散歩を楽しむためのヒントとして
+                使ってもらえたらうれしいです。
+            </p>
+
+            <h3>🐾 ご利用にあたって</h3>
+
+            <p>
+                表示されるコンディションや注意ポイントは、
+                お散歩の判断をサポートするための目安です。
+                安全を保証するものではありません。
+            </p>
+
+            <p>
+                実際の天候や愛犬の様子に合わせて、
+                無理のないお散歩を楽しんでください♪
+            </p>
+
+        </div>
+
+        <button type="button" id="backFromAbout">
+            ‹ ヘルプメニューに戻る
+        </button>
+
+    </div>
+
+
+    <!-- ============================= -->
     <!-- 地域設定 -->
     <!-- ============================= -->
 
@@ -81,11 +202,51 @@
     </div>
 
 
+    <!-- =============================
+        ヘルプ画面
+    ============================= -->
+
+    <div
+        class="help-screen"
+        id="helpScreen"
+        style="display: none;"
+    >
+
+        <h2>柴んぽヘルプ</h2>
+
+        <button
+            type="button"
+            id="usageButton"
+            class="help-menu-button"
+        >
+            📖 柴んぽの使い方
+        </button>
+
+        <button
+            type="button"
+            id="aboutButton"
+            class="help-menu-button"
+        >
+            🐕 このアプリについて
+        </button>
+
+        <button
+            type="button"
+            id="backFromHelp"
+        >
+            戻る
+        </button>
+
+    </div>
+
+
+
     <!-- ======================================== -->
     <!-- V2：柴んぽ -->
     <!-- ======================================== -->
 
     <!-- ヘッダー -->
+
     <header class="app-header">
 
         <img
@@ -96,13 +257,28 @@
 
         <div class="header-overlay">
 
-            <button
-                type="button"
-                id="settingsButton"
-                class="settings-button"
-            >
-                ⚙️地域設定
-            </button>
+            <!-- ヘッダー右上のボタン -->
+            <div class="header-buttons">
+
+                <button
+                    type="button"
+                    id="settingsButton"
+                    class="settings-button"
+                >
+                    ⚙️地域設定
+                </button>
+
+                <button
+                    type="button"
+                    id="helpButton"
+                    class="help-button"
+                    aria-label="柴んぽのヘルプ"
+                    title="柴んぽのヘルプ"
+                >
+                    ?
+                </button>
+
+            </div>
 
             <div class="location">
                 <span></span>
@@ -112,6 +288,7 @@
         </div>
 
     </header>
+
 
     <!-- タブ -->
     <nav class="weather-tabs">
@@ -921,5 +1098,63 @@ async function initializeUser() {
     );
 
     console.log("気圧変化の結果:", result);
+
+
+    // =============================
+    // 初回起動：使い方の案内
+    // =============================
+
+    const loadingScreen =
+        document.getElementById("loadingScreen");
+
+    const welcomeScreen =
+        document.getElementById("welcomeScreen");
+
+    const startAppButton =
+        document.getElementById("startAppButton");
+
+    // 初回案内を表示済みか確認
+    const hasSeenWelcome =
+        localStorage.getItem("shampoWelcomeSeen") === "true";
+
+    if (!hasSeenWelcome) {
+
+        // 準備中画面を閉じて案内を表示
+        if (loadingScreen) {
+            loadingScreen.style.display = "none";
+        }
+
+        if (welcomeScreen) {
+            welcomeScreen.style.display = "block";
+        }
+
+    } else {
+
+        // 2回目以降は案内を表示しない
+        if (welcomeScreen) {
+            welcomeScreen.style.display = "none";
+        }
+
+    }
+
+    // 「さっそく使ってみる！」を押したとき
+    if (startAppButton) {
+
+        startAppButton.addEventListener("click", () => {
+
+            // 案内を表示済みとして記録
+            localStorage.setItem(
+                "shampoWelcomeSeen",
+                "true"
+            );
+
+            // 案内を閉じて天気画面へ
+            if (welcomeScreen) {
+                welcomeScreen.style.display = "none";
+            }
+
+        });
+
+    }
 
 </script>
