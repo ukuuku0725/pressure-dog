@@ -45,7 +45,7 @@
                 <h3>🌤️ 次のお散歩をチェック</h3>
                 <p>
                     朝と夜のお散歩に合わせて、
-                    天気や気温、体感温度を確認できるよ。
+                    天気や気温、降水確率を確認できるよ。
                 </p>
             </div>
 
@@ -61,7 +61,7 @@
                 <h3>🐕 おすすめの服装や持ちもの</h3>
                 <p>
                     その日の天気に合わせて、
-                    愛犬のお散歩スタイルを考えよう！
+                    愛犬のお散歩スタイルを提案するよ！
                 </p>
             </div>
 
@@ -89,6 +89,55 @@
                 style="display: none;"
             >
                 ヘルプに戻る
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- ============================= -->
+    <!-- 初回起動：ホーム画面に追加 -->
+    <!-- ============================= -->
+
+    <div id="homeScreenGuide" style="display: none;">
+
+        <div class="welcome-content">
+
+            <h1>ホーム画面に追加しよう！🐾</h1>
+
+            <p>
+                ホーム画面に追加すると、
+                次から柴んぽをすぐに開けるよ♪
+            </p>
+
+            <!-- iPhone -->
+            <div class="welcome-item">
+                <h3>🍎 iPhone（Safari）</h3>
+                <ol>
+                    <li>画面の「共有」ボタンをタップ</li>
+                    <li>「ホーム画面に追加」を選ぶ</li>
+                    <li>右上の「追加」をタップ</li>
+                </ol>
+            </div>
+
+            <!-- Android -->
+            <div class="welcome-item">
+                <h3>🤖 Android（Chrome）</h3>
+                <ol>
+                    <li>右上の「︙」メニューをタップ</li>
+                    <li>「ホーム画面に追加」または
+                        「アプリをインストール」を選ぶ</li>
+                </ol>
+            </div>
+
+            <p class="welcome-note">
+                すでに追加している場合は、
+                そのまま次へ進んでね！
+            </p>
+
+            <button type="button" id="nextToLocationButton">
+                次へ
             </button>
 
         </div>
@@ -158,7 +207,7 @@
         style="display: none;"
     >
 
-        <h2>地域設定</h2>
+        <h2>お散歩する地域を設定しよう</h2>
 
         <div class="location-setting-item">
 
@@ -189,7 +238,7 @@
         </div>
 
         <button id="saveCity">
-            保存
+            この地域に設定する
         </button>
 
         <button
@@ -1023,6 +1072,21 @@ async function initializeUser() {
 
                 alert("地域を保存しました！");
 
+
+                // 初回の地域設定が完了した場合
+                if (window.isInitialLocationSetup) {
+
+                    // 初回案内を完了として記録
+                    localStorage.setItem("shampoWelcomeSeen", "true");
+
+                    // 初回案内用のフラグをリセット
+                    window.isInitialLocationSetup = false;
+
+                    // 地域設定画面を閉じる
+                    document.getElementById("locationSettings").style.display = "none";
+                }
+
+
             } catch (error) {
 
                 console.error("地域の保存に失敗しました:", error);
@@ -1101,7 +1165,7 @@ async function initializeUser() {
 
 
     // =============================
-    // 初回起動：使い方の案内
+    // 初回起動：使い方・ホーム画面追加の案内
     // =============================
 
     const loadingScreen =
@@ -1113,13 +1177,19 @@ async function initializeUser() {
     const startAppButton =
         document.getElementById("startAppButton");
 
+    const homeScreenGuide =
+        document.getElementById("homeScreenGuide");
+
+    const nextToLocationButton =
+        document.getElementById("nextToLocationButton");
+
     // 初回案内を表示済みか確認
     const hasSeenWelcome =
         localStorage.getItem("shampoWelcomeSeen") === "true";
 
     if (!hasSeenWelcome) {
 
-        // 準備中画面を閉じて案内を表示
+        // 準備中画面を閉じて使い方を表示
         if (loadingScreen) {
             loadingScreen.style.display = "none";
         }
@@ -1128,11 +1198,19 @@ async function initializeUser() {
             welcomeScreen.style.display = "block";
         }
 
+        if (homeScreenGuide) {
+            homeScreenGuide.style.display = "none";
+        }
+
     } else {
 
-        // 2回目以降は案内を表示しない
+        // 2回目以降は初回案内を表示しない
         if (welcomeScreen) {
             welcomeScreen.style.display = "none";
+        }
+
+        if (homeScreenGuide) {
+            homeScreenGuide.style.display = "none";
         }
 
     }
@@ -1142,19 +1220,42 @@ async function initializeUser() {
 
         startAppButton.addEventListener("click", () => {
 
-            // 案内を表示済みとして記録
-            localStorage.setItem(
-                "shampoWelcomeSeen",
-                "true"
-            );
-
-            // 案内を閉じて天気画面へ
+            // 使い方を閉じてホーム画面追加の案内へ
             if (welcomeScreen) {
                 welcomeScreen.style.display = "none";
+            }
+
+            if (homeScreenGuide) {
+                homeScreenGuide.style.display = "block";
             }
 
         });
 
     }
+
+
+    // 「次へ」を押したとき
+    if (nextToLocationButton) {
+
+        nextToLocationButton.addEventListener("click", () => {
+
+            // 初回案内から地域設定へ進んだことを記録
+            window.isInitialLocationSetup = true;
+
+            // ホーム画面追加の案内を閉じる
+            if (homeScreenGuide) {
+                homeScreenGuide.style.display = "none";
+            }
+
+            // 地域設定画面を開く
+            if (locationSettings) {
+                locationSettings.style.display = "block";
+            }
+
+        });
+
+    }
+
+
 
 </script>

@@ -1439,7 +1439,8 @@ transform: scale(0.94);
     line-height: 1.8;
 }
 
-#startAppButton {
+#startAppButton,
+#nextToLocationButton {
     display: block;
     width: 100%;
     min-height: 52px;
@@ -1455,7 +1456,8 @@ transform: scale(0.94);
     box-shadow: 0 3px 0 #cf8040;
 }
 
-#startAppButton:active {
+#startAppButton:active,
+#nextToLocationButton:active {
     transform: translateY(2px);
     box-shadow: 0 1px 0 #cf8040;
 }
@@ -1472,7 +1474,29 @@ transform: scale(0.94);
     .welcome-content h1 {
         font-size: 1.3rem;
     }
+ 
+    #homeScreenGuide {
+        padding: 14px 10px;
+    }
 }
+
+
+/* =============================
+   初回起動：ホーム画面追加の案内
+============================= */
+
+#homeScreenGuide {
+    position: fixed;
+    inset: 0;
+    z-index: 10001;
+    overflow-y: auto;
+    box-sizing: border-box;
+    padding: 24px 16px;
+    background: #fff8ef;
+    color: #59483b;
+    font-family: inherit;
+}
+
 
 /* 使い方画面：戻るボタン */
 #backFromUsage,
