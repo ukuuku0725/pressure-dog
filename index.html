@@ -766,6 +766,13 @@ const isTikTokBrowser =
 
     console.log("Tiktokブラウザチェック",isTikTokBrowser);
 
+        document.body.innerHTML =
+        '<div style="padding:30px;font-size:18px;' +
+        'background:#fff8ed;color:#49382b;">' +
+        '<h2>TikTok判定：成功</h2>' + isTikTokBrowser +
+        '<p>案内画面の表示テスト中だよ🐾</p>' +
+        '</div>';
+
 if (isTikTokBrowser) {
     document.body.innerHTML =
         '<div style="padding:30px;font-size:18px;' +
