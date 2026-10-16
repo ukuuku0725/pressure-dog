@@ -762,6 +762,28 @@
             userAgent
         );
 
+        const notice = document.getElementById("browserNoticeScreen");
+
+        document.body.insertAdjacentHTML(
+            "afterbegin",
+            '<div id="debugResult" style="' +
+            'padding:15px;background:#fff3cd;color:#49382b;' +
+            'font-size:16px;overflow-wrap:anywhere;">' +
+            '判定結果を確認中...</div>'
+        );
+
+        const debug = document.getElementById("debugResult");
+
+        debug.innerHTML =
+            "<strong>ブラウザ判定テスト</strong><br>" +
+            "TikTok判定：" + isTikTokBrowser + "<br>" +
+            "案内画面：" + (notice ? "HTMLあり" : "HTMLが見つからない") + "<br>" +
+            "User Agent：<br>" + navigator.userAgent;
+
+        if (isTikTokBrowser && notice) {
+            notice.style.display = "block";
+        }
+
     if (isTikTokBrowser) {
         
         document.getElementById("browserNoticeScreen").style.display = "block";
