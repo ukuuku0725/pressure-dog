@@ -193,11 +193,11 @@ exports.refreshWeatherCache = onSchedule(
       const db = admin.firestore();
 
       // ※※定期取得関数　テストの際はdevelopmentユーザーだけ取得するよう修正する
-      // ※※development⇔production切り替え※※
+      // ※※development⇔production切り替え※※テスト環境FireBaseではこの関数はデプロイしてない
       const usersSnapshot =
             await db
                 .collection("users")
-                .where("environment", "==", "development")
+                .where("environment", "==", "production")
                 .get();
 
       logger.info(
