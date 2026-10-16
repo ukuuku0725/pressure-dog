@@ -66,11 +66,6 @@
                 </ol>
             </div>
 
-            <p class="welcome-note">
-                ブラウザで開いたら、ホーム画面に追加しておくと
-                次からすぐに柴んぽを使えるよ！🐾
-            </p>
-
         </div>
 
     </div>
@@ -759,29 +754,17 @@
     } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-functions.js";
 
 
-const isTikTokBrowser =
-    /TikTok|BytedanceWebview|musical_ly/i.test(
-        navigator.userAgent
-    );
 
+    const userAgent = navigator.userAgent;
 
-    document.body.innerHTML =
-        "<div style='background:#fff3cd;color:#333;padding:12px;margin:10px;border:2px solid #e0a800;border-radius:8px;font-size:13px;overflow-wrap:anywhere;white-space:pre-wrap;'>" +
-        "<strong>ブラウザ判定のデバッグ情報</strong><br><br>" +
-        "<strong>User Agent:</strong><br>" +
-        navigator.userAgent +
-        "<br><br><strong>TikTok判定:</strong> " +
-        isTikTokBrowser +
-        "</div>";
+    const isTikTokBrowser =
+        /TikTok|BytedanceWebview|musical_ly|trill_\d|AppName\/trill/i.test(
+            userAgent
+        );
 
     if (isTikTokBrowser) {
-        document.body.innerHTML =
-            '<div style="padding:30px;font-size:18px;' +
-            'background:#fff8ed;color:#49382b;">' +
-            '<h2>TikTok判定：成功</h2>' +
-            '<p>案内画面の表示テスト中だよ🐾</p>' +
-            '</div>';
-
+        
+        document.getElementById("browserNoticeScreen").style.display = "block";
 
     } else {
 
