@@ -1396,7 +1396,7 @@ transform: scale(0.94);
 .welcome-content h1 {
     margin: 0 0 10px;
     color: #9b6037;
-    font-size: 1.45rem;
+    font-size: 1.3rem;
     line-height: 1.6;
     text-align: center;
 }
@@ -1404,7 +1404,7 @@ transform: scale(0.94);
 .welcome-content > p:first-of-type {
     margin: 0 0 24px;
     color: #8c7868;
-    font-size: 0.95rem;
+    font-size: 0.8rem;
     text-align: center;
 }
 
@@ -1425,7 +1425,7 @@ transform: scale(0.94);
 .welcome-item p {
     margin: 0;
     color: #66594f;
-    font-size: 0.9rem;
+    font-size: 0.8rem;
     line-height: 1.8;
 }
 
