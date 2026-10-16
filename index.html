@@ -757,35 +757,20 @@
 
     const userAgent = navigator.userAgent;
 
-    const isTikTokBrowser =
-        /TikTok|BytedanceWebview|musical_ly|trill_\d|AppName\/trill/i.test(
-            userAgent
-        );
+    // Chrome（Android・iOS）
+    const isChrome =
+        /CriOS|Chrome/i.test(userAgent) &&
+        !/Edg|OPR|SamsungBrowser/i.test(userAgent);
 
-        const notice = document.getElementById("browserNoticeScreen");
+    // Safari（iPhone・iPad）
+    const isSafari =
+        /Safari/i.test(userAgent) &&
+        !/Chrome|CriOS|Chromium|Edg|OPR|FxiOS/i.test(userAgent);
 
-        document.body.insertAdjacentHTML(
-            "afterbegin",
-            '<div id="debugResult" style="' +
-            'padding:15px;background:#fff3cd;color:#49382b;' +
-            'font-size:16px;overflow-wrap:anywhere;">' +
-            '判定結果を確認中...</div>'
-        );
+    // 通常のアプリ起動を許可するブラウザ
+    const isSupportedBrowser = isChrome || isSafari;
 
-        const debug = document.getElementById("debugResult");
-
-        debug.innerHTML =
-            "<strong>ブラウザ判定テスト</strong><br>" +
-            "TikTok判定：" + isTikTokBrowser + "<br>" +
-            "案内画面：" + (notice ? "HTMLあり" : "HTMLが見つからない") + "<br>" +
-            "User Agent：<br>" + navigator.userAgent;
-
-        if (isTikTokBrowser && notice) {
-            notice.style.display = "block";
-        }
-
-    if (isTikTokBrowser) {
-        
+    if (!isSupportedBrowser) {
         document.getElementById("browserNoticeScreen").style.display = "block";
 
     } else {
