@@ -764,6 +764,8 @@ const isTikTokBrowser =
         navigator.userAgent
     );
 
+    console.log("Tiktokブラウザチェック",isTikTokBrowser);
+
 if (isTikTokBrowser) {
     document.body.innerHTML =
         '<div style="padding:30px;font-size:18px;' +
@@ -772,7 +774,7 @@ if (isTikTokBrowser) {
         '<p>案内画面の表示テスト中だよ🐾</p>' +
         '</div>';
 
-        
+
     } else {
 
         // =============================
