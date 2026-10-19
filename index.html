@@ -1246,7 +1246,6 @@
     console.log("User-Agent:", ua);
     console.log("TikTokブラウザ判定:", isTikTokBrowser);
 
-    // アプリ内ブラウザなら案内画面を表示
     if (isTikTokBrowser) {
         const browserNoticeScreen =
             document.getElementById("browserNoticeScreen");
@@ -1254,17 +1253,28 @@
         const loadingScreen =
             document.getElementById("loadingScreen");
 
-        if (loadingScreen) {
-            loadingScreen.style.display = "none";
-        }
+        const welcomeScreen =
+            document.getElementById("welcomeScreen");
 
+        const homeScreenGuide =
+            document.getElementById("homeScreenGuide");
+
+        const locationSettings =
+            document.getElementById("locationSettings");
+
+        // アプリ本体の画面を非表示にする
+        if (loadingScreen) loadingScreen.style.display = "none";
+        if (welcomeScreen) welcomeScreen.style.display = "none";
+        if (homeScreenGuide) homeScreenGuide.style.display = "none";
+        if (locationSettings) locationSettings.style.display = "none";
+
+        // ブラウザ案内画面だけを表示する
         if (browserNoticeScreen) {
             browserNoticeScreen.style.display = "block";
         }
 
-        console.log("ブラウザ案内画面を表示しました");
+        console.log("ブラウザ案内画面だけを表示しました");
     }
-
     
     // =============================
     // 初回起動：使い方・ホーム画面追加の案内
