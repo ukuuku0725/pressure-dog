@@ -1251,6 +1251,13 @@
         const browserNoticeScreen =
             document.getElementById("browserNoticeScreen");
 
+        const loadingScreen =
+            document.getElementById("loadingScreen");
+
+        if (loadingScreen) {
+            loadingScreen.style.display = "none";
+        }
+
         if (browserNoticeScreen) {
             browserNoticeScreen.style.display = "block";
         }
