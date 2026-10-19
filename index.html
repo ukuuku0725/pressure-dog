@@ -1302,7 +1302,10 @@
 
         const nextToLocationButton =
             document.getElementById("nextToLocationButton");
-
+        alert(
+    "初回案内の保存値: " +
+    localStorage.getItem("shampoWelcomeSeen")
+);
         // 初回案内を表示済みか確認
         const hasSeenWelcome =
             localStorage.getItem("shampoWelcomeSeen") === "true";
