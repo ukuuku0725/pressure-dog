@@ -1554,3 +1554,18 @@ transform: scale(0.94);
     padding-left: 1.4em;
 }
 
+/* =============================
+   TikTok内ブラウザ：ブラウザ案内
+============================= */
+
+#browserNoticeScreen {
+    position: fixed;
+    inset: 0;
+    z-index: 10002;
+    overflow-y: auto;
+    box-sizing: border-box;
+    padding: 24px 16px;
+    background: #fff8ef;
+    color: #59483b;
+    font-family: inherit;
+}
