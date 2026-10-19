@@ -1301,11 +1301,7 @@
 
         const nextToLocationButton =
             document.getElementById("nextToLocationButton");
-localStorage.removeItem("shampoWelcomeSeen");
 
-alert(
-    "テスト用に初回案内の保存値を削除しました"
-);
         // 初回案内を表示済みか確認
         const hasSeenWelcome =
             localStorage.getItem("shampoWelcomeSeen") === "true";
