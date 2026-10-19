@@ -29,50 +29,33 @@
 
 
     <!-- ============================= -->
-    <!-- TikTok内ブラウザ：ブラウザで開く案内 -->
+    <!-- ブラウザで開く案内 -->
     <!-- ============================= -->
 
     <div id="browserNoticeScreen" style="display: none;">
 
         <div class="welcome-content">
-
-            <div style="font-size: 3.5rem; text-align: center;">
-                🐕
-            </div>
+            <div style="font-size: 3.5rem; text-align: center;">🐕</div>
 
             <h1 style="text-align: center;">
-                おねがい
+            柴んぽを開くには
             </h1>
 
             <p style="text-align: center;">
-                柴んぽを快適に使うために、<br>
-                Safari または Chrome で開いてね♪
+            柴んぽを快適に使うために、<br>
+            Safari や Chrome などのブラウザで<br>
+            開いてね♪
             </p>
 
             <div class="welcome-item">
-                <h3>🍎 iPhoneの方</h3>
+                <h3>📱 ブラウザで開く方法</h3>
                 <ol>
-                    <li>TikTok画面のメニューや共有ボタンをタップ</li>
-                    <li>「Safariで開く」などの項目を選ぶ</li>
+                    <li>画面右上の「…」などのメニューをタップ</li>
+                    <li>「ブラウザで開く」「Safariで開く」などを選んでね</li>
                 </ol>
-            </div>
-
-            <div class="welcome-item">
-                <h3>🤖 Androidの方</h3>
-                <ol>
-                    <li>TikTok画面のメニューをタップ</li>
-                    <li>「ブラウザで開く」などの項目を選ぶ</li>
-                </ol>
-            </div>
-
-            <div class="welcome-item">
-                <button
-                    type="button"
-                    id="browserNoticeConfirm"
-                    class="welcome-button"
-                >
-                    確認した！
-                </button>
+                <p style="font-size: 0.9rem; text-align: center;">
+                    ※ メニューの場所や表示は、アプリや端末によって異なるよ。
+                </p>
             </div>
 
         </div>
@@ -1249,140 +1232,170 @@
 
 
     // =============================
+    // アプリ内ブラウザ判定
+    // =============================
+
+    const ua = navigator.userAgent.toLowerCase();
+
+    const isTikTokBrowser =
+        ua.includes("tiktok") ||
+        ua.includes("musical_ly") ||
+        ua.includes("trill") ||
+        ua.includes("bytedancewebview");
+
+    console.log("User-Agent:", ua);
+    console.log("TikTokブラウザ判定:", isTikTokBrowser);
+
+    // アプリ内ブラウザなら案内画面を表示
+    if (isTikTokBrowser) {
+        const browserNoticeScreen =
+            document.getElementById("browserNoticeScreen");
+
+        if (browserNoticeScreen) {
+            browserNoticeScreen.style.display = "block";
+        }
+
+        console.log("ブラウザ案内画面を表示しました");
+    }
+
+    
+    // =============================
     // 初回起動：使い方・ホーム画面追加の案内
     // =============================
 
-    const loadingScreen =
-        document.getElementById("loadingScreen");
+    if (!isTikTokBrowser) {
 
-    const welcomeScreen =
-        document.getElementById("welcomeScreen");
+        const loadingScreen =
+            document.getElementById("loadingScreen");
 
-    const startAppButton =
-        document.getElementById("startAppButton");
+        const welcomeScreen =
+            document.getElementById("welcomeScreen");
 
-    const homeScreenGuide =
-        document.getElementById("homeScreenGuide");
+        const startAppButton =
+            document.getElementById("startAppButton");
 
-    const nextToLocationButton =
-        document.getElementById("nextToLocationButton");
+        const homeScreenGuide =
+            document.getElementById("homeScreenGuide");
 
-    // 初回案内を表示済みか確認
-    const hasSeenWelcome =
-        localStorage.getItem("shampoWelcomeSeen") === "true";
+        const nextToLocationButton =
+            document.getElementById("nextToLocationButton");
 
-    const locationSettings = 
-        document.getElementById("locationSettings");
+        // 初回案内を表示済みか確認
+        const hasSeenWelcome =
+            localStorage.getItem("shampoWelcomeSeen") === "true";
 
-    if (!hasSeenWelcome) {
+        const locationSettings = 
+            document.getElementById("locationSettings");
 
-        // 準備中画面を閉じて使い方を表示
-        if (loadingScreen) {
-            loadingScreen.style.display = "none";
-        }
+        if (!hasSeenWelcome) {
 
-        if (welcomeScreen) {
-            welcomeScreen.style.display = "block";
-        }
+            // 準備中画面を閉じて使い方を表示
+            if (loadingScreen) {
+                loadingScreen.style.display = "none";
+            }
 
-        if (homeScreenGuide) {
-            homeScreenGuide.style.display = "none";
-        }
-
-    } else {
-
-        // 2回目以降は初回案内を表示しない
-        if (welcomeScreen) {
-            welcomeScreen.style.display = "none";
-        }
-
-        if (homeScreenGuide) {
-            homeScreenGuide.style.display = "none";
-        }
-
-        startAppAfterGuide()
-            .then(() => {
-                if (loadingScreen) {
-                    loadingScreen.style.display = "none";
-                }
-            })
-            .catch(error => {
-                console.error(
-                    "柴んぽの起動に失敗しました:",
-                    error
-                );
-            });
-
-    }
-
-    // 「さっそく使ってみる！」を押したとき
-    if (startAppButton) {
-
-        startAppButton.addEventListener("click", () => {
-
-            // 使い方を閉じてホーム画面追加の案内へ
             if (welcomeScreen) {
-                welcomeScreen.style.display = "none";
+                welcomeScreen.style.display = "block";
             }
-
-            if (homeScreenGuide) {
-                homeScreenGuide.style.display = "block";
-            }
-
-        });
-
-    }
-
-
- 
-    if (nextToLocationButton) {
-        nextToLocationButton.addEventListener("click", async () => {
-
-            console.log("🟢 STEP 1：初回案内の「次へ」ボタンが押されました");
-
-            window.isInitialLocationSetup = true;
 
             if (homeScreenGuide) {
                 homeScreenGuide.style.display = "none";
             }
 
-            if (loadingScreen) {
-                loadingScreen.style.display = "block";
+        } else {
+
+            // 2回目以降は初回案内を表示しない
+            if (welcomeScreen) {
+                welcomeScreen.style.display = "none";
             }
 
-            try {
-                // Firebase・ユーザー情報・天気データを起動
-                await startAppAfterGuide();
+            if (homeScreenGuide) {
+                homeScreenGuide.style.display = "none";
+            }
 
-                if (loadingScreen) {
-                    loadingScreen.style.display = "none";
-                }
+            startAppAfterGuide()
+                .then(() => {
+                    if (loadingScreen) {
+                        loadingScreen.style.display = "none";
+                    }
+                })
+                .catch(error => {
+                    console.error(
+                        "柴んぽの起動に失敗しました:",
+                        error
+                    );
+                });
 
-                // 起動が完了してから地域設定を表示
-                if (locationSettings) {
-                    locationSettings.style.display = "block";
-                }
+        }
 
-            } catch (error) {
-                console.error(
-                    "柴んぽの起動に失敗しました:",
-                    error
-                );
+        // 「さっそく使ってみる！」を押したとき
+        if (startAppButton) {
 
-                if (loadingScreen) {
-                    loadingScreen.style.display = "none";
+            startAppButton.addEventListener("click", () => {
+
+                // 使い方を閉じてホーム画面追加の案内へ
+                if (welcomeScreen) {
+                    welcomeScreen.style.display = "none";
                 }
 
                 if (homeScreenGuide) {
                     homeScreenGuide.style.display = "block";
                 }
 
-                alert(
-                    "柴んぽの起動に失敗しました。ページを再読み込みしてください。"
-                );
-            }
-        });
-    }
+            });
 
+        }
+
+
+    
+        if (nextToLocationButton) {
+            nextToLocationButton.addEventListener("click", async () => {
+
+                console.log("🟢 STEP 1：初回案内の「次へ」ボタンが押されました");
+
+                window.isInitialLocationSetup = true;
+
+                if (homeScreenGuide) {
+                    homeScreenGuide.style.display = "none";
+                }
+
+                if (loadingScreen) {
+                    loadingScreen.style.display = "block";
+                }
+
+                try {
+                    // Firebase・ユーザー情報・天気データを起動
+                    await startAppAfterGuide();
+
+                    if (loadingScreen) {
+                        loadingScreen.style.display = "none";
+                    }
+
+                    // 起動が完了してから地域設定を表示
+                    if (locationSettings) {
+                        locationSettings.style.display = "block";
+                    }
+
+                } catch (error) {
+                    console.error(
+                        "柴んぽの起動に失敗しました:",
+                        error
+                    );
+
+                    if (loadingScreen) {
+                        loadingScreen.style.display = "none";
+                    }
+
+                    if (homeScreenGuide) {
+                        homeScreenGuide.style.display = "block";
+                    }
+
+                    alert(
+                        "柴んぽの起動に失敗しました。ページを再読み込みしてください。"
+                    );
+                }
+            });
+        }
+    }
 
 </script>
