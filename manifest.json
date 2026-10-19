@@ -1,9 +1,16 @@
+
 {
     "name": "お散歩コンディションアプリ【柴んぽ】",
     "short_name": "柴んぽ",
     "start_url": "./",
     "display": "standalone",
     "icons": [
+        {
+            "src": "./images/icons/shiba-logo.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "any"
+        },
         {
             "src": "./images/icons/shiba-logo.png",
             "sizes": "512x512",
