@@ -917,6 +917,13 @@
                 "ms",
             );
 
+            alert(
+    "⏱️ 匿名ログイン時間：" +
+    Math.round(performance.now() - authStart) +
+    " ms"
+);
+
+
             const userRef = doc(db, "users", user.uid);
 
             const firestoreReadStart = performance.now();
@@ -924,6 +931,12 @@
             const userSnap = await getDoc(userRef);
 
             console.log(
+                "⏱️ Firestore読み込み:",
+                Math.round(performance.now() - firestoreReadStart),
+                "ms",
+            );
+
+            alert(
                 "⏱️ Firestore読み込み:",
                 Math.round(performance.now() - firestoreReadStart),
                 "ms",
@@ -1039,6 +1052,12 @@
             console.log("Firestoreへの保存成功！");
 
             console.log(
+                "⏱️ initializeUser全体:",
+                Math.round(performance.now() - firebaseStart),
+                "ms",
+            );
+
+            alert(
                 "⏱️ initializeUser全体:",
                 Math.round(performance.now() - firebaseStart),
                 "ms",
@@ -1213,6 +1232,12 @@
                 "ms"
             );
 
+            alert(
+                "⏱️ app.js読み込み:",
+                Math.round(performance.now() - startupTime),
+                "ms"
+            );
+
             // 4. Firebase認証・ユーザー情報取得
             await initializeUser();
 
@@ -1227,6 +1252,12 @@
             console.log("✅ STEP 4：天気取得処理が完了");
 
             console.log(
+                "⏱️ アプリ起動完了:",
+                Math.round(performance.now() - startupTime),
+                "ms"
+            );
+
+            alert(
                 "⏱️ アプリ起動完了:",
                 Math.round(performance.now() - startupTime),
                 "ms"
