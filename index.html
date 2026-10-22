@@ -911,12 +911,11 @@
             console.log("匿名ログイン成功！");
             console.log("UID:", user.uid);
 
-const authElapsed = Math.round(performance.now() - authStart);
+            const authElapsed = Math.round(performance.now() - authStart);
 
-console.log("⏱️ 匿名ログイン:", authElapsed, "ms");
+            console.log("⏱️ 匿名ログイン:", authElapsed, "ms");
 
-alert(`匿名ログイン時間：${authElapsed} ms`);
-
+            //alert(`匿名ログイン時間：${authElapsed} ms`);
 
 
             const userRef = doc(db, "users", user.uid);
@@ -925,17 +924,17 @@ alert(`匿名ログイン時間：${authElapsed} ms`);
 
             const userSnap = await getDoc(userRef);
 
-const firestoreReadElapsed = Math.round(
-    performance.now() - firestoreReadStart
-);
+            const firestoreReadElapsed = Math.round(
+                performance.now() - firestoreReadStart
+            );
 
-console.log(
-    "⏱️ Firestore読み込み:",
-    firestoreReadElapsed,
-    "ms",
-);
+            console.log(
+                "⏱️ Firestore読み込み:",
+                firestoreReadElapsed,
+                "ms",
+            );
 
-alert(`Firestore読み込み時間：${firestoreReadElapsed} ms`);
+            //alert(`Firestore読み込み時間：${firestoreReadElapsed} ms`);
 
             if (!userSnap.exists()) {
 
@@ -1045,17 +1044,17 @@ alert(`Firestore読み込み時間：${firestoreReadElapsed} ms`);
             );
             console.log("Firestoreへの保存成功！");
 
-const initializeUserElapsed = Math.round(
-    performance.now() - firebaseStart
-);
+            const initializeUserElapsed = Math.round(
+                performance.now() - firebaseStart
+            );
 
-console.log(
-    "⏱️ initializeUser全体:",
-    initializeUserElapsed,
-    "ms",
-);
+            console.log(
+                "⏱️ initializeUser全体:",
+                initializeUserElapsed,
+                "ms",
+            );
 
-alert(`initializeUser全体の時間：${initializeUserElapsed} ms`);
+            //alert(`initializeUser全体の時間：${initializeUserElapsed} ms`);
 
         } catch (error) {
 
@@ -1220,17 +1219,17 @@ alert(`initializeUser全体の時間：${initializeUserElapsed} ms`);
 
             });
 
-const appJsLoadElapsed = Math.round(
-    performance.now() - startupTime
-);
+            const appJsLoadElapsed = Math.round(
+                performance.now() - startupTime
+            );
 
-console.log(
-    "⏱️ app.js読み込み:",
-    appJsLoadElapsed,
-    "ms"
-);
+            console.log(
+                "⏱️ app.js読み込み:",
+                appJsLoadElapsed,
+                "ms"
+            );
 
-alert(`app.js読み込み時間：${appJsLoadElapsed} ms`);
+            //alert(`app.js読み込み時間：${appJsLoadElapsed} ms`);
 
             // 4. Firebase認証・ユーザー情報取得
             await initializeUser();
@@ -1245,17 +1244,17 @@ alert(`app.js読み込み時間：${appJsLoadElapsed} ms`);
 
             console.log("✅ STEP 4：天気取得処理が完了");
 
-const appStartupElapsed = Math.round(
-    performance.now() - startupTime
-);
+            console.log(
+                "⏱️ アプリ起動完了:",
+                Math.round(performance.now() - startupTime),
+                "ms"
+            );
 
-console.log(
-    "⏱️ アプリ起動完了:",
-    appStartupElapsed,
-    "ms"
-);
-
-alert(`アプリ起動完了までの時間：${appStartupElapsed} ms`);
+            // alert(
+            //     "⏱️ アプリ起動完了:",
+            //     Math.round(performance.now() - startupTime),
+            //     "ms"
+            // );
 
             return result;
 
