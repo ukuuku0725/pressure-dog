@@ -207,6 +207,7 @@ h2 {
     font-size: 21px;
 }
 
+
 /* ==============================
    読み込み画面
 ============================== */
@@ -220,13 +221,75 @@ h2 {
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    gap: 18px;
 
     background: #f1fffa;
 }
 
+.loading-title {
+    font-size: 32px;
+    font-weight: bold;
+    color: #527b62;
+}
+
+/* 柴犬がちょこちょこ歩く */
+.walking-shiba {
+    font-size: 76px;
+    line-height: 1.4;
+    display: inline-block;
+    transform-origin: center bottom;
+    animation: shibaWalk 0.45s infinite alternate ease-in-out;
+}
+
+/* 上下に弾みながら歩く */
+@keyframes shibaWalk {
+    0% {
+        transform: translateY(0) rotate(-8deg) scaleX(1);
+    }
+
+    50% {
+        transform: translateY(-8px) rotate(0deg) scaleX(1);
+    }
+
+    100% {
+        transform: translateY(0) rotate(8deg) scaleX(1);
+    }
+}
+
+/* 準備中のメッセージ */
 #loadingMessage {
     font-size: 20px;
+    font-weight: bold;
+    color: #527b62;
 }
+
+/* 点が順番に表示される */
+.loading-dots::after {
+    content: "";
+    animation: loadingDots 1.2s steps(4, end) infinite;
+}
+
+@keyframes loadingDots {
+    0%   { content: ""; }
+    25%  { content: "."; }
+    50%  { content: ".."; }
+    75%,
+    100% { content: "..."; }
+}
+
+.loading-submessage {
+    font-size: 14px;
+    color: #789487;
+}
+
+/* 動きを減らす設定の端末ではアニメーションを停止 */
+@media (prefers-reduced-motion: reduce) {
+    .walking-shiba,
+    .loading-dots::after {
+        animation: none;
+    }
+}
+
 
 
 /* ==============================
