@@ -207,6 +207,12 @@ h2 {
     font-size: 21px;
 }
 
+.walking-shiba img {
+    display: block;
+    width: 100px;
+    height: auto;
+}
+
 
 /* ==============================
    読み込み画面
